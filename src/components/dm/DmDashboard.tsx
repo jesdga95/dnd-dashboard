@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Plus, Users, RotateCcw, LogOut } from "lucide-react";
+import { Plus, Users, RotateCcw, LogOut, Swords } from "lucide-react";
 import { useDmParty } from "@/hooks/useDmParty";
+import { useDmCombat } from "@/hooks/useDmCombat";
 import { useProfile } from "@/hooks/useProfile";
 import { useAuth } from "@/hooks/useAuth";
 import { useDict } from "@/lib/DictContext";
 import { PartyCard } from "./PartyCard";
+import { DmCombatMode } from "./DmCombatMode";
 
 function DmAvatarMenu({ onReset, onSignOut }: { onReset: () => void; onSignOut: () => void }) {
   const dict = useDict();
@@ -91,10 +93,12 @@ function DmAvatarMenu({ onReset, onSignOut }: { onReset: () => void; onSignOut: 
 export function DmDashboard() {
   const dict = useDict();
   const { partyLoading, members, addPlayer, removePlayer } = useDmParty();
+  const { combat } = useDmCombat();
   const { role, resetProfile } = useProfile();
   const { signOut } = useAuth();
   const [inputValue, setInputValue] = useState("");
   const [adding, setAdding] = useState(false);
+  const [combatOpen, setCombatOpen] = useState(false);
 
   const handleAdd = async () => {
     const uid = inputValue.trim();
@@ -131,6 +135,21 @@ export function DmDashboard() {
               {(members.length === 1 ? dict.dm.playerCount : dict.dm.playersCount).replace("{count}", String(members.length))} · {dict.dm.liveUpdates}
             </p>
           </div>
+          <button
+            onClick={() => setCombatOpen(true)}
+            disabled={!combat && members.length === 0}
+            className="flex items-center gap-2 px-3.5 py-2 rounded-[12px] text-[12px] font-semibold
+              cursor-pointer transition-colors duration-150 shrink-0
+              disabled:opacity-30 disabled:cursor-not-allowed"
+            style={{
+              background: "rgba(244,123,95,0.14)",
+              color: "var(--color-coral)",
+              border: "1px solid rgba(244,123,95,0.25)",
+            }}
+          >
+            <Swords size={14} />
+            <span className="max-[480px]:hidden">{combat ? dict.dmCombat.resume : dict.dmCombat.start}</span>
+          </button>
         </div>
 
         {/* Add player input */}
@@ -141,6 +160,7 @@ export function DmDashboard() {
             onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleAdd()}
             placeholder={dict.dm.addPlayerPlaceholder}
+            maxLength={40}
             className="flex-1 px-3 py-2 rounded-[10px] text-[13px] font-medium
               outline-none transition-colors duration-150 font-mono"
             style={{
@@ -184,6 +204,10 @@ export function DmDashboard() {
             <PartyCard key={m.uid} member={m} onRemove={removePlayer} />
           ))}
         </div>
+      )}
+
+      {combatOpen && (
+        <DmCombatMode members={members} onClose={() => setCombatOpen(false)} />
       )}
     </div>
   );

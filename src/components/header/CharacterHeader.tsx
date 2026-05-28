@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { RotateCcw, LogOut, Swords, Share2, Copy, Check } from "lucide-react";
+import { RotateCcw, LogOut, Share2, Copy, Check, Moon, Coffee } from "lucide-react";
 import { EditableInput } from "@/components/ui/EditableInput";
 import { EditableNumber } from "@/components/ui/EditableNumber";
 import { useAuth } from "@/hooks/useAuth";
@@ -12,7 +12,8 @@ interface CharacterHeaderProps {
   char: Pick<Character, "name" | "race" | "className" | "subclass" | "background" | "alignment" | "level" | "isShared">;
   onUpdate: (patch: Partial<Character>) => void;
   onReset: () => void;
-  onStartCombat?: () => void;
+  onShortRest: () => void;
+  onLongRest: () => void;
   onToggleSharing: () => void;
   isShared: boolean;
   userId: string | null;
@@ -25,6 +26,9 @@ function AvatarMenu({
   onReset,
   user,
   onSignOut,
+  isShared,
+  userId,
+  onToggleSharing,
 }: {
   size: "sm" | "md";
   initial: string;
@@ -32,10 +36,14 @@ function AvatarMenu({
   onReset: () => void;
   user: { displayName?: string | null; email?: string | null } | null;
   onSignOut: () => void;
+  isShared: boolean;
+  userId: string | null;
+  onToggleSharing: () => void;
 }) {
   const dict = useDict();
   const [open, setOpen] = useState(false);
   const [resetConfirm, setResetConfirm] = useState(false);
+  const [copied, setCopied] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -59,6 +67,14 @@ function AvatarMenu({
       setResetConfirm(true);
       setTimeout(() => setResetConfirm(false), 3000);
     }
+  };
+
+  const handleCopy = () => {
+    if (!userId) return;
+    navigator.clipboard.writeText(userId).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
   };
 
   const wh = size === "sm" ? "w-[48px] h-[48px]" : "w-[56px] h-[56px]";
@@ -90,9 +106,36 @@ function AvatarMenu({
 
       {open && (
         <div
-          className="absolute top-full left-0 mt-2 w-[168px] z-50
+          className="absolute top-full left-0 mt-2 w-[180px] z-50
             bg-[#28221e] border border-white/[0.08] rounded-[12px] shadow-2xl overflow-hidden py-1"
         >
+          {/* Sharing */}
+          <button
+            onClick={() => { onToggleSharing(); }}
+            className="w-full flex items-center gap-2.5 px-3.5 py-[9px] text-[12.5px] font-medium
+              transition-colors cursor-pointer text-left"
+            style={isShared
+              ? { color: "rgba(72,200,160,0.9)", background: "rgba(72,200,160,0.08)" }
+              : { color: "rgba(255,255,255,0.5)" }
+            }
+          >
+            <Share2 size={12} />
+            {isShared ? dict.sharing.enabled : dict.sharing.label}
+          </button>
+
+          {isShared && userId && (
+            <button
+              onClick={handleCopy}
+              className="w-full flex items-center gap-2.5 px-3.5 py-[9px] text-[12.5px] font-medium
+                text-white/50 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer text-left"
+            >
+              {copied ? <Check size={12} /> : <Copy size={12} />}
+              {copied ? dict.sharing.copied : dict.sharing.copyId}
+            </button>
+          )}
+
+          <div className="my-1 border-t border-white/[0.08]" />
+
           <button
             onClick={handleReset}
             className="w-full flex items-center gap-2.5 px-3.5 py-[9px] text-[12.5px] font-medium
@@ -101,6 +144,7 @@ function AvatarMenu({
             <RotateCcw size={12} />
             {resetConfirm ? dict.header.confirmResetProfile : dict.header.resetProfile}
           </button>
+
           {user && (
             <button
               onClick={() => { onSignOut(); setOpen(false); }}
@@ -117,51 +161,7 @@ function AvatarMenu({
   );
 }
 
-function SharingRow({ isShared, userId, onToggleSharing }: { isShared: boolean; userId: string | null; onToggleSharing: () => void }) {
-  const dict = useDict();
-  const [copied, setCopied] = useState(false);
-
-  const handleCopy = () => {
-    if (!userId) return;
-    navigator.clipboard.writeText(userId).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    });
-  };
-
-  return (
-    <div className="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-white/[0.08]">
-      <button
-        onClick={onToggleSharing}
-        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-[8px] text-[11px] font-semibold
-          transition-colors duration-150 cursor-pointer"
-        style={isShared
-          ? { background: "rgba(72,200,160,0.18)", color: "var(--color-mint-deep)", border: "1px solid rgba(72,200,160,0.3)" }
-          : { background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.4)", border: "1px solid rgba(255,255,255,0.1)" }
-        }
-      >
-        <Share2 size={10} />
-        {isShared ? dict.sharing.enabled : dict.sharing.label}
-      </button>
-
-      {isShared && userId && (
-        <button
-          onClick={handleCopy}
-          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-[8px] text-[11px]
-            transition-colors duration-150 cursor-pointer"
-          style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.45)", border: "1px solid rgba(255,255,255,0.1)" }}
-        >
-          {copied ? <Check size={10} /> : <Copy size={10} />}
-          <span className="font-mono tracking-tight">
-            {copied ? dict.sharing.copied : userId}
-          </span>
-        </button>
-      )}
-    </div>
-  );
-}
-
-export function CharacterHeader({ char, onUpdate, onReset, onStartCombat, onToggleSharing, isShared, userId }: CharacterHeaderProps) {
+export function CharacterHeader({ char, onUpdate, onReset, onShortRest, onLongRest, onToggleSharing, isShared, userId }: CharacterHeaderProps) {
   const dict = useDict();
   const { user, signOut } = useAuth();
   const initial = char.name?.[0]?.toUpperCase() ?? "?";
@@ -173,6 +173,29 @@ export function CharacterHeader({ char, onUpdate, onReset, onStartCombat, onTogg
     { label: dict.header.bg, key: "background" },
     { label: dict.header.align, key: "alignment" },
   ];
+
+  const restButtons = (fullWidth: boolean) => (
+    <div className={`flex gap-2 mt-3 pt-3 border-t border-white/[0.08] ${fullWidth ? "" : "justify-end"}`}>
+      <button
+        onClick={onShortRest}
+        className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-[8px] text-[11px] font-semibold
+          transition-colors duration-150 cursor-pointer ${fullWidth ? "flex-1" : ""}`}
+        style={{ background: "rgba(99,149,225,0.18)", color: "#7aaee8", border: "1px solid rgba(99,149,225,0.3)" }}
+      >
+        <Coffee size={10} />
+        {dict.header.shortRest}
+      </button>
+      <button
+        onClick={onLongRest}
+        className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-[8px] text-[11px] font-semibold
+          transition-colors duration-150 cursor-pointer ${fullWidth ? "flex-1" : ""}`}
+        style={{ background: "rgba(72,200,160,0.14)", color: "var(--color-mint-deep)", border: "1px solid rgba(72,200,160,0.25)" }}
+      >
+        <Moon size={10} />
+        {dict.header.longRest}
+      </button>
+    </div>
+  );
 
   return (
     <div
@@ -189,6 +212,9 @@ export function CharacterHeader({ char, onUpdate, onReset, onStartCombat, onTogg
             onReset={onReset}
             user={user}
             onSignOut={signOut}
+            isShared={isShared}
+            userId={userId}
+            onToggleSharing={onToggleSharing}
           />
 
           {/* Name + meta row */}
@@ -199,6 +225,7 @@ export function CharacterHeader({ char, onUpdate, onReset, onStartCombat, onTogg
                 onChange={(v) => onUpdate({ name: v })}
                 dark
                 asDiv
+                maxLength={50}
               />
             </div>
             <div className="grid grid-cols-2 min-[1050px]:grid-cols-5 gap-x-8 gap-y-1.5 mt-[7px]">
@@ -212,6 +239,7 @@ export function CharacterHeader({ char, onUpdate, onReset, onStartCombat, onTogg
                       value={char[key]}
                       onChange={(v) => onUpdate({ [key]: v })}
                       dark
+                      maxLength={30}
                     />
                   </span>
                 </div>
@@ -219,8 +247,8 @@ export function CharacterHeader({ char, onUpdate, onReset, onStartCombat, onTogg
             </div>
           </div>
 
-          {/* Level badge + combat button stacked */}
-          <div className="flex flex-col gap-2 flex-shrink-0">
+          {/* Level badge */}
+          <div className="flex-shrink-0">
             <div
               className="flex flex-col items-center justify-center
                 rounded-[14px] border border-[rgba(180,80,45,0.45)]
@@ -247,26 +275,10 @@ export function CharacterHeader({ char, onUpdate, onReset, onStartCombat, onTogg
                 }}
               />
             </div>
-            {onStartCombat && (
-              <button
-                onClick={onStartCombat}
-                className="w-full flex items-center justify-center gap-2 py-2 rounded-[12px]
-                  border-none cursor-pointer font-[inherit] font-semibold text-[12px]
-                  transition-colors duration-150"
-                style={{
-                  background: "rgba(244,123,95,0.14)",
-                  color: "var(--color-coral)",
-                  border: "1px solid rgba(244,123,95,0.25)",
-                }}
-              >
-                <Swords size={13} />
-                <span>{dict.combat.title}</span>
-              </button>
-            )}
           </div>
         </div>
 
-        <SharingRow isShared={isShared} userId={userId} onToggleSharing={onToggleSharing} />
+        {restButtons(false)}
       </div>
 
       {/* ── Mobile ── */}
@@ -279,6 +291,9 @@ export function CharacterHeader({ char, onUpdate, onReset, onStartCombat, onTogg
             onReset={onReset}
             user={user}
             onSignOut={signOut}
+            isShared={isShared}
+            userId={userId}
+            onToggleSharing={onToggleSharing}
           />
 
           {/* Name + meta grid */}
@@ -289,6 +304,7 @@ export function CharacterHeader({ char, onUpdate, onReset, onStartCombat, onTogg
                 onChange={(v) => onUpdate({ name: v })}
                 dark
                 asDiv
+                maxLength={50}
               />
             </div>
             <div className="grid grid-cols-3 gap-x-3 gap-y-2.5">
@@ -302,6 +318,7 @@ export function CharacterHeader({ char, onUpdate, onReset, onStartCombat, onTogg
                       value={char[key]}
                       onChange={(v) => onUpdate({ [key]: v })}
                       dark
+                      maxLength={30}
                     />
                   </div>
                 </div>
@@ -311,9 +328,9 @@ export function CharacterHeader({ char, onUpdate, onReset, onStartCombat, onTogg
         </div>
 
         {/* Level bar */}
-        <div className="mt-4 flex items-stretch gap-2">
+        <div className="mt-4">
           <div
-            className="flex-1 flex items-center justify-between
+            className="flex items-center justify-between
               rounded-[12px] border border-[rgba(180,80,45,0.45)]
               bg-[rgba(255,255,255,0.03)] px-4 py-3"
           >
@@ -336,24 +353,9 @@ export function CharacterHeader({ char, onUpdate, onReset, onStartCombat, onTogg
               }}
             />
           </div>
-          {onStartCombat && (
-            <button
-              onClick={onStartCombat}
-              className="flex items-center justify-center w-[56px] rounded-[12px]
-                border-none cursor-pointer font-[inherit] shrink-0
-                transition-colors duration-150"
-              style={{
-                background: "rgba(244,123,95,0.14)",
-                color: "var(--color-coral)",
-                border: "1px solid rgba(244,123,95,0.25)",
-              }}
-            >
-              <Swords size={20} />
-            </button>
-          )}
         </div>
 
-        <SharingRow isShared={isShared} userId={userId} onToggleSharing={onToggleSharing} />
+        {restButtons(true)}
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCharacter } from "@/hooks/useCharacter";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
@@ -17,20 +17,21 @@ import { InventoryCard } from "@/components/inventory/InventoryCard";
 import { NotesCard } from "@/components/notes/NotesCard";
 import { SpellcastingCard } from "@/components/spellcasting/SpellcastingCard";
 import { ResourcesCard } from "@/components/resources/ResourcesCard";
-import { CombatMode, type CombatEnemy } from "@/components/combat/CombatMode";
+import { PlayerCombatView } from "@/components/combat/PlayerCombatView";
+import { usePlayerCombat } from "@/hooks/usePlayerCombat";
+import { useDict } from "@/lib/DictContext";
+import { Swords } from "lucide-react";
 import { DEFAULT_SPELLCASTING } from "@/lib/defaults";
-import { clamp } from "@/lib/utils";
 
 export function CharacterSheet() {
-  const [combatOpen, setCombatOpen] = useState(false);
-  const [combatEnemies, setCombatEnemies] = useState<CombatEnemy[]>([]);
+  const dict = useDict();
+  const { combat: dmCombat } = usePlayerCombat();
+  const [dmCombatDismissed, setDmCombatDismissed] = useState(false);
 
-  const addEnemy = (enemy: CombatEnemy) => setCombatEnemies((p) => [...p, enemy]);
-  const adjustEnemyHp = (id: number, delta: number) =>
-    setCombatEnemies((p) =>
-      p.map((e) => (e.id === id ? { ...e, hp: clamp(e.hp + delta, 0, e.hpMax) } : e))
-    );
-  const removeEnemy = (id: number) => setCombatEnemies((p) => p.filter((e) => e.id !== id));
+  // Auto-show overlay when a new combat begins (null → non-null transition only)
+  useEffect(() => {
+    if (dmCombat) setDmCombatDismissed(false);
+  }, [!!dmCombat]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const { user } = useAuth();
   const { role, resetProfile } = useProfile();
@@ -43,7 +44,8 @@ export function CharacterSheet() {
     toggleSaveProficiency,
     adjustHp,
     setTempHp,
-    fullRest,
+    shortRest,
+    longRest,
     toggleDeathSave,
     toggleDeathFail,
     saveEquipment,
@@ -90,7 +92,8 @@ export function CharacterSheet() {
         char={char}
         onUpdate={update}
         onReset={() => resetProfile(role ?? undefined)}
-        onStartCombat={() => { setCombatOpen(true); update({ inCombat: true }); }}
+        onShortRest={shortRest}
+        onLongRest={longRest}
         onToggleSharing={toggleSharing}
         isShared={char.isShared}
         userId={user?.uid ?? null}
@@ -107,7 +110,6 @@ export function CharacterSheet() {
           onAdjust={adjustHp}
           onUpdate={update}
           onTempHpChange={setTempHp}
-          onFullRest={fullRest}
         />
         <DeathSaves
           successes={char.deathSaves}
@@ -121,12 +123,23 @@ export function CharacterSheet() {
       <div className="h-3" />
 
       {/* Bento stats */}
-      <StatBentoRow char={char} onUpdate={update} onToggleInspiration={toggleInspiration} />
+      <StatBentoRow
+        char={char}
+        abilities={char.abilities}
+        skills={char.skills ?? {}}
+        onUpdate={update}
+        onToggleInspiration={toggleInspiration}
+      />
 
       <div className="h-3" />
 
       {/* Ability Scores */}
-      <AbilityScores abilities={char.abilities} onUpdate={updateAbility} onToggleSave={toggleSaveProficiency} />
+      <AbilityScores
+        abilities={char.abilities}
+        proficiency={char.proficiency}
+        onUpdate={updateAbility}
+        onToggleSave={toggleSaveProficiency}
+      />
 
       <div className="h-3" />
 
@@ -159,6 +172,8 @@ export function CharacterSheet() {
       {/* Spellcasting */}
       <SpellcastingCard
         spellcasting={char.spellcasting ?? DEFAULT_SPELLCASTING}
+        abilities={char.abilities}
+        proficiency={char.proficiency}
         onUpdateMeta={updateSpellcasting}
         onUpdateSlot={updateSpellSlot}
         onAddSlotLevel={addSpellSlotLevel}
@@ -210,22 +225,34 @@ export function CharacterSheet() {
         onDelete={deleteNote}
       />
 
-      {combatOpen && (
-        <CombatMode
+      {dmCombat && user?.uid && !dmCombatDismissed && (
+        <PlayerCombatView
+          uid={user.uid}
           char={char}
-          enemies={combatEnemies}
           statuses={char.conditions ?? []}
           onAdjustHp={adjustHp}
           onUpdateHp={update}
           onTempHpChange={setTempHp}
-          onFullRest={fullRest}
-          onAddEnemy={addEnemy}
-          onAdjustEnemyHp={adjustEnemyHp}
-          onRemoveEnemy={removeEnemy}
           onAddStatus={addCondition}
           onRemoveStatus={removeCondition}
-          onClose={() => { setCombatOpen(false); update({ inCombat: false }); }}
+          onDismiss={() => setDmCombatDismissed(true)}
         />
+      )}
+
+      {dmCombat && dmCombatDismissed && (
+        <button
+          onClick={() => setDmCombatDismissed(false)}
+          className="fixed bottom-6 right-6 z-[190] flex items-center gap-2 px-4 py-3
+            rounded-[14px] text-[13px] font-bold cursor-pointer shadow-2xl transition-all duration-150"
+          style={{
+            background: "rgba(244,123,95,0.95)",
+            color: "white",
+            border: "1px solid rgba(244,123,95,0.4)",
+          }}
+        >
+          <Swords size={15} />
+          <span>{dict.combat.title}</span>
+        </button>
       )}
     </div>
   );

@@ -83,12 +83,12 @@ export function useCharacter() {
   const update = (patch: Partial<Character>) =>
     setChar((c) => ({ ...c, ...patch }));
 
-  const updateAbility = (key: AbilityKey, field: "score" | "mod", val: number | null) =>
+  const updateAbility = (key: AbilityKey, val: number | null) =>
     setChar((c) => ({
       ...c,
       abilities: {
         ...c.abilities,
-        [key]: { ...c.abilities[key], [field]: val },
+        [key]: { ...c.abilities[key], score: val },
       },
     }));
 
@@ -120,7 +120,15 @@ export function useCharacter() {
   const setTempHp = (val: number) =>
     setChar((c) => ({ ...c, tempHp: Math.max(0, val) }));
 
-  const fullRest = () =>
+  const shortRest = () =>
+    setChar((c) => ({
+      ...c,
+      customResources: (c.customResources ?? []).map((r) =>
+        (r.resetOn ?? "long") === "short" ? { ...r, used: 0 } : r
+      ),
+    }));
+
+  const longRest = () =>
     setChar((c) => {
       const sc = c.spellcasting ?? DEFAULT_SPELLCASTING;
       return {
@@ -258,7 +266,7 @@ export function useCharacter() {
   const toggleSharing = () =>
     setChar((c) => ({ ...c, isShared: !c.isShared }));
 
-  const updateSpellcasting = (patch: Partial<Pick<Spellcasting, "ability" | "saveDC" | "attackBonus">>) =>  // saveDC/attackBonus may be null
+  const updateSpellcasting = (patch: Partial<Pick<Spellcasting, "ability">>) =>
     setChar((c) => {
       const sc = c.spellcasting ?? DEFAULT_SPELLCASTING;
       return { ...c, spellcasting: { ...sc, ...patch } };
@@ -340,7 +348,7 @@ export function useCharacter() {
   const addCustomResource = () =>
     setChar((c) => ({
       ...c,
-      customResources: [...(c.customResources ?? []), { id: generateId(), name: "", max: 1, used: 0 }],
+      customResources: [...(c.customResources ?? []), { id: generateId(), name: "", max: 1, used: 0, resetOn: "long" as const }],
     }));
 
   const updateCustomResource = (id: number, patch: Partial<Omit<CustomResource, "id">>) =>
@@ -373,7 +381,8 @@ export function useCharacter() {
     updateAbility,
     adjustHp,
     setTempHp,
-    fullRest,
+    shortRest,
+    longRest,
     toggleDeathSave,
     toggleDeathFail,
     saveEquipment,

@@ -1,6 +1,6 @@
 "use client";
 
-import { Heart, Moon, RotateCcw, Shield } from "lucide-react";
+import { Heart, RotateCcw, Shield } from "lucide-react";
 import { IconPill } from "@/components/ui/IconPill";
 import { EditableNumber } from "@/components/ui/EditableNumber";
 import { useDict } from "@/lib/DictContext";
@@ -12,10 +12,9 @@ interface HpCardProps {
   onAdjust: (delta: number) => void;
   onUpdate: (patch: { hp?: number | null; hpMax?: number | null }) => void;
   onTempHpChange: (val: number) => void;
-  onFullRest: () => void;
 }
 
-export function HpCard({ hp, hpMax, tempHp, onAdjust, onUpdate, onTempHpChange, onFullRest }: HpCardProps) {
+export function HpCard({ hp, hpMax, tempHp, onAdjust, onUpdate, onTempHpChange }: HpCardProps) {
   const dict = useDict();
   const hpVal = hp ?? 0;
   const hpMaxVal = hpMax ?? 0;
@@ -100,16 +99,6 @@ export function HpCard({ hp, hpMax, tempHp, onAdjust, onUpdate, onTempHpChange, 
             </button>
           ))}
         </div>
-        <button
-          onClick={onFullRest}
-          className="font-[inherit] font-semibold text-[11px] px-2.5 py-[5px] rounded-full
-            border-none bg-[var(--color-mint)] text-[var(--color-mint-deep)]
-            cursor-pointer transition-colors duration-150 hover:bg-[#ddead4] inline-flex items-center gap-1.5"
-        >
-          <Moon size={11} />
-          <span className="max-[460px]:hidden">{dict.hp.fullRest}</span>
-          <span className="min-[461px]:hidden">{dict.hp.restShort}</span>
-        </button>
       </div>
 
       {/* Temp HP */}

@@ -167,20 +167,20 @@ function AttackModal({
       </div>
 
       <ModalField label={dict.combat.modal.name}>
-        <ModalInput value={d.name} onChange={(v) => setD({ ...d, name: v })} autoFocus placeholder={dict.combat.modal.namePlaceholder} />
+        <ModalInput value={d.name} onChange={(v) => setD({ ...d, name: v })} autoFocus placeholder={dict.combat.modal.namePlaceholder} maxLength={50} />
       </ModalField>
 
       <div className="grid grid-cols-2 gap-2.5">
         <ModalField label={dict.combat.modal.hit}>
-          <ModalInput value={d.hit} onChange={(v) => setD({ ...d, hit: v })} placeholder={dict.combat.modal.hitPlaceholder} />
+          <ModalInput value={d.hit} onChange={(v) => setD({ ...d, hit: v })} placeholder={dict.combat.modal.hitPlaceholder} maxLength={20} />
         </ModalField>
         <ModalField label={dict.combat.modal.damage}>
-          <ModalInput value={d.dmg} onChange={(v) => setD({ ...d, dmg: v })} placeholder={dict.combat.modal.damagePlaceholder} />
+          <ModalInput value={d.dmg} onChange={(v) => setD({ ...d, dmg: v })} placeholder={dict.combat.modal.damagePlaceholder} maxLength={20} />
         </ModalField>
       </div>
 
       <ModalField label={dict.combat.modal.note}>
-        <ModalInput value={d.note} onChange={(v) => setD({ ...d, note: v })} placeholder={dict.combat.modal.notePlaceholder} />
+        <ModalInput value={d.note} onChange={(v) => setD({ ...d, note: v })} placeholder={dict.combat.modal.notePlaceholder} maxLength={100} />
       </ModalField>
     </Modal>
   );

@@ -4,6 +4,7 @@ import { Shield } from "lucide-react";
 import { IconPill } from "@/components/ui/IconPill";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { useDict } from "@/lib/DictContext";
+import { abilityMod } from "@/lib/utils";
 import type { Abilities, AbilityKey, SkillProficiency } from "@/lib/types";
 
 interface SkillDef {
@@ -67,12 +68,12 @@ export function SkillsCard({
   };
 
   const calcMod = (skill: SkillDef): number => {
-    const abilMod = abilities[skill.ability].mod ?? 0;
+    const abilModVal = abilityMod(abilities[skill.ability].score ?? 10).val;
     const prof: SkillProficiency = skills[skill.name] ?? "none";
-    const prof_bonus = proficiency ?? 0;
-    if (prof === "expert") return abilMod + prof_bonus * 2;
-    if (prof === "proficient") return abilMod + prof_bonus;
-    return abilMod;
+    const profBonus = proficiency ?? 0;
+    if (prof === "expert") return abilModVal + profBonus * 2;
+    if (prof === "proficient") return abilModVal + profBonus;
+    return abilModVal;
   };
 
   return (

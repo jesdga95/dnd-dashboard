@@ -10,6 +10,7 @@ interface EditableInputProps {
   placeholder?: string;
   dark?: boolean;
   asDiv?: boolean;
+  maxLength?: number;
 }
 
 const DASH = "–";
@@ -22,6 +23,7 @@ export function EditableInput({
   placeholder,
   dark = false,
   asDiv = false,
+  maxLength,
 }: EditableInputProps) {
   const focusCls = dark
     ? "hover:bg-white/[0.06] focus:bg-white/10 focus:shadow-[0_0_0_2px_var(--color-coral)]"
@@ -62,7 +64,11 @@ export function EditableInput({
         }}
         onKeyDown={(e) => { if (e.key === "Enter") e.preventDefault(); }}
         onInput={(e) => {
-          const text = (e.currentTarget.textContent ?? "").replace(/[\r\n]/g, "");
+          let text = (e.currentTarget.textContent ?? "").replace(/[\r\n]/g, "");
+          if (maxLength !== undefined && text.length > maxLength) {
+            text = text.slice(0, maxLength);
+            e.currentTarget.textContent = text;
+          }
           onChange(text);
         }}
         onBlur={(e) => {
@@ -73,7 +79,8 @@ export function EditableInput({
         }}
         onPaste={(e) => {
           e.preventDefault();
-          const text = e.clipboardData.getData("text/plain").replace(/[\r\n]/g, "");
+          let text = e.clipboardData.getData("text/plain").replace(/[\r\n]/g, "");
+          if (maxLength !== undefined) text = text.slice(0, maxLength);
           document.execCommand("insertText", false, text);
         }}
         data-placeholder={placeholder}
@@ -94,6 +101,7 @@ export function EditableInput({
       onChange={(e) => { setLocalVal(e.target.value); onChange(e.target.value); }}
       onBlur={() => setLocalVal(null)}
       placeholder={placeholder}
+      maxLength={maxLength}
       style={style}
       className={`w-full py-0 ${sharedCls}`}
     />

@@ -8,7 +8,6 @@ export type AbilityKey =
 
 export interface AbilityScore {
   score: number | null;
-  mod: number | null;
   saveProficient?: boolean;
 }
 
@@ -89,8 +88,6 @@ export interface Spell {
 
 export interface Spellcasting {
   ability: SpellcastingAbility;
-  saveDC: number | null;
-  attackBonus: number | null;
   slots: Record<number, SpellSlot>;
   spells: Spell[];
 }
@@ -100,6 +97,7 @@ export interface CustomResource {
   name: string;
   max: number;
   used: number;
+  resetOn: "short" | "long";
 }
 
 export interface Character {
@@ -145,4 +143,31 @@ export interface UserProfile {
 
 export interface DmParty {
   playerIds: string[];
+}
+
+export interface PlayerCombatant {
+  type: "player";
+  uid: string;
+  name: string;
+  initiativeRoll: number;
+}
+
+export interface MonsterCombatant {
+  type: "monster";
+  id: string;
+  name: string;
+  hp: number;
+  hpMax: number;
+  ac?: number;
+  initiativeRoll: number;
+  conditions: string[];
+  revealed: boolean;
+}
+
+export type Combatant = PlayerCombatant | MonsterCombatant;
+
+export interface DmCombat {
+  round: number;
+  currentTurnIndex: number;
+  combatants: Combatant[];
 }

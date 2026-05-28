@@ -8,7 +8,8 @@ import { Btn } from "@/components/ui/Btn";
 import { EditableNumber } from "@/components/ui/EditableNumber";
 import { Modal, ModalField, ModalInput, ModalTextarea, ModalBtn } from "@/components/ui/Modal";
 import { useDict } from "@/lib/DictContext";
-import type { Spellcasting, Spell, SpellSlot, SpellcastingAbility } from "@/lib/types";
+import { abilityMod } from "@/lib/utils";
+import type { Spellcasting, Spell, SpellSlot, SpellcastingAbility, Abilities } from "@/lib/types";
 
 const ABILITY_OPTIONS: SpellcastingAbility[] = ["Intelligence", "Wisdom", "Charisma"];
 
@@ -27,7 +28,9 @@ const BLANK_SPELL: Spell = {
 
 interface SpellcastingCardProps {
   spellcasting: Spellcasting;
-  onUpdateMeta: (patch: Partial<Pick<Spellcasting, "ability" | "saveDC" | "attackBonus">>) => void;
+  abilities: Abilities;
+  proficiency: number | null;
+  onUpdateMeta: (patch: Partial<Pick<Spellcasting, "ability">>) => void;
   onUpdateSlot: (level: number, field: "max" | "used", val: number) => void;
   onAddSlotLevel: (level: number) => void;
   onRemoveSlotLevel: (level: number) => void;
@@ -38,6 +41,8 @@ interface SpellcastingCardProps {
 
 export function SpellcastingCard({
   spellcasting,
+  abilities,
+  proficiency,
   onUpdateMeta,
   onUpdateSlot,
   onAddSlotLevel,
@@ -47,6 +52,11 @@ export function SpellcastingCard({
   onTogglePrepared,
 }: SpellcastingCardProps) {
   const dict = useDict();
+  const spellAbilMod = abilityMod(abilities[spellcasting.ability]?.score ?? 10).val;
+  const prof = proficiency ?? 0;
+  const derivedSaveDC = 8 + prof + spellAbilMod;
+  const derivedAtkBonus = prof + spellAbilMod;
+  const atkBonusStr = derivedAtkBonus >= 0 ? `+${derivedAtkBonus}` : String(derivedAtkBonus);
   const [editing, setEditing] = useState<Spell | null>(null);
 
   const byLevel: Record<number, Spell[]> = {};
@@ -103,12 +113,9 @@ export function SpellcastingCard({
             text-[var(--color-blue-deep)] mb-1">
             {dict.spellcasting.meta.saveDC}
           </div>
-          <div className="text-[26px] font-extrabold tracking-tight leading-none">
-            <EditableNumber
-              value={spellcasting.saveDC}
-              onChange={(v) => onUpdateMeta({ saveDC: v })}
-              style={{ width: 52, fontSize: 26, fontWeight: 800, letterSpacing: "-0.02em" }}
-            />
+          <div className="text-[26px] font-extrabold tracking-tight leading-none text-[var(--color-ink)]"
+            style={{ letterSpacing: "-0.02em" }}>
+            {derivedSaveDC}
           </div>
         </div>
 
@@ -117,13 +124,9 @@ export function SpellcastingCard({
             text-[var(--color-mint-deep)] mb-1">
             {dict.spellcasting.meta.atkBonus}
           </div>
-          <div className="flex items-baseline gap-[2px] leading-none">
-            <span className="text-[16px] font-bold text-[var(--color-muted)]">+</span>
-            <EditableNumber
-              value={spellcasting.attackBonus}
-              onChange={(v) => onUpdateMeta({ attackBonus: v })}
-              style={{ width: 48, fontSize: 26, fontWeight: 800, letterSpacing: "-0.02em" }}
-            />
+          <div className="text-[26px] font-extrabold tracking-tight leading-none text-[var(--color-ink)]"
+            style={{ letterSpacing: "-0.02em" }}>
+            {atkBonusStr}
           </div>
         </div>
       </div>
@@ -417,7 +420,7 @@ function SpellModal({
       }
     >
       <ModalField label={dict.spellcasting.modal.name}>
-        <ModalInput value={d.name} onChange={(v) => setD({ ...d, name: v })} autoFocus />
+        <ModalInput value={d.name} onChange={(v) => setD({ ...d, name: v })} autoFocus maxLength={50} />
       </ModalField>
 
       <div className="grid grid-cols-2 gap-3">
@@ -436,13 +439,13 @@ function SpellModal({
           </select>
         </ModalField>
         <ModalField label={dict.spellcasting.modal.castTime}>
-          <ModalInput value={d.castTime} onChange={(v) => setD({ ...d, castTime: v })} placeholder={dict.spellcasting.modal.castTimePlaceholder} />
+          <ModalInput value={d.castTime} onChange={(v) => setD({ ...d, castTime: v })} placeholder={dict.spellcasting.modal.castTimePlaceholder} maxLength={30} />
         </ModalField>
         <ModalField label={dict.spellcasting.modal.range}>
-          <ModalInput value={d.range} onChange={(v) => setD({ ...d, range: v })} placeholder={dict.spellcasting.modal.rangePlaceholder} />
+          <ModalInput value={d.range} onChange={(v) => setD({ ...d, range: v })} placeholder={dict.spellcasting.modal.rangePlaceholder} maxLength={30} />
         </ModalField>
         <ModalField label={dict.spellcasting.modal.duration}>
-          <ModalInput value={d.duration} onChange={(v) => setD({ ...d, duration: v })} placeholder={dict.spellcasting.modal.durationPlaceholder} />
+          <ModalInput value={d.duration} onChange={(v) => setD({ ...d, duration: v })} placeholder={dict.spellcasting.modal.durationPlaceholder} maxLength={30} />
         </ModalField>
       </div>
 
@@ -473,6 +476,7 @@ function SpellModal({
           value={d.desc}
           onChange={(v) => setD({ ...d, desc: v })}
           placeholder={dict.spellcasting.modal.notesPlaceholder}
+          maxLength={1000}
         />
       </ModalField>
     </Modal>

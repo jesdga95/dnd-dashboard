@@ -106,18 +106,18 @@ function EquipmentModal({
       }
     >
       <ModalField label={dict.equipment.modal.name}>
-        <ModalInput value={d.name} onChange={(v) => setD({ ...d, name: v })} autoFocus />
+        <ModalInput value={d.name} onChange={(v) => setD({ ...d, name: v })} autoFocus maxLength={50} />
       </ModalField>
       <div className="grid grid-cols-2 gap-2.5">
         <ModalField label={dict.equipment.modal.slot}>
-          <ModalInput value={d.slot} onChange={(v) => setD({ ...d, slot: v })} placeholder={dict.equipment.modal.slotPlaceholder} />
+          <ModalInput value={d.slot} onChange={(v) => setD({ ...d, slot: v })} placeholder={dict.equipment.modal.slotPlaceholder} maxLength={30} />
         </ModalField>
         <ModalField label={dict.equipment.modal.modifier}>
-          <ModalInput value={d.mod} onChange={(v) => setD({ ...d, mod: v })} placeholder={dict.equipment.modal.modifierPlaceholder} />
+          <ModalInput value={d.mod} onChange={(v) => setD({ ...d, mod: v })} placeholder={dict.equipment.modal.modifierPlaceholder} maxLength={20} />
         </ModalField>
       </div>
       <ModalField label={dict.equipment.modal.description}>
-        <ModalTextarea value={d.desc} onChange={(v) => setD({ ...d, desc: v })} />
+        <ModalTextarea value={d.desc} onChange={(v) => setD({ ...d, desc: v })} maxLength={500} />
       </ModalField>
     </Modal>
   );

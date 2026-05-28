@@ -76,6 +76,7 @@ function NoteRow({
           placeholder:text-[var(--color-muted-soft)] placeholder:font-semibold"
         value={note.title}
         placeholder={dict.notes.titlePlaceholder}
+        maxLength={100}
         onChange={(e) => onChange({ title: e.target.value })}
       />
       <textarea
@@ -84,6 +85,7 @@ function NoteRow({
           placeholder:text-[var(--color-muted-soft)]"
         value={note.body}
         placeholder={dict.notes.bodyPlaceholder}
+        maxLength={5000}
         onChange={(e) => onChange({ body: e.target.value })}
         rows={1}
       />

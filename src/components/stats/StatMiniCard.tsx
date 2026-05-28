@@ -31,6 +31,7 @@ interface StatMiniCardProps {
   type?: "number" | "text";
   numValue?: number | null;
   textValue?: string;
+  textMaxLength?: number;
   onChangeNum?: (val: number | null) => void;
   onChangeText?: (val: string) => void;
 }
@@ -45,6 +46,7 @@ export function StatMiniCard({
   type = "number",
   numValue,
   textValue,
+  textMaxLength,
   onChangeNum,
   onChangeText,
 }: StatMiniCardProps) {
@@ -68,6 +70,7 @@ export function StatMiniCard({
           <EditableInput
             value={textValue ?? ""}
             onChange={onChangeText ?? (() => {})}
+            maxLength={textMaxLength}
             style={{ textAlign: "center", fontWeight: 800, fontSize: 22 }}
           />
         )}

@@ -50,6 +50,8 @@
     "bg": "Trasf.",
     "align": "Alin.",
     "level": "Nivel",
+    "shortRest": "Descanso Corto",
+    "longRest": "Descanso Largo",
     "resetCharacter": "Reiniciar personaje",
     "confirmReset": "¿Confirmar reinicio?",
     "resetProfile": "Reiniciar perfil",
@@ -58,8 +60,7 @@
   },
   "hp": {
     "title": "Puntos de Vida",
-    "fullRest": "Descanso Largo",
-    "restShort": "Descanso",
+    "longRest": "Descanso Largo",
     "tempHp": "PV Temp.",
     "clear": "Limpiar"
   },
@@ -71,7 +72,7 @@
   },
   "abilities": {
     "title": "Características",
-    "subtitle": "Clic para editar",
+    "subtitle": "Clic para editar puntuación",
     "abbr": {
       "Strength": "FUE",
       "Dexterity": "DES",
@@ -245,7 +246,9 @@
     "restoreOne": "Restaurar uno",
     "emptyStatePre": "Sin recursos. Haz clic en",
     "emptyStateHighlight": "Agregar",
-    "emptyStatePost": "para registrar un recurso de clase."
+    "emptyStatePost": "para registrar un recurso de clase.",
+    "resetShort": "C",
+    "resetLong": "L"
   },
   "notes": {
     "title": "Notas",
@@ -265,6 +268,7 @@
     "initiative": "Iniciativa",
     "proficiency": "Competencia",
     "hitDice": "Dados de Golpe",
+    "passivePerc": "Perc. Pasiva",
     "inspiration": "Inspiración",
     "inspiredTitle": "Inspirado — clic para gastar",
     "notInspiredTitle": "Sin inspiración — clic para ganar"
@@ -276,13 +280,36 @@
     "addStatus": "Agregar estado",
     "noStatuses": "Ninguna",
     "statusPlaceholder": "ej. Envenenado",
-    "enemies": "Enemigos",
-    "addEnemy": "Agregar enemigo",
-    "noEnemies": "Sin enemigos aún.",
-    "enemyNamePlaceholder": "Nombre",
-    "maxHpPlaceholder": "PV máx.",
     "amountPlaceholder": "Cantidad…",
-    "heal": "Curar"
+    "heal": "Curar",
+    "playerBadge": "J",
+    "monsterBadge": "M"
+  },
+  "dmCombat": {
+    "title": "Combate DM",
+    "start": "Iniciar Combate",
+    "resume": "Reanudar Combate",
+    "endCombat": "Terminar Combate",
+    "round": "Ronda",
+    "nextTurn": "Siguiente Turno",
+    "setupTitle": "Configurar Combate",
+    "playerInitiatives": "Iniciativas de Jugadores",
+    "monsters": "Monstruos",
+    "addMonster": "Agregar Monstruo",
+    "initiativePlaceholder": "Iniciativa",
+    "initiativeAbbr": "I",
+    "namePlaceholder": "Goblin, Dragón…",
+    "hpPlaceholder": "PV máx.",
+    "hpLabel": "PV",
+    "acPlaceholder": "CA",
+    "acLabel": "CA",
+    "startCombat": "Iniciar Combate",
+    "startRequirements": "Se requieren ≥1 jugador, ≥1 monstruo e iniciativas para todos",
+    "noParty": "Agrega jugadores a tu grupo primero.",
+    "exit": "Salir",
+    "reveal": "Revelar a jugadores",
+    "hide": "Ocultar a jugadores",
+    "unknown": "????"
   },
   "iconPicker": {
     "searchPlaceholder": "Buscar íconos…",

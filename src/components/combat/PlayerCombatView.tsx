@@ -1,71 +1,47 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Swords, X, Moon, Shield, Plus, Check } from "lucide-react";
-import { EditableNumber } from "@/components/ui/EditableNumber";
+import { usePlayerCombat } from "@/hooks/usePlayerCombat";
 import { useDict } from "@/lib/DictContext";
-import { generateId } from "@/lib/utils";
-import type { Character } from "@/lib/types";
+import { Swords, X, Shield, Plus, Check } from "lucide-react";
+import { EditableNumber } from "@/components/ui/EditableNumber";
+import { CombatantList } from "@/components/combat/CombatantList";
+import type { DmCombat, Character } from "@/lib/types";
 
-export interface CombatEnemy {
-  id: number;
-  name: string;
-  hp: number;
-  hpMax: number;
-}
-
-interface CombatModeProps {
+export interface PlayerCombatViewProps {
+  uid: string;
   char: Pick<Character, "name" | "hp" | "hpMax" | "tempHp" | "ac">;
-  enemies: CombatEnemy[];
   statuses: string[];
   onAdjustHp: (delta: number) => void;
   onUpdateHp: (patch: { hp?: number | null; hpMax?: number | null }) => void;
   onTempHpChange: (val: number) => void;
-  onFullRest: () => void;
-  onAddEnemy: (enemy: CombatEnemy) => void;
-  onAdjustEnemyHp: (id: number, delta: number) => void;
-  onRemoveEnemy: (id: number) => void;
   onAddStatus: (status: string) => void;
   onRemoveStatus: (index: number) => void;
-  onClose: () => void;
+  onDismiss: () => void;
 }
 
-function enemyBarColor(hp: number, hpMax: number): string {
-  const pct = hp / Math.max(1, hpMax);
-  if (pct > 0.5) return "linear-gradient(90deg, #22c55e, #16a34a)";
-  if (pct > 0.25) return "linear-gradient(90deg, #eab308, #ca8a04)";
-  return "linear-gradient(90deg, #f47b5f, #e04a3a)";
-}
-
-export function CombatMode({
+function PlayerCombatViewInner({
+  uid,
   char,
-  enemies,
   statuses,
+  combat,
   onAdjustHp,
   onUpdateHp,
   onTempHpChange,
-  onFullRest,
-  onAddEnemy,
-  onAdjustEnemyHp,
-  onRemoveEnemy,
   onAddStatus,
   onRemoveStatus,
-  onClose,
-}: CombatModeProps) {
+  onDismiss,
+}: PlayerCombatViewProps & { combat: DmCombat }) {
   const dict = useDict();
-  const cm = dict.combatMode;
 
   const [customAmount, setCustomAmount] = useState("");
   const [statusInput, setStatusInput] = useState("");
   const [showStatusInput, setShowStatusInput] = useState(false);
-  const [showAddEnemy, setShowAddEnemy] = useState(false);
-  const [enemyForm, setEnemyForm] = useState({ name: "", hpMax: "" });
 
   const statusInputRef = useRef<HTMLInputElement>(null);
-  const enemyNameRef = useRef<HTMLInputElement>(null);
-  const onCloseRef = useRef(onClose);
-  // eslint-disable-next-line react-hooks/refs
-  onCloseRef.current = onClose;
+  const onDismissRef = useRef(onDismiss);
+  // keep ref fresh without adding to effect deps
+  onDismissRef.current = onDismiss;
 
   const hp = char.hp ?? 0;
   const hpMax = char.hpMax ?? 0;
@@ -76,13 +52,17 @@ export function CombatMode({
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
-    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onCloseRef.current(); };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onDismissRef.current();
+    };
     document.addEventListener("keydown", onKey);
     return () => {
       document.body.style.overflow = "";
       document.removeEventListener("keydown", onKey);
     };
   }, []);
+
+
 
   const handleCustomApply = (sign: 1 | -1) => {
     const val = parseInt(customAmount, 10);
@@ -106,21 +86,6 @@ export function CombatMode({
     setTimeout(() => statusInputRef.current?.focus(), 50);
   };
 
-  const handleAddEnemy = () => {
-    const name = enemyForm.name.trim();
-    const maxHp = parseInt(enemyForm.hpMax, 10);
-    if (name && !isNaN(maxHp) && maxHp > 0) {
-      onAddEnemy({ id: generateId(), name, hp: maxHp, hpMax: maxHp });
-      setEnemyForm({ name: "", hpMax: "" });
-      setShowAddEnemy(false);
-    }
-  };
-
-  const handleShowAddEnemy = () => {
-    setShowAddEnemy(true);
-    setTimeout(() => enemyNameRef.current?.focus(), 50);
-  };
-
   return (
     <div
       className="fixed inset-0 z-[200] overflow-y-auto"
@@ -139,31 +104,23 @@ export function CombatMode({
         }}
       >
         <button
-          onClick={onClose}
+          onClick={onDismiss}
           className="flex items-center gap-2 text-[12.5px] font-semibold px-3 py-2 rounded-lg
             border-none bg-transparent cursor-pointer font-[inherit] transition-colors
             text-white/35 hover:text-white/65 hover:bg-white/[0.06]"
         >
           <X size={14} />
-          <span className="max-[460px]:hidden">{cm.exit}</span>
+          <span className="max-[460px]:hidden">{dict.combatMode.exit}</span>
         </button>
 
-        <div className="flex items-center gap-2 text-[11px] font-bold tracking-[0.22em] uppercase text-white/30">
-          <Swords size={14} style={{ color: "var(--color-coral)" }} />
-          {dict.combat.title}
+        <div className="flex flex-col items-center gap-0.5">
+          <div className="flex items-center gap-2 text-[11px] font-bold tracking-[0.22em] uppercase text-white/30">
+            <Swords size={14} style={{ color: "var(--color-coral)" }} />
+            {dict.combat.title}
+          </div>
         </div>
 
-        <button
-          onClick={onFullRest}
-          className="flex items-center gap-1.5 text-[12px] font-semibold px-3 py-2 rounded-full
-            border-none cursor-pointer font-[inherit] transition-colors"
-          style={{ background: "rgba(74,122,58,0.18)", color: "#6aba4e" }}
-          onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(74,122,58,0.28)"; }}
-          onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(74,122,58,0.18)"; }}
-        >
-          <Moon size={12} />
-          <span className="max-[460px]:hidden">{dict.hp.fullRest}</span>
-        </button>
+        <div className="w-[80px]" />
       </div>
 
       {/* ── Main content ── */}
@@ -181,7 +138,7 @@ export function CombatMode({
           {/* Name + AC row */}
           <div className="flex items-center justify-between mb-5">
             <span className="text-[17px] font-extrabold text-white/75 tracking-tight truncate">
-              {char.name || cm.unnamed}
+              {char.name || dict.combatMode.unnamed}
             </span>
             {char.ac !== null && char.ac > 0 && (
               <span
@@ -189,7 +146,7 @@ export function CombatMode({
                 style={{ color: "rgba(255,255,255,0.4)", background: "rgba(255,255,255,0.06)" }}
               >
                 <Shield size={12} />
-                AC {char.ac}
+                {dict.dmCombat.acLabel} {char.ac}
               </span>
             )}
           </div>
@@ -211,15 +168,14 @@ export function CombatMode({
               }}
             />
             {tempHp > 0 && (
-              <span
-                className="text-[22px] font-bold"
-                style={{ color: "#818cf8" }}
-              >
+              <span className="text-[22px] font-bold" style={{ color: "#818cf8" }}>
                 (+{tempHp})
               </span>
             )}
             <div className="flex items-baseline gap-1">
-              <span className="text-[26px] font-semibold" style={{ color: "rgba(255,255,255,0.2)" }}>/</span>
+              <span className="text-[26px] font-semibold" style={{ color: "rgba(255,255,255,0.2)" }}>
+                /
+              </span>
               <EditableNumber
                 value={char.hpMax}
                 onChange={(v) => onUpdateHp({ hpMax: v })}
@@ -301,8 +257,10 @@ export function CombatMode({
               type="number"
               value={customAmount}
               onChange={(e) => setCustomAmount(e.target.value)}
-              onKeyDown={(e) => { if (e.key === "Enter") handleCustomApply(-1); }}
-              placeholder={cm.amountPlaceholder}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleCustomApply(-1);
+              }}
+              placeholder={dict.combatMode.amountPlaceholder}
               className="w-[100px] px-3 py-[7px] rounded-full text-[12px] font-semibold
                 font-[inherit] text-center text-white/60 border-none outline-none"
               style={{ background: "rgba(255,255,255,0.07)" }}
@@ -321,7 +279,7 @@ export function CombatMode({
                 border-none cursor-pointer transition-colors duration-150"
               style={{ background: "rgba(74,180,58,0.14)", color: "#6aba4e" }}
             >
-              {cm.heal}
+              {dict.combatMode.heal}
             </button>
           </div>
 
@@ -388,7 +346,7 @@ export function CombatMode({
         >
           <div className="flex items-center justify-between mb-3">
             <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-white/25">
-              {cm.statusConditions}
+              {dict.combatMode.statusConditions}
             </span>
             {!showStatusInput && (
               <button
@@ -398,7 +356,7 @@ export function CombatMode({
                   text-white/35 hover:text-white/65 hover:bg-white/[0.07]"
               >
                 <Plus size={11} />
-                {cm.addStatus}
+                {dict.combatMode.addStatus}
               </button>
             )}
           </div>
@@ -440,7 +398,8 @@ export function CombatMode({
                       setStatusInput("");
                     }
                   }}
-                  placeholder={cm.statusPlaceholder}
+                  placeholder={dict.combatMode.statusPlaceholder}
+                  maxLength={30}
                   className="px-3 py-1.5 rounded-full text-[12px] font-semibold font-[inherit]
                     text-white/65 border-none outline-none"
                   style={{ background: "rgba(255,255,255,0.09)", width: 140 }}
@@ -453,7 +412,10 @@ export function CombatMode({
                   <Check size={13} />
                 </button>
                 <button
-                  onClick={() => { setShowStatusInput(false); setStatusInput(""); }}
+                  onClick={() => {
+                    setShowStatusInput(false);
+                    setStatusInput("");
+                  }}
                   className="p-1.5 rounded-full border-none cursor-pointer flex items-center
                     transition-colors text-white/25 hover:bg-white/[0.08] hover:text-white/55"
                 >
@@ -463,174 +425,38 @@ export function CombatMode({
             )}
 
             {statuses.length === 0 && !showStatusInput && (
-              <span className="text-[12px] italic text-white/20">{cm.noStatuses}</span>
+              <span className="text-[12px] italic text-white/20">{dict.combatMode.noStatuses}</span>
             )}
           </div>
         </div>
 
-        {/* ── Enemies ── */}
+        {/* ── Turn Order ── */}
         <div>
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2 mb-3">
             <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-white/25">
-              {cm.enemies}
+              {dict.dmCombat.round} {combat.round}
             </span>
-            {!showAddEnemy && (
-              <button
-                onClick={handleShowAddEnemy}
-                className="flex items-center gap-1.5 text-[11.5px] font-semibold px-3 py-1.5 rounded-full
-                  border-none cursor-pointer font-[inherit] transition-colors
-                  text-white/35 hover:text-white/65 hover:bg-white/[0.07]"
-              >
-                <Plus size={11} />
-                {cm.addEnemy}
-              </button>
-            )}
-          </div>
-
-          {/* Add enemy form */}
-          {showAddEnemy && (
-            <div
-              className="flex items-center gap-2 mb-3 flex-wrap rounded-[16px] px-4 py-3"
-              style={{
-                background: "rgba(255,255,255,0.04)",
-                border: "1px solid rgba(255,255,255,0.08)",
-              }}
-            >
-              <input
-                ref={enemyNameRef}
-                type="text"
-                value={enemyForm.name}
-                onChange={(e) => setEnemyForm((f) => ({ ...f, name: e.target.value }))}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") handleAddEnemy();
-                  if (e.key === "Escape") setShowAddEnemy(false);
-                }}
-                placeholder={cm.enemyNamePlaceholder}
-                className="flex-1 min-w-[120px] px-3 py-2 rounded-full text-[12px] font-semibold
-                  font-[inherit] text-white/65 border-none outline-none"
-                style={{ background: "rgba(255,255,255,0.07)" }}
-              />
-              <input
-                type="number"
-                value={enemyForm.hpMax}
-                onChange={(e) => setEnemyForm((f) => ({ ...f, hpMax: e.target.value }))}
-                onKeyDown={(e) => { if (e.key === "Enter") handleAddEnemy(); }}
-                placeholder={cm.maxHpPlaceholder}
-                className="w-[84px] px-3 py-2 rounded-full text-[12px] font-semibold text-center
-                  font-[inherit] text-white/65 border-none outline-none"
-                style={{ background: "rgba(255,255,255,0.07)" }}
-              />
-              <button
-                onClick={handleAddEnemy}
-                className="px-4 py-2 rounded-full text-[12px] font-semibold font-[inherit]
-                  border-none cursor-pointer transition-colors"
-                style={{ background: "rgba(74,180,58,0.14)", color: "#6aba4e" }}
-              >
-                {dict.equipment.add}
-              </button>
-              <button
-                onClick={() => setShowAddEnemy(false)}
-                className="p-2 rounded-full border-none cursor-pointer flex items-center
-                  transition-colors text-white/25 hover:bg-white/[0.08] hover:text-white/55"
-              >
-                <X size={12} />
-              </button>
             </div>
-          )}
 
-          {enemies.length === 0 && !showAddEnemy && (
-            <p className="text-[13px] italic text-white/20 py-1">{cm.noEnemies}</p>
-          )}
+          <CombatantList
+            combat={combat}
+            myUid={uid}
+            myHp={char.hp}
+            myHpMax={char.hpMax}
+            myTempHp={char.tempHp}
+            myAc={char.ac}
+          />
 
-          <div className="grid gap-3 [grid-template-columns:1fr_1fr] max-[600px]:grid-cols-1">
-            {enemies.map((enemy) => {
-              const pct = (enemy.hp / Math.max(1, enemy.hpMax)) * 100;
-              return (
-                <div
-                  key={enemy.id}
-                  className="rounded-[18px] px-4 py-4 relative"
-                  style={{
-                    background: "rgba(255,255,255,0.04)",
-                    border: "1px solid rgba(255,255,255,0.07)",
-                  }}
-                >
-                  <button
-                    onClick={() => onRemoveEnemy(enemy.id)}
-                    className="absolute top-3 right-3 p-1.5 rounded-full border-none cursor-pointer
-                      flex items-center transition-colors
-                      text-white/20 hover:bg-[rgba(224,74,58,0.15)] hover:text-[var(--color-coral)]"
-                  >
-                    <X size={11} />
-                  </button>
-
-                  <div className="text-[13px] font-bold text-white/65 pr-7 mb-2 truncate">
-                    {enemy.name}
-                  </div>
-
-                  <div className="flex items-baseline gap-1 mb-2 leading-none">
-                    <span
-                      className="text-[28px] font-extrabold"
-                      style={{ color: "rgba(255,255,255,0.85)", letterSpacing: "-0.02em" }}
-                    >
-                      {enemy.hp}
-                    </span>
-                    <span className="text-[13px] font-semibold" style={{ color: "rgba(255,255,255,0.25)" }}>
-                      &nbsp;/ {enemy.hpMax}
-                    </span>
-                  </div>
-
-                  <div
-                    className="h-[6px] rounded-full overflow-hidden mb-3"
-                    style={{ background: "rgba(255,255,255,0.08)" }}
-                  >
-                    <div
-                      className="h-full rounded-full transition-all duration-300"
-                      style={{ width: `${pct}%`, background: enemyBarColor(enemy.hp, enemy.hpMax) }}
-                    />
-                  </div>
-
-                  <div className="flex gap-1.5">
-                    <div
-                      className="flex gap-0.5 rounded-full p-[3px]"
-                      style={{ background: "rgba(255,255,255,0.06)" }}
-                    >
-                      {[5, 1].map((n) => (
-                        <button
-                          key={"ed" + n}
-                          onClick={() => onAdjustEnemyHp(enemy.id, -n)}
-                          className="px-2.5 py-[5px] text-[11px] border-none bg-transparent rounded-full
-                            font-semibold font-[inherit] cursor-pointer transition-colors duration-150
-                            text-white/45 hover:bg-[rgba(224,74,58,0.2)] hover:text-[var(--color-coral)]"
-                        >
-                          −{n}
-                        </button>
-                      ))}
-                    </div>
-                    <div
-                      className="flex gap-0.5 rounded-full p-[3px]"
-                      style={{ background: "rgba(255,255,255,0.06)" }}
-                    >
-                      {[1, 5].map((n) => (
-                        <button
-                          key={"eh" + n}
-                          onClick={() => onAdjustEnemyHp(enemy.id, n)}
-                          className="px-2.5 py-[5px] text-[11px] border-none bg-transparent rounded-full
-                            font-semibold font-[inherit] cursor-pointer transition-colors duration-150
-                            text-white/45 hover:bg-[rgba(74,180,58,0.2)] hover:text-[#6aba4e]"
-                        >
-                          +{n}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
         </div>
 
         <div className="h-10" />
       </div>
     </div>
   );
+}
+
+export function PlayerCombatView(props: PlayerCombatViewProps) {
+  const { combat } = usePlayerCombat();
+  if (!combat) return null;
+  return <PlayerCombatViewInner {...props} combat={combat} />;
 }

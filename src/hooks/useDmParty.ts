@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { doc, onSnapshot, setDoc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
+import { doc, onSnapshot, setDoc, updateDoc, deleteDoc, arrayUnion, arrayRemove } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useAuth } from "./useAuth";
 import { DEFAULT_CHAR } from "@/lib/defaults";
@@ -88,14 +88,17 @@ export function useDmParty() {
 
   const addPlayer = async (uid: string) => {
     if (!user || !uid.trim() || playerIds.includes(uid.trim())) return;
+    const trimmed = uid.trim();
     const docRef = doc(db, "dm_parties", user.uid);
-    await setDoc(docRef, { playerIds: arrayUnion(uid.trim()) }, { merge: true });
+    await setDoc(docRef, { playerIds: arrayUnion(trimmed) }, { merge: true });
+    await setDoc(doc(db, "player_dm_links", trimmed), { dmUid: user.uid });
   };
 
   const removePlayer = async (uid: string) => {
     if (!user) return;
     const docRef = doc(db, "dm_parties", user.uid);
     await updateDoc(docRef, { playerIds: arrayRemove(uid) });
+    await deleteDoc(doc(db, "player_dm_links", uid)).catch(() => {});
   };
 
   return { playerIds, partyLoading, members, addPlayer, removePlayer };

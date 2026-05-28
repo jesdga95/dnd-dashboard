@@ -72,11 +72,29 @@ function ResourceEntry({
           value={resource.name}
           onChange={(e) => onUpdate({ name: e.target.value })}
           placeholder={dict.resources.namePlaceholder}
+          maxLength={30}
           className="text-[11px] font-bold uppercase tracking-[0.08em] text-[var(--color-muted)]
             bg-transparent border-none outline-none w-0 flex-1 min-w-0
             placeholder:text-[var(--color-muted-soft)] placeholder:normal-case placeholder:tracking-normal
             placeholder:font-normal focus:text-[var(--color-ink)]"
         />
+        {/* S / L rest reset toggle */}
+        <div className="flex items-center gap-0.5 flex-shrink-0 opacity-0 group-hover/res:opacity-100 transition-opacity duration-150">
+          {(["short", "long"] as const).map((r) => (
+            <button
+              key={r}
+              onClick={() => onUpdate({ resetOn: r })}
+              title={r === "short" ? dict.resources.resetShort : dict.resources.resetLong}
+              className={`text-[9px] font-bold w-5 h-5 rounded-full cursor-pointer transition-colors duration-150
+                ${(resource.resetOn ?? "long") === r
+                  ? "bg-[var(--color-sand-deep)] text-white"
+                  : "bg-transparent text-[var(--color-muted-soft)] hover:text-[var(--color-muted)]"
+                }`}
+            >
+              {r === "short" ? dict.resources.resetShort : dict.resources.resetLong}
+            </button>
+          ))}
+        </div>
         <button
           onClick={onRemove}
           title="Remove resource"

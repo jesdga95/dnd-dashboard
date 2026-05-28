@@ -49,6 +49,7 @@ export function useProfile() {
       await deleteDoc(doc(db, "characters", user.uid)).catch(() => {});
     } else if (currentRole === "dm") {
       await deleteDoc(doc(db, "dm_parties", user.uid)).catch(() => {});
+      await deleteDoc(doc(db, "dm_combats", user.uid)).catch(() => {});
     }
   };
 

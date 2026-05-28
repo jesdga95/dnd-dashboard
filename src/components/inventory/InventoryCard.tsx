@@ -164,7 +164,7 @@ function InventoryModal({
     >
       <div className="grid grid-cols-2 gap-2.5">
         <ModalField label={dict.inventory.modal.name}>
-          <ModalInput value={d.name} onChange={(v) => setD({ ...d, name: v })} autoFocus />
+          <ModalInput value={d.name} onChange={(v) => setD({ ...d, name: v })} autoFocus maxLength={50} />
         </ModalField>
         <ModalField label={dict.inventory.modal.quantity}>
           <ModalInput
@@ -178,7 +178,7 @@ function InventoryModal({
         <IconPicker value={d.icon || ""} onChange={(v) => setD({ ...d, icon: v })} />
       </ModalField>
       <ModalField label={dict.inventory.modal.noteModifier}>
-        <ModalTextarea value={d.note || ""} onChange={(v) => setD({ ...d, note: v })} />
+        <ModalTextarea value={d.note || ""} onChange={(v) => setD({ ...d, note: v })} maxLength={200} />
       </ModalField>
     </Modal>
   );

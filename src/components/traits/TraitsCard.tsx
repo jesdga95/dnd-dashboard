@@ -98,13 +98,14 @@ function TraitModal({
       }
     >
       <ModalField label={dict.traits.modal.name}>
-        <ModalInput value={d.name} onChange={(v) => setD({ ...d, name: v })} autoFocus />
+        <ModalInput value={d.name} onChange={(v) => setD({ ...d, name: v })} autoFocus maxLength={50} />
       </ModalField>
       <ModalField label={dict.traits.modal.description}>
         <ModalTextarea
           value={d.desc}
           onChange={(v) => setD({ ...d, desc: v })}
           placeholder={dict.traits.modal.descPlaceholder}
+          maxLength={1000}
         />
       </ModalField>
     </Modal>

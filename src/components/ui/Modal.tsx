@@ -81,11 +81,13 @@ export function ModalInput({
   onChange,
   placeholder,
   autoFocus,
+  maxLength,
 }: {
   value: string;
   onChange: (v: string) => void;
   placeholder?: string;
   autoFocus?: boolean;
+  maxLength?: number;
 }) {
   return (
     <input
@@ -97,6 +99,7 @@ export function ModalInput({
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
       autoFocus={autoFocus}
+      maxLength={maxLength}
     />
   );
 }
@@ -105,10 +108,12 @@ export function ModalTextarea({
   value,
   onChange,
   placeholder,
+  maxLength,
 }: {
   value: string;
   onChange: (v: string) => void;
   placeholder?: string;
+  maxLength?: number;
 }) {
   return (
     <textarea
@@ -120,6 +125,7 @@ export function ModalTextarea({
       value={value}
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
+      maxLength={maxLength}
     />
   );
 }

@@ -4,8 +4,6 @@ export const STORAGE_KEY = "dnd_dashboard";
 
 export const DEFAULT_SPELLCASTING: Spellcasting = {
   ability: "Intelligence",
-  saveDC: null,
-  attackBonus: null,
   slots: {} as Record<number, { max: number; used: number }>,
   spells: [],
 };
@@ -35,12 +33,12 @@ export const DEFAULT_CHAR: Character = {
   conditions: [],
   isShared: false,
   abilities: {
-    Strength: { score: null, mod: null },
-    Dexterity: { score: null, mod: null },
-    Constitution: { score: null, mod: null },
-    Intelligence: { score: null, mod: null },
-    Wisdom: { score: null, mod: null },
-    Charisma: { score: null, mod: null },
+    Strength: { score: null },
+    Dexterity: { score: null },
+    Constitution: { score: null },
+    Intelligence: { score: null },
+    Wisdom: { score: null },
+    Charisma: { score: null },
   },
   traits: [],
   equipment: [],

@@ -2,6 +2,7 @@
 
 import { Check, X, Trash2, Swords } from "lucide-react";
 import { useDict } from "@/lib/DictContext";
+import { abilityMod } from "@/lib/utils";
 import type { PartyMember } from "@/hooks/useDmParty";
 
 type Tint = "mint" | "peach" | "blue" | "lavender" | "sand";
@@ -95,12 +96,18 @@ export function PartyCard({ member, onRemove }: PartyCardProps) {
   const tempPct = tempHp > 0 ? (tempHp / total) * 100 : 0;
 
   const percProf = char.skills?.["Perception"] ?? "none";
-  const wisdomMod = char.abilities?.Wisdom?.mod ?? 0;
+  const wisdomMod = abilityMod(char.abilities?.Wisdom?.score ?? 10).val;
   const profBonus = char.proficiency ?? 0;
   const passivePerception =
     10 +
     wisdomMod +
     (percProf === "expert" ? profBonus * 2 : percProf === "proficient" ? profBonus : 0);
+  const spellAbilMod = char.spellcasting
+    ? abilityMod(char.abilities?.[char.spellcasting.ability]?.score ?? 10).val
+    : 0;
+  const derivedSpellSaveDC = char.spellcasting
+    ? 8 + profBonus + spellAbilMod
+    : null;
 
   const spellcasting = char.spellcasting;
   const slotLevels = spellcasting
@@ -247,9 +254,9 @@ export function PartyCard({ member, onRemove }: PartyCardProps) {
               <span className="text-[10px] font-bold tracking-[0.1em] uppercase text-[var(--color-muted)] opacity-70">
                 {dict.dm.slots}
               </span>
-              {spellcasting.saveDC && (
+              {derivedSpellSaveDC !== null && (
                 <span className="ml-auto text-[10px] text-[var(--color-muted)]">
-                  {dict.dm.spellSaveDC} <span className="font-bold text-[var(--color-ink)]">{spellcasting.saveDC}</span>
+                  {dict.dm.spellSaveDC} <span className="font-bold text-[var(--color-ink)]">{derivedSpellSaveDC}</span>
                 </span>
               )}
             </div>

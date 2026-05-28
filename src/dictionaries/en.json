@@ -50,6 +50,8 @@
     "bg": "Bg",
     "align": "Align",
     "level": "Level",
+    "shortRest": "Short Rest",
+    "longRest": "Long Rest",
     "resetCharacter": "Reset character",
     "confirmReset": "Confirm reset?",
     "resetProfile": "Reset profile",
@@ -58,8 +60,7 @@
   },
   "hp": {
     "title": "Hit Points",
-    "fullRest": "Full Rest",
-    "restShort": "Rest",
+    "longRest": "Long Rest",
     "tempHp": "Temp HP",
     "clear": "Clear"
   },
@@ -71,7 +72,7 @@
   },
   "abilities": {
     "title": "Ability Scores",
-    "subtitle": "Click to edit score or modifier",
+    "subtitle": "Click to edit score",
     "abbr": {
       "Strength": "STR",
       "Dexterity": "DEX",
@@ -245,7 +246,9 @@
     "restoreOne": "Restore one",
     "emptyStatePre": "No resources yet. Click",
     "emptyStateHighlight": "Add",
-    "emptyStatePost": "to track a class resource."
+    "emptyStatePost": "to track a class resource.",
+    "resetShort": "S",
+    "resetLong": "L"
   },
   "notes": {
     "title": "Notes",
@@ -265,6 +268,7 @@
     "initiative": "Initiative",
     "proficiency": "Proficiency",
     "hitDice": "Hit Dice",
+    "passivePerc": "Passive Perc",
     "inspiration": "Inspiration",
     "inspiredTitle": "Inspired — click to spend",
     "notInspiredTitle": "No inspiration — click to gain"
@@ -276,13 +280,36 @@
     "addStatus": "Add Status",
     "noStatuses": "None",
     "statusPlaceholder": "e.g. Poisoned",
-    "enemies": "Enemies",
-    "addEnemy": "Add Enemy",
-    "noEnemies": "No enemies yet.",
-    "enemyNamePlaceholder": "Name",
-    "maxHpPlaceholder": "Max HP",
     "amountPlaceholder": "Amount…",
-    "heal": "Heal"
+    "heal": "Heal",
+    "playerBadge": "P",
+    "monsterBadge": "M"
+  },
+  "dmCombat": {
+    "title": "DM Combat",
+    "start": "Start Combat",
+    "resume": "Resume Combat",
+    "endCombat": "End Combat",
+    "round": "Round",
+    "nextTurn": "Next Turn",
+    "setupTitle": "Combat Setup",
+    "playerInitiatives": "Player Initiatives",
+    "monsters": "Monsters",
+    "addMonster": "Add Monster",
+    "initiativePlaceholder": "Initiative",
+    "initiativeAbbr": "I",
+    "namePlaceholder": "Goblin, Dragon…",
+    "hpPlaceholder": "Max HP",
+    "hpLabel": "HP",
+    "acPlaceholder": "AC",
+    "acLabel": "AC",
+    "startCombat": "Start Combat",
+    "startRequirements": "Requires ≥1 player, ≥1 monster, and all initiatives set",
+    "noParty": "Add players to your party first.",
+    "exit": "Exit",
+    "reveal": "Reveal to players",
+    "hide": "Hide from players",
+    "unknown": "????"
   },
   "iconPicker": {
     "searchPlaceholder": "Search icons…",
