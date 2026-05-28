@@ -8,6 +8,41 @@
     "subtitle": "Sign in to access your dashboard",
     "signInGoogle": "Sign in with Google"
   },
+  "roleSelect": {
+    "title": "Welcome to D&D Dashboard",
+    "subtitle": "How will you be using this?",
+    "playerTitle": "I'm a Player",
+    "playerDesc": "Track your character — HP, spells, inventory, and more.",
+    "dmTitle": "I'm a Dungeon Master",
+    "dmDesc": "Monitor your party's HP, conditions, and key stats in real time.",
+    "warning": "You can switch roles later, but it requires a full reset."
+  },
+  "sharing": {
+    "label": "Share with DM",
+    "enabled": "Sharing on",
+    "copyId": "Copy ID",
+    "copied": "Copied!",
+    "hint": "Share this ID with your DM"
+  },
+  "dm": {
+    "title": "Party Overview",
+    "liveUpdates": "live updates",
+    "addPlayer": "Add Player",
+    "addPlayerPlaceholder": "Paste player ID…",
+    "add": "Add",
+    "emptyTitle": "No players yet",
+    "emptyHint": "Ask your players to enable sharing and share their ID with you.",
+    "remove": "Remove",
+    "notShared": "Character not shared",
+    "notSharedHint": "Ask the player to enable sharing in their dashboard.",
+    "passivePerception": "Passive Perc",
+    "spellSaveDC": "Spell Save DC",
+    "slots": "Spell Slots",
+    "noConditions": "No conditions",
+    "lv": "Lv",
+    "playerCount": "{count} player",
+    "playersCount": "{count} players"
+  },
   "header": {
     "race": "Race",
     "class": "Class",
@@ -17,6 +52,8 @@
     "level": "Level",
     "resetCharacter": "Reset character",
     "confirmReset": "Confirm reset?",
+    "resetProfile": "Reset profile",
+    "confirmResetProfile": "Erase all data?",
     "signOut": "Sign out"
   },
   "hp": {

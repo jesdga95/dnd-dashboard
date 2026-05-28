@@ -31,6 +31,9 @@ export const DEFAULT_CHAR: Character = {
   gold: null,
   silver: null,
   inspiration: false,
+  inCombat: false,
+  conditions: [],
+  isShared: false,
   abilities: {
     Strength: { score: null, mod: null },
     Dexterity: { score: null, mod: null },

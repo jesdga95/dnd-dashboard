@@ -116,6 +116,9 @@ export interface Character {
   gold: number | null;
   silver: number | null;
   inspiration?: boolean;
+  inCombat?: boolean;
+  conditions: string[];
+  isShared: boolean;
   abilities: Abilities;
   traits: Trait[];
   equipment: EquipmentItem[];
@@ -124,4 +127,14 @@ export interface Character {
   notes: Note[];
   skills: Record<string, SkillProficiency>;
   spellcasting?: Spellcasting;
+}
+
+export type UserRole = "player" | "dm";
+
+export interface UserProfile {
+  role: UserRole;
+}
+
+export interface DmParty {
+  playerIds: string[];
 }

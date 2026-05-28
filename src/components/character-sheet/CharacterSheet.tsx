@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useCharacter } from "@/hooks/useCharacter";
+import { useAuth } from "@/hooks/useAuth";
+import { useProfile } from "@/hooks/useProfile";
 import { CharacterHeader } from "@/components/header/CharacterHeader";
 import { StatBentoRow } from "@/components/stats/StatBentoRow";
 import { HpCard } from "@/components/health/HpCard";
@@ -21,7 +23,6 @@ import { clamp } from "@/lib/utils";
 export function CharacterSheet() {
   const [combatOpen, setCombatOpen] = useState(false);
   const [combatEnemies, setCombatEnemies] = useState<CombatEnemy[]>([]);
-  const [combatStatuses, setCombatStatuses] = useState<string[]>([]);
 
   const addEnemy = (enemy: CombatEnemy) => setCombatEnemies((p) => [...p, enemy]);
   const adjustEnemyHp = (id: number, delta: number) =>
@@ -29,8 +30,9 @@ export function CharacterSheet() {
       p.map((e) => (e.id === id ? { ...e, hp: clamp(e.hp + delta, 0, e.hpMax) } : e))
     );
   const removeEnemy = (id: number) => setCombatEnemies((p) => p.filter((e) => e.id !== id));
-  const addStatus = (s: string) => setCombatStatuses((p) => [...p, s]);
-  const removeStatus = (i: number) => setCombatStatuses((p) => p.filter((_, idx) => idx !== i));
+
+  const { user } = useAuth();
+  const { role, resetProfile } = useProfile();
 
   const {
     char,
@@ -54,6 +56,9 @@ export function CharacterSheet() {
     deleteAttack,
     updateSkillProficiency,
     toggleInspiration,
+    addCondition,
+    removeCondition,
+    toggleSharing,
     updateSpellcasting,
     updateSpellSlot,
     addSpellSlotLevel,
@@ -64,7 +69,6 @@ export function CharacterSheet() {
     addNote,
     updateNote,
     deleteNote,
-    resetCharacter,
   } = useCharacter();
 
   if (loading) {
@@ -81,8 +85,11 @@ export function CharacterSheet() {
       <CharacterHeader
         char={char}
         onUpdate={update}
-        onReset={resetCharacter}
-        onStartCombat={() => setCombatOpen(true)}
+        onReset={() => resetProfile(role ?? undefined)}
+        onStartCombat={() => { setCombatOpen(true); update({ inCombat: true }); }}
+        onToggleSharing={toggleSharing}
+        isShared={char.isShared}
+        userId={user?.uid ?? null}
       />
 
       <div className="h-3" />
@@ -193,7 +200,7 @@ export function CharacterSheet() {
         <CombatMode
           char={char}
           enemies={combatEnemies}
-          statuses={combatStatuses}
+          statuses={char.conditions ?? []}
           onAdjustHp={adjustHp}
           onUpdateHp={update}
           onTempHpChange={setTempHp}
@@ -201,9 +208,9 @@ export function CharacterSheet() {
           onAddEnemy={addEnemy}
           onAdjustEnemyHp={adjustEnemyHp}
           onRemoveEnemy={removeEnemy}
-          onAddStatus={addStatus}
-          onRemoveStatus={removeStatus}
-          onClose={() => setCombatOpen(false)}
+          onAddStatus={addCondition}
+          onRemoveStatus={removeCondition}
+          onClose={() => { setCombatOpen(false); update({ inCombat: false }); }}
         />
       )}
     </div>

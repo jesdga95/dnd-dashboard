@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { doc, onSnapshot, setDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useAuth } from "./useAuth";
-import { DEFAULT_CHAR, DEFAULT_SPELLCASTING, STORAGE_KEY } from "@/lib/defaults";
+import { DEFAULT_CHAR, DEFAULT_SPELLCASTING } from "@/lib/defaults";
 import { clamp, generateId } from "@/lib/utils";
 import type {
   Character,
@@ -43,22 +43,8 @@ export function useCharacter() {
         if (snapshot.exists()) {
           setCharState({ ...DEFAULT_CHAR, ...(snapshot.data() as Character) });
         } else {
-          // First sign-in: migrate localStorage data if present
-          let initial = DEFAULT_CHAR;
-          try {
-            const raw = localStorage.getItem(STORAGE_KEY);
-            if (raw) {
-              const parsed = JSON.parse(raw) as Partial<Character>;
-              if (typeof parsed === "object" && parsed !== null) {
-                initial = { ...DEFAULT_CHAR, ...parsed };
-              }
-              localStorage.removeItem(STORAGE_KEY);
-            }
-          } catch {
-            // Ignore corrupted localStorage
-          }
-          setDoc(docRef, initial);
-          setCharState(initial);
+          setDoc(docRef, DEFAULT_CHAR);
+          setCharState(DEFAULT_CHAR);
         }
         setLoading(false);
       },
@@ -255,6 +241,21 @@ export function useCharacter() {
   const toggleInspiration = () =>
     setChar((c) => ({ ...c, inspiration: !c.inspiration }));
 
+  const addCondition = (s: string) =>
+    setChar((c) => ({
+      ...c,
+      conditions: (c.conditions ?? []).includes(s) ? (c.conditions ?? []) : [...(c.conditions ?? []), s],
+    }));
+
+  const removeCondition = (index: number) =>
+    setChar((c) => ({
+      ...c,
+      conditions: (c.conditions ?? []).filter((_, i) => i !== index),
+    }));
+
+  const toggleSharing = () =>
+    setChar((c) => ({ ...c, isShared: !c.isShared }));
+
   const updateSpellcasting = (patch: Partial<Pick<Spellcasting, "ability" | "saveDC" | "attackBonus">>) =>  // saveDC/attackBonus may be null
     setChar((c) => {
       const sc = c.spellcasting ?? DEFAULT_SPELLCASTING;
@@ -362,6 +363,9 @@ export function useCharacter() {
     deleteNote,
     updateSkillProficiency,
     toggleInspiration,
+    addCondition,
+    removeCondition,
+    toggleSharing,
     updateSpellcasting,
     updateSpellSlot,
     addSpellSlotLevel,

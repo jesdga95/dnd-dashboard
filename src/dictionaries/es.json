@@ -8,6 +8,41 @@
     "subtitle": "Inicia sesión para acceder a tu hoja de personaje",
     "signInGoogle": "Iniciar sesión con Google"
   },
+  "roleSelect": {
+    "title": "Bienvenido a D&D Dashboard",
+    "subtitle": "¿Cómo vas a usar esto?",
+    "playerTitle": "Soy Jugador",
+    "playerDesc": "Lleva el registro de tu personaje — PV, conjuros, inventario y más.",
+    "dmTitle": "Soy Dungeon Master",
+    "dmDesc": "Monitorea los PV, condiciones y estadísticas clave de tu grupo en tiempo real.",
+    "warning": "Puedes cambiar de rol más adelante, pero requiere un reinicio completo."
+  },
+  "sharing": {
+    "label": "Compartir con DM",
+    "enabled": "Compartiendo",
+    "copyId": "Copiar ID",
+    "copied": "¡Copiado!",
+    "hint": "Comparte este ID con tu DM"
+  },
+  "dm": {
+    "title": "Vista del Grupo",
+    "liveUpdates": "en vivo",
+    "addPlayer": "Agregar Jugador",
+    "addPlayerPlaceholder": "Pega el ID del jugador…",
+    "add": "Agregar",
+    "emptyTitle": "Sin jugadores aún",
+    "emptyHint": "Pide a tus jugadores que activen el compartir y te envíen su ID.",
+    "remove": "Eliminar",
+    "notShared": "Personaje no compartido",
+    "notSharedHint": "Pide al jugador que active el compartir en su hoja.",
+    "passivePerception": "Perc. Pasiva",
+    "spellSaveDC": "CD de Conjuro",
+    "slots": "Espacios",
+    "noConditions": "Sin condiciones",
+    "lv": "Nv",
+    "playerCount": "{count} jugador",
+    "playersCount": "{count} jugadores"
+  },
   "header": {
     "race": "Raza",
     "class": "Clase",
@@ -17,6 +52,8 @@
     "level": "Nivel",
     "resetCharacter": "Reiniciar personaje",
     "confirmReset": "¿Confirmar reinicio?",
+    "resetProfile": "Reiniciar perfil",
+    "confirmResetProfile": "¿Borrar todos los datos?",
     "signOut": "Cerrar sesión"
   },
   "hp": {
