@@ -30,10 +30,14 @@ export function EditableNumber({
     <input
       type={format && !focused ? "text" : "number"}
       value={displayValue}
-      onFocus={() => setLocalVal(String(value))}
+      onFocus={() => setLocalVal("")}
       onChange={(e) => setLocalVal(e.target.value)}
       onBlur={() => {
-        const parsed = parseInt(localVal ?? "", 10);
+        if (localVal === "" || localVal === null) {
+          setLocalVal(null);
+          return;
+        }
+        const parsed = parseInt(localVal, 10);
         let final = isNaN(parsed) ? value : parsed;
         if (min !== undefined) final = Math.max(min, final);
         if (max !== undefined) final = Math.min(max, final);
@@ -43,7 +47,7 @@ export function EditableNumber({
       style={style}
       className={`bg-transparent border-none outline-none text-center
         font-[inherit] text-[inherit] font-[inherit] leading-[inherit] tracking-[inherit]
-        hover:bg-black/[0.025] focus:bg-white focus:shadow-[0_0_0_2px_var(--color-coral)]
+        hover:bg-black/[0.025] focus:shadow-[0_0_0_2px_var(--color-coral)]
         transition-[background,box-shadow] duration-[0.12s] rounded px-0.5 ${className}`}
     />
   );

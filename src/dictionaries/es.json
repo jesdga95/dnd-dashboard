@@ -154,7 +154,7 @@
     "noSpellsPost": "para comenzar.",
     "ordinals": ["Truco", "1.°", "2.°", "3.°", "4.°", "5.°", "6.°", "7.°", "8.°", "9.°"],
     "meta": {
-      "ability": "Característica",
+      "ability": "Atributo",
       "saveDC": "CD de salvación",
       "atkBonus": "Bono de ataque"
     },
@@ -203,7 +203,7 @@
   "stats": {
     "armor": "Armadura",
     "speed": "Velocidad",
-    "speedSuffix": "m · {squares} cas.",
+    "speedSuffix": "ft · {squares} cas.",
     "initiative": "Iniciativa",
     "proficiency": "Competencia",
     "hitDice": "Dados de Golpe",
