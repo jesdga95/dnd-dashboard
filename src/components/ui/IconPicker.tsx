@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useDict } from "@/lib/DictContext";
 import { Search, X } from "lucide-react";
 import {
   Sword, Swords, Shield, Axe, Crosshair, Target, Bolt, Zap,
@@ -55,6 +56,7 @@ interface IconPickerProps {
 }
 
 export function IconPicker({ value, onChange }: IconPickerProps) {
+  const dict = useDict();
   const [query, setQuery] = useState("");
 
   const filtered = useMemo(() => {
@@ -81,7 +83,7 @@ export function IconPicker({ value, onChange }: IconPickerProps) {
               transition-all duration-150"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search icons…"
+            placeholder={dict.iconPicker.searchPlaceholder}
           />
           {query && (
             <button
@@ -100,7 +102,7 @@ export function IconPicker({ value, onChange }: IconPickerProps) {
         p-2 max-h-[168px] overflow-y-auto">
         {filtered.length === 0 ? (
           <div className="text-[12px] text-[var(--color-muted)] text-center py-4">
-            No icons match "{query}"
+            {dict.iconPicker.noMatch} &quot;{query}&quot;
           </div>
         ) : (
           <div className="grid grid-cols-8 gap-1">

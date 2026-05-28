@@ -28,6 +28,7 @@ export function useCharacter() {
 
   useEffect(() => {
     if (!user) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCharState(DEFAULT_CHAR);
       setLoading(false);
       return;
@@ -293,7 +294,8 @@ export function useCharacter() {
   const removeSpellSlotLevel = (level: number) =>
     setChar((c) => {
       const sc = c.spellcasting ?? DEFAULT_SPELLCASTING;
-      const { [level]: _removed, ...rest } = sc.slots;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [level]: _slot, ...rest } = sc.slots;
       return { ...c, spellcasting: { ...sc, slots: rest } };
     });
 

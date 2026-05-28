@@ -64,6 +64,7 @@ export function CombatMode({
   const statusInputRef = useRef<HTMLInputElement>(null);
   const enemyNameRef = useRef<HTMLInputElement>(null);
   const onCloseRef = useRef(onClose);
+  // eslint-disable-next-line react-hooks/refs
   onCloseRef.current = onClose;
 
   const hp = char.hp ?? 0;

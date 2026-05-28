@@ -70,7 +70,10 @@ function AvatarMenu({
           ring-2 ring-transparent hover:ring-white/20 transition-all duration-150`}
       >
         {photoURL ? (
-          <img src={photoURL} alt="" className={`${r} object-cover w-full h-full`} />
+          <>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={photoURL} alt="" className={`${r} object-cover w-full h-full`} />
+          </>
         ) : (
           <div
             className={`w-full h-full ${r} flex items-center justify-center

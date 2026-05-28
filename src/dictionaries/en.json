@@ -237,6 +237,10 @@
     "amountPlaceholder": "Amount…",
     "heal": "Heal"
   },
+  "iconPicker": {
+    "searchPlaceholder": "Search icons…",
+    "noMatch": "No icons match"
+  },
   "common": {
     "cancel": "Cancel",
     "save": "Save"

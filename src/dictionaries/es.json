@@ -237,6 +237,10 @@
     "amountPlaceholder": "Cantidad…",
     "heal": "Curar"
   },
+  "iconPicker": {
+    "searchPlaceholder": "Buscar íconos…",
+    "noMatch": "No hay íconos que coincidan con"
+  },
   "common": {
     "cancel": "Cancelar",
     "save": "Guardar"

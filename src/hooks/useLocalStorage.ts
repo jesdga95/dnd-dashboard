@@ -15,6 +15,7 @@ export function useLocalStorage<T>(key: string, defaultValue: T) {
         const parsed = JSON.parse(raw) as Partial<T>;
         // Deep-merge: spread default first so new fields always appear
         if (typeof parsed === "object" && parsed !== null) {
+          // eslint-disable-next-line react-hooks/set-state-in-effect
           setValue({ ...defaultValue, ...(parsed as T) });
         } else {
           setValue(parsed as T);
