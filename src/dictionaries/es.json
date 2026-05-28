@@ -92,7 +92,7 @@
     "emptyStatePost": "para añadir uno.",
     "types": {
       "melee": "Físico",
-      "ranged": "A distancia",
+      "ranged": "Distancia",
       "special": "Especial"
     },
     "modal": {
