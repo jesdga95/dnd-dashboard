@@ -7,7 +7,7 @@ import { HpCard } from "@/components/health/HpCard";
 import { DeathSaves } from "@/components/health/DeathSaves";
 import { AbilityScores } from "@/components/abilities/AbilityScores";
 import { CombatCard } from "@/components/combat/CombatCard";
-import { CombatSkillsCard } from "@/components/combat/CombatSkillsCard";
+import { SkillsCard } from "@/components/combat/SkillsCard";
 import { EquipmentCard } from "@/components/equipment/EquipmentCard";
 import { CoinPurse } from "@/components/coins/CoinPurse";
 import { TraitsCard } from "@/components/traits/TraitsCard";
@@ -116,9 +116,9 @@ export function CharacterSheet() {
 
       <div className="h-3" />
 
-      {/* Combat Skills */}
-      <CombatSkillsCard
-        combatSkills={char.combatSkills ?? {}}
+      {/* Skills */}
+      <SkillsCard
+        skills={char.skills ?? {}}
         abilities={char.abilities}
         proficiency={char.proficiency}
         onUpdate={updateSkillProficiency}

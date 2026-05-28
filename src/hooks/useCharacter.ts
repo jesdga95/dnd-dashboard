@@ -220,7 +220,7 @@ export function useCharacter() {
   const updateSkillProficiency = (skill: string, proficiency: SkillProficiency) =>
     setChar((c) => ({
       ...c,
-      combatSkills: { ...(c.combatSkills ?? {}), [skill]: proficiency },
+      skills: { ...(c.skills ?? {}), [skill]: proficiency },
     }));
 
   // Notes CRUD

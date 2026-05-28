@@ -121,6 +121,6 @@ export interface Character {
   combat: Combat;
   inventory: InventoryItem[];
   notes: Note[];
-  combatSkills: Record<string, SkillProficiency>;
+  skills: Record<string, SkillProficiency>;
   spellcasting?: Spellcasting;
 }

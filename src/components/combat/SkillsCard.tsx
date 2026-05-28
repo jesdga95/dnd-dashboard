@@ -11,7 +11,7 @@ interface SkillDef {
   ability: AbilityKey;
 }
 
-const COMBAT_SKILLS: SkillDef[] = [
+const SKILLS: SkillDef[] = [
   { name: "Acrobatics", ability: "Dexterity" },
   { name: "Animal Handling", ability: "Wisdom" },
   { name: "Arcana", ability: "Intelligence" },
@@ -44,21 +44,21 @@ function fmtMod(n: number) {
   return n >= 0 ? `+${n}` : `${n}`;
 }
 
-interface CombatSkillsCardProps {
-  combatSkills: Record<string, SkillProficiency>;
+interface SkillsCardProps {
+  skills: Record<string, SkillProficiency>;
   abilities: Abilities;
   proficiency: number;
   onUpdate: (skill: string, prof: SkillProficiency) => void;
 }
 
-export function CombatSkillsCard({
-  combatSkills,
+export function SkillsCard({
+  skills: skillsMap,
   abilities,
   proficiency,
   onUpdate,
-}: CombatSkillsCardProps) {
+}: SkillsCardProps) {
   const dict = useDict();
-  const skills = combatSkills ?? {};
+  const skills = skillsMap ?? {};
 
   const cycle = (name: string) => {
     const current: SkillProficiency = skills[name] ?? "none";
@@ -84,7 +84,7 @@ export function CombatSkillsCard({
       />
 
       <div className="grid grid-cols-3 gap-x-2 gap-y-0.5 max-[700px]:grid-cols-2">
-        {COMBAT_SKILLS.map((skill) => {
+        {SKILLS.map((skill) => {
           const prof: SkillProficiency = skills[skill.name] ?? "none";
           const mod = calcMod(skill);
           return (
