@@ -1,26 +1,127 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-ink: #1a1715;
+  --color-ink-soft: #3a342e;
+  --color-muted: #6e6862;
+  --color-muted-soft: #8a857f;
+  --color-bg: #f4f1ec;
+  --color-bg-warm: #efeae2;
+  --color-card: #ffffff;
+  --color-line: #ece6dc;
+  --color-line-soft: #f0eae3;
+
+  --color-mint: #e8f0e3;
+  --color-mint-deep: #4a7a3a;
+  --color-peach: #fde8df;
+  --color-peach-deep: #c2502a;
+  --color-blue: #e3ebf5;
+  --color-blue-deep: #2b5a96;
+  --color-lavender: #ece3f5;
+  --color-lavender-deep: #6b4aa0;
+  --color-sand: #f5ede0;
+  --color-sand-deep: #8c6a2a;
+  --color-coral: #f47b5f;
+  --color-coral-deep: #e04a3a;
+  --color-rose: #f0a0a0;
+
+  --font-sans: "Manrope", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background:
+    radial-gradient(ellipse 800px 500px at 80% 0%, #f0e6d8 0%, transparent 60%),
+    radial-gradient(ellipse 800px 500px at 0% 100%, #e8dfd2 0%, transparent 60%),
+    var(--color-bg);
+  background-attachment: fixed;
+}
+
+/* HP bar gradient — hard to replicate with Tailwind utilities */
+.hp-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-coral), var(--color-coral-deep));
+  border-radius: 999px;
+  transition: width 0.4s cubic-bezier(0.6, 0, 0.2, 1);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* Auto-growing textarea — CSS-only approach */
+textarea.auto-grow {
+  field-sizing: content;
+  min-height: 20px;
+  resize: none;
+}
+
+/* Remove number input spinners globally */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Trait tooltip (CSS-only hover) */
+.trait-tip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-ink);
+  color: #fff;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+  min-width: 200px;
+  max-width: 280px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s;
+  z-index: 50;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  white-space: normal;
+  text-align: left;
+}
+
+.trait-tip strong {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #c8b5e8;
+  margin-bottom: 4px;
+}
+
+.trait-tip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: var(--color-ink);
+}
+
+.trait-chip:hover .trait-tip {
+  opacity: 1;
 }
