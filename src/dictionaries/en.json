@@ -22,7 +22,9 @@
     "enabled": "Sharing on",
     "copyId": "Copy ID",
     "copied": "Copied!",
-    "hint": "Share this ID with your DM"
+    "hint": "Share this ID with your DM",
+    "exportMd": "Copy as Markdown",
+    "exportMdCopied": "Copied!"
   },
   "dm": {
     "title": "Party Overview",

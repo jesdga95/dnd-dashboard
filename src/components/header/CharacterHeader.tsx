@@ -1,15 +1,16 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { RotateCcw, LogOut, Share2, Copy, Check, Moon, Coffee } from "lucide-react";
+import { RotateCcw, LogOut, Share2, Copy, Check, Moon, Coffee, FileText } from "lucide-react";
 import { EditableInput } from "@/components/ui/EditableInput";
 import { EditableNumber } from "@/components/ui/EditableNumber";
 import { useAuth } from "@/hooks/useAuth";
 import { useDict } from "@/lib/DictContext";
 import type { Character } from "@/lib/types";
+import { charToMarkdown } from "@/lib/charToMarkdown";
 
 interface CharacterHeaderProps {
-  char: Pick<Character, "name" | "race" | "className" | "subclass" | "background" | "alignment" | "level" | "isShared">;
+  char: Character;
   onUpdate: (patch: Partial<Character>) => void;
   onReset: () => void;
   onShortRest: () => void;
@@ -29,6 +30,7 @@ function AvatarMenu({
   isShared,
   userId,
   onToggleSharing,
+  char,
 }: {
   size: "sm" | "md";
   initial: string;
@@ -39,11 +41,13 @@ function AvatarMenu({
   isShared: boolean;
   userId: string | null;
   onToggleSharing: () => void;
+  char: Character;
 }) {
   const dict = useDict();
   const [open, setOpen] = useState(false);
   const [resetConfirm, setResetConfirm] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [exportCopied, setExportCopied] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -74,6 +78,13 @@ function AvatarMenu({
     navigator.clipboard.writeText(userId).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
+    });
+  };
+
+  const handleExportMd = () => {
+    navigator.clipboard.writeText(charToMarkdown(char)).then(() => {
+      setExportCopied(true);
+      setTimeout(() => setExportCopied(false), 2000);
     });
   };
 
@@ -133,6 +144,15 @@ function AvatarMenu({
               {copied ? dict.sharing.copied : dict.sharing.copyId}
             </button>
           )}
+
+          <button
+            onClick={handleExportMd}
+            className="w-full flex items-center gap-2.5 px-3.5 py-[9px] text-[12.5px] font-medium
+              text-white/50 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer text-left"
+          >
+            {exportCopied ? <Check size={12} /> : <FileText size={12} />}
+            {exportCopied ? dict.sharing.exportMdCopied : dict.sharing.exportMd}
+          </button>
 
           <div className="my-1 border-t border-white/[0.08]" />
 
@@ -215,6 +235,7 @@ export function CharacterHeader({ char, onUpdate, onReset, onShortRest, onLongRe
             isShared={isShared}
             userId={userId}
             onToggleSharing={onToggleSharing}
+            char={char}
           />
 
           {/* Name + meta row */}
@@ -294,6 +315,7 @@ export function CharacterHeader({ char, onUpdate, onReset, onShortRest, onLongRe
             isShared={isShared}
             userId={userId}
             onToggleSharing={onToggleSharing}
+            char={char}
           />
 
           {/* Name + meta grid */}

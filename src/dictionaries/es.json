@@ -22,7 +22,9 @@
     "enabled": "Compartiendo",
     "copyId": "Copiar ID",
     "copied": "¡Copiado!",
-    "hint": "Comparte este ID con tu DM"
+    "hint": "Comparte este ID con tu DM",
+    "exportMd": "Copiar como Markdown",
+    "exportMdCopied": "¡Copiado!"
   },
   "dm": {
     "title": "Vista del Grupo",
