@@ -75,6 +75,7 @@ export function CharacterSheet() {
     addNote,
     updateNote,
     deleteNote,
+    importChar,
   } = useCharacter();
 
   if (loading) {
@@ -91,6 +92,7 @@ export function CharacterSheet() {
       <CharacterHeader
         char={char}
         onUpdate={update}
+        onImport={importChar}
         onReset={() => resetProfile(role ?? undefined)}
         onShortRest={shortRest}
         onLongRest={longRest}
@@ -185,22 +187,20 @@ export function CharacterSheet() {
 
       <div className="h-3" />
 
-      {/* Custom Resources */}
-      <ResourcesCard
-        resources={char.customResources ?? []}
-        onAdd={addCustomResource}
-        onUpdate={updateCustomResource}
-        onRemove={removeCustomResource}
-      />
-
-      <div className="h-3" />
-
-      {/* Traits */}
-      <TraitsCard
-        traits={char.traits}
-        onSave={saveTrait}
-        onDelete={deleteTrait}
-      />
+      {/* Resources + Traits */}
+      <div className="grid gap-3 grid-cols-2 max-[700px]:grid-cols-1">
+        <ResourcesCard
+          resources={char.customResources ?? []}
+          onAdd={addCustomResource}
+          onUpdate={updateCustomResource}
+          onRemove={removeCustomResource}
+        />
+        <TraitsCard
+          traits={char.traits}
+          onSave={saveTrait}
+          onDelete={deleteTrait}
+        />
+      </div>
 
       <div className="h-3" />
 

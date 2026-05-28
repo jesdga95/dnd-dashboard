@@ -22,9 +22,7 @@
     "enabled": "Sharing on",
     "copyId": "Copy ID",
     "copied": "Copied!",
-    "hint": "Share this ID with your DM",
-    "exportMd": "Copy as Markdown",
-    "exportMdCopied": "Copied!"
+    "hint": "Share this ID with your DM"
   },
   "dm": {
     "title": "Party Overview",
@@ -58,6 +56,8 @@
     "confirmReset": "Confirm reset?",
     "resetProfile": "Reset profile",
     "confirmResetProfile": "Erase all data?",
+    "exportChar": "Export character",
+    "importChar": "Import character",
     "signOut": "Sign out"
   },
   "hp": {

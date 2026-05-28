@@ -1,17 +1,17 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { RotateCcw, LogOut, Share2, Copy, Check, Moon, Coffee, FileText } from "lucide-react";
+import { RotateCcw, LogOut, Share2, Copy, Check, Moon, Coffee, Download, Upload } from "lucide-react";
 import { EditableInput } from "@/components/ui/EditableInput";
 import { EditableNumber } from "@/components/ui/EditableNumber";
 import { useAuth } from "@/hooks/useAuth";
 import { useDict } from "@/lib/DictContext";
 import type { Character } from "@/lib/types";
-import { charToMarkdown } from "@/lib/charToMarkdown";
 
 interface CharacterHeaderProps {
   char: Character;
   onUpdate: (patch: Partial<Character>) => void;
+  onImport: (char: Character) => void;
   onReset: () => void;
   onShortRest: () => void;
   onLongRest: () => void;
@@ -31,6 +31,7 @@ function AvatarMenu({
   userId,
   onToggleSharing,
   char,
+  onImport,
 }: {
   size: "sm" | "md";
   initial: string;
@@ -42,13 +43,14 @@ function AvatarMenu({
   userId: string | null;
   onToggleSharing: () => void;
   char: Character;
+  onImport: (char: Character) => void;
 }) {
   const dict = useDict();
   const [open, setOpen] = useState(false);
   const [resetConfirm, setResetConfirm] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [exportCopied, setExportCopied] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -81,11 +83,35 @@ function AvatarMenu({
     });
   };
 
-  const handleExportMd = () => {
-    navigator.clipboard.writeText(charToMarkdown(char)).then(() => {
-      setExportCopied(true);
-      setTimeout(() => setExportCopied(false), 2000);
-    });
+  const handleExport = () => {
+    const json = JSON.stringify(char, null, 2);
+    const blob = new Blob([json], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${(char.name || "character").replace(/\s+/g, "-")}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    setOpen(false);
+  };
+
+  const handleImportFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      try {
+        const parsed = JSON.parse(ev.target?.result as string);
+        if (parsed && typeof parsed.name === "string") {
+          onImport(parsed as Character);
+          setOpen(false);
+        }
+      } catch {
+        // ignore invalid JSON
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = "";
   };
 
   const wh = size === "sm" ? "w-[48px] h-[48px]" : "w-[56px] h-[56px]";
@@ -145,14 +171,33 @@ function AvatarMenu({
             </button>
           )}
 
+          <div className="my-1 border-t border-white/[0.08]" />
+
           <button
-            onClick={handleExportMd}
+            onClick={handleExport}
             className="w-full flex items-center gap-2.5 px-3.5 py-[9px] text-[12.5px] font-medium
               text-white/50 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer text-left"
           >
-            {exportCopied ? <Check size={12} /> : <FileText size={12} />}
-            {exportCopied ? dict.sharing.exportMdCopied : dict.sharing.exportMd}
+            <Download size={12} />
+            {dict.header.exportChar}
           </button>
+
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            className="w-full flex items-center gap-2.5 px-3.5 py-[9px] text-[12.5px] font-medium
+              text-white/50 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer text-left"
+          >
+            <Upload size={12} />
+            {dict.header.importChar}
+          </button>
+
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".json"
+            className="hidden"
+            onChange={handleImportFile}
+          />
 
           <div className="my-1 border-t border-white/[0.08]" />
 
@@ -181,7 +226,7 @@ function AvatarMenu({
   );
 }
 
-export function CharacterHeader({ char, onUpdate, onReset, onShortRest, onLongRest, onToggleSharing, isShared, userId }: CharacterHeaderProps) {
+export function CharacterHeader({ char, onUpdate, onImport, onReset, onShortRest, onLongRest, onToggleSharing, isShared, userId }: CharacterHeaderProps) {
   const dict = useDict();
   const { user, signOut } = useAuth();
   const initial = char.name?.[0]?.toUpperCase() ?? "?";
@@ -236,6 +281,7 @@ export function CharacterHeader({ char, onUpdate, onReset, onShortRest, onLongRe
             userId={userId}
             onToggleSharing={onToggleSharing}
             char={char}
+            onImport={onImport}
           />
 
           {/* Name + meta row */}
@@ -316,6 +362,7 @@ export function CharacterHeader({ char, onUpdate, onReset, onShortRest, onLongRe
             userId={userId}
             onToggleSharing={onToggleSharing}
             char={char}
+            onImport={onImport}
           />
 
           {/* Name + meta grid */}

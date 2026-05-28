@@ -83,6 +83,9 @@ export function useCharacter() {
   const update = (patch: Partial<Character>) =>
     setChar((c) => ({ ...c, ...patch }));
 
+  const importChar = (imported: Character) =>
+    setChar({ ...DEFAULT_CHAR, ...imported, isShared: false });
+
   const updateAbility = (key: AbilityKey, val: number | null) =>
     setChar((c) => ({
       ...c,
@@ -414,6 +417,7 @@ export function useCharacter() {
     updateCustomResource,
     removeCustomResource,
     resetCharacter,
+    importChar,
     hpPercent,
   };
 }

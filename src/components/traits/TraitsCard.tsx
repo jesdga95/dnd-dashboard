@@ -38,29 +38,30 @@ export function TraitsCard({ traits, onSave, onDelete }: TraitsCardProps) {
           {dict.traits.emptyStatePost}
         </div>
       )}
-      <div className="flex flex-wrap gap-1.5">
+      <div className="flex flex-col gap-2">
         {traits.map((t) => (
-          <span key={t.id}
-            className="trait-chip relative bg-[var(--color-lavender)] text-[var(--color-lavender-deep)]
-              rounded-full px-3 py-[6px] text-[12px] font-bold cursor-pointer inline-flex items-center gap-1.5
+          <div key={t.id}
+            className="group relative bg-[var(--color-lavender)] text-[var(--color-lavender-deep)]
+              rounded-[12px] px-3 py-2 cursor-pointer
               hover:bg-[#e1d4ef] transition-colors duration-150"
             onClick={() => setEditing(t)}
           >
-            {t.name}
-            <span
-              className="max-[700px]:opacity-100 opacity-0 hover:opacity-100 text-black/40 hover:text-[var(--color-coral-deep)]
-                transition-opacity duration-150 ml-0.5"
-              onClick={(e) => { e.stopPropagation(); onDelete(t.id); }}
-            >
-              <X size={10} />
-            </span>
-            {t.desc && (
-              <span className="trait-tip">
-                <strong>{t.name}</strong>
-                {t.desc}
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-[12px] font-bold">{t.name}</span>
+              <span
+                className="max-[700px]:opacity-100 opacity-0 group-hover:opacity-100 text-black/40 hover:text-[var(--color-coral-deep)]
+                  transition-opacity duration-150 shrink-0"
+                onClick={(e) => { e.stopPropagation(); onDelete(t.id); }}
+              >
+                <X size={10} />
               </span>
+            </div>
+            {t.desc && (
+              <p className="text-[11px] font-medium text-[var(--color-lavender-deep)]/70 mt-0.5 leading-snug">
+                {t.desc}
+              </p>
             )}
-          </span>
+          </div>
         ))}
       </div>
 

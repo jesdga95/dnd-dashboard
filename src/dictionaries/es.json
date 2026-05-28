@@ -22,9 +22,7 @@
     "enabled": "Compartiendo",
     "copyId": "Copiar ID",
     "copied": "¡Copiado!",
-    "hint": "Comparte este ID con tu DM",
-    "exportMd": "Copiar como Markdown",
-    "exportMdCopied": "¡Copiado!"
+    "hint": "Comparte este ID con tu DM"
   },
   "dm": {
     "title": "Vista del Grupo",
@@ -58,6 +56,8 @@
     "confirmReset": "¿Confirmar reinicio?",
     "resetProfile": "Reiniciar perfil",
     "confirmResetProfile": "¿Borrar todos los datos?",
+    "exportChar": "Exportar personaje",
+    "importChar": "Importar personaje",
     "signOut": "Cerrar sesión"
   },
   "hp": {
