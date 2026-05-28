@@ -50,6 +50,7 @@ export function AbilityScores({ abilities, onUpdate, onToggleSave }: AbilityScor
                   value={mod}
                   onChange={(v) => onUpdate(key, "mod", v)}
                   format={fmtMod}
+                  signed
                   style={{ width: 30, textAlign: "center", fontWeight: 600 }}
                 />
               </span>

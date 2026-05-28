@@ -90,8 +90,9 @@ export function PartyCard({ member, onRemove }: PartyCardProps) {
   const hp = char.hp ?? 0;
   const hpMax = Math.max(1, char.hpMax ?? 1);
   const tempHp = char.tempHp ?? 0;
-  const hpPct = Math.max(0, Math.min(100, (hp / hpMax) * 100));
-  const tempPct = tempHp > 0 ? Math.max(0, Math.min(100 - hpPct, (tempHp / (hpMax + tempHp)) * 100)) : 0;
+  const total = hpMax + tempHp;
+  const hpPct = Math.max(0, Math.min(100, (hp / total) * 100));
+  const tempPct = tempHp > 0 ? (tempHp / total) * 100 : 0;
 
   const percProf = char.skills?.["Perception"] ?? "none";
   const wisdomMod = char.abilities?.Wisdom?.mod ?? 0;
