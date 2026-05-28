@@ -42,23 +42,23 @@ export function EquipmentCard({ equipment, onSave, onDelete }: EquipmentCardProp
       <div className="grid gap-2">
         {equipment.map((eq) => (
           <div key={eq.id}
-            className="flex flex-col gap-1 px-[14px] py-3 rounded-[14px]
+            className="flex flex-col gap-1 px-[14px] py-3 rounded-[14px] min-w-0 overflow-hidden
               bg-[var(--color-bg-warm)] hover:bg-[#ebe5db] transition-colors duration-150 relative group">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 max-[700px]:pr-14">
               <span className="text-[9px] font-bold tracking-[0.1em] uppercase
                 bg-[var(--color-card)] rounded-full px-2 py-[3px] text-[var(--color-muted)]">
                 {eq.slot}
               </span>
-              <span className="font-bold text-[14px] flex-1">{eq.name}</span>
+              <span className="font-bold text-[14px] flex-1 min-w-0 truncate">{eq.name}</span>
               {eq.mod && (
                 <span className="text-[11px] font-bold text-[var(--color-lavender-deep)]
-                  bg-[var(--color-lavender)] rounded-full px-[9px] py-[3px]">
+                  bg-[var(--color-lavender)] rounded-full px-[9px] py-[3px] flex-shrink-0">
                   {eq.mod}
                 </span>
               )}
             </div>
             {eq.desc && (
-              <div className="text-[12.5px] text-[var(--color-muted)] leading-[1.4]">{eq.desc}</div>
+              <div className="text-[12.5px] text-[var(--color-muted)] leading-[1.4] line-clamp-2 break-all">{eq.desc}</div>
             )}
             <div className="absolute top-2 right-2 flex gap-0.5 max-[700px]:opacity-100 opacity-0 group-hover:opacity-100 transition-opacity">
               <Btn variant="default" size="xs" iconOnly onClick={() => setEditing(eq)}>
@@ -106,18 +106,18 @@ function EquipmentModal({
       }
     >
       <ModalField label={dict.equipment.modal.name}>
-        <ModalInput value={d.name} onChange={(v) => setD({ ...d, name: v })} autoFocus maxLength={50} />
+        <ModalInput value={d.name} onChange={(v) => setD({ ...d, name: v })} autoFocus maxLength={24} />
       </ModalField>
       <div className="grid grid-cols-2 gap-2.5">
         <ModalField label={dict.equipment.modal.slot}>
-          <ModalInput value={d.slot} onChange={(v) => setD({ ...d, slot: v })} placeholder={dict.equipment.modal.slotPlaceholder} maxLength={30} />
+          <ModalInput value={d.slot} onChange={(v) => setD({ ...d, slot: v })} placeholder={dict.equipment.modal.slotPlaceholder} maxLength={12} />
         </ModalField>
         <ModalField label={dict.equipment.modal.modifier}>
-          <ModalInput value={d.mod} onChange={(v) => setD({ ...d, mod: v })} placeholder={dict.equipment.modal.modifierPlaceholder} maxLength={20} />
+          <ModalInput value={d.mod} onChange={(v) => setD({ ...d, mod: v })} placeholder={dict.equipment.modal.modifierPlaceholder} maxLength={8} />
         </ModalField>
       </div>
       <ModalField label={dict.equipment.modal.description}>
-        <ModalTextarea value={d.desc} onChange={(v) => setD({ ...d, desc: v })} maxLength={500} />
+        <ModalTextarea value={d.desc} onChange={(v) => setD({ ...d, desc: v })} maxLength={200} />
       </ModalField>
     </Modal>
   );

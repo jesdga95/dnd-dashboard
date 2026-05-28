@@ -91,7 +91,7 @@
     "emptyStateHighlight": "Agregar ataque",
     "emptyStatePost": "para añadir uno.",
     "types": {
-      "melee": "Cuerpo a cuerpo",
+      "melee": "Físico",
       "ranged": "A distancia",
       "special": "Especial"
     },
