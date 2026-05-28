@@ -12,7 +12,20 @@ export async function generateMetadata({
   const { lang } = await params;
   if (!hasLocale(lang)) return {};
   const dict = await getDictionary(lang);
-  return { title: dict.meta.title, description: dict.meta.description };
+  return {
+    title: dict.meta.title,
+    description: dict.meta.description,
+    openGraph: {
+      title: dict.meta.title,
+      description: dict.meta.description,
+      type: "website",
+    },
+    twitter: {
+      card: "summary",
+      title: dict.meta.title,
+      description: dict.meta.description,
+    },
+  };
 }
 
 export default async function LangLayout({
