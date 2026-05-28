@@ -16,6 +16,7 @@ import { TraitsCard } from "@/components/traits/TraitsCard";
 import { InventoryCard } from "@/components/inventory/InventoryCard";
 import { NotesCard } from "@/components/notes/NotesCard";
 import { SpellcastingCard } from "@/components/spellcasting/SpellcastingCard";
+import { ResourcesCard } from "@/components/resources/ResourcesCard";
 import { CombatMode, type CombatEnemy } from "@/components/combat/CombatMode";
 import { DEFAULT_SPELLCASTING } from "@/lib/defaults";
 import { clamp } from "@/lib/utils";
@@ -66,6 +67,9 @@ export function CharacterSheet() {
     saveSpell,
     deleteSpell,
     toggleSpellPrepared,
+    addCustomResource,
+    updateCustomResource,
+    removeCustomResource,
     addNote,
     updateNote,
     deleteNote,
@@ -162,6 +166,16 @@ export function CharacterSheet() {
         onSaveSpell={saveSpell}
         onDeleteSpell={deleteSpell}
         onTogglePrepared={toggleSpellPrepared}
+      />
+
+      <div className="h-3" />
+
+      {/* Custom Resources */}
+      <ResourcesCard
+        resources={char.customResources ?? []}
+        onAdd={addCustomResource}
+        onUpdate={updateCustomResource}
+        onRemove={removeCustomResource}
       />
 
       <div className="h-3" />

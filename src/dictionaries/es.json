@@ -237,6 +237,16 @@
       "notesPlaceholder": "Componentes, efecto, alcance…"
     }
   },
+  "resources": {
+    "title": "Recursos",
+    "add": "Agregar",
+    "namePlaceholder": "Puntos de Hechicería, Puntos de Ki…",
+    "useOne": "Usar uno",
+    "restoreOne": "Restaurar uno",
+    "emptyStatePre": "Sin recursos. Haz clic en",
+    "emptyStateHighlight": "Agregar",
+    "emptyStatePost": "para registrar un recurso de clase."
+  },
   "notes": {
     "title": "Notas",
     "addNote": "Agregar nota",

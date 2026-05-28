@@ -17,6 +17,7 @@ import type {
   SkillProficiency,
   Spellcasting,
   Spell,
+  CustomResource,
 } from "@/lib/types";
 
 export function useCharacter() {
@@ -134,6 +135,7 @@ export function useCharacter() {
             Object.entries(sc.slots).map(([k, v]) => [k, { ...v, used: 0 }])
           ),
         },
+        customResources: (c.customResources ?? []).map((r) => ({ ...r, used: 0 })),
       };
     });
 
@@ -335,6 +337,31 @@ export function useCharacter() {
       };
     });
 
+  const addCustomResource = () =>
+    setChar((c) => ({
+      ...c,
+      customResources: [...(c.customResources ?? []), { id: generateId(), name: "", max: 1, used: 0 }],
+    }));
+
+  const updateCustomResource = (id: number, patch: Partial<Omit<CustomResource, "id">>) =>
+    setChar((c) => ({
+      ...c,
+      customResources: (c.customResources ?? []).map((r) => {
+        if (r.id !== id) return r;
+        const newMax = patch.max !== undefined ? Math.max(0, patch.max) : r.max;
+        const newUsed = patch.used !== undefined
+          ? Math.max(0, Math.min(patch.used, newMax))
+          : Math.min(r.used, newMax);
+        return { ...r, ...patch, max: newMax, used: newUsed };
+      }),
+    }));
+
+  const removeCustomResource = (id: number) =>
+    setChar((c) => ({
+      ...c,
+      customResources: (c.customResources ?? []).filter((r) => r.id !== id),
+    }));
+
   const resetCharacter = () => setChar(DEFAULT_CHAR);
 
   const hpPercent = Math.max(0, Math.min(100, ((char.hp ?? 0) / Math.max(1, char.hpMax ?? 0)) * 100));
@@ -374,6 +401,9 @@ export function useCharacter() {
     deleteSpell,
     toggleSpellPrepared,
     toggleSaveProficiency,
+    addCustomResource,
+    updateCustomResource,
+    removeCustomResource,
     resetCharacter,
     hpPercent,
   };

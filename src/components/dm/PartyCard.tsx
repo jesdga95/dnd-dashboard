@@ -285,6 +285,43 @@ export function PartyCard({ member, onRemove }: PartyCardProps) {
         </div>
       )}
 
+      {/* Custom resources */}
+      {(char.customResources ?? []).length > 0 && (
+        <div className="px-5 pb-3 bg-[var(--color-card)]">
+          <div className="border-t border-[var(--color-line-soft)] pt-3">
+            <div className="flex flex-wrap gap-y-1.5 gap-x-3">
+              {(char.customResources ?? []).map((r) => {
+                const remaining = r.max - r.used;
+                const allUsed = remaining === 0;
+                return (
+                  <div key={r.id} className="flex items-center gap-1">
+                    <span
+                      className="text-[9px] font-bold uppercase tracking-[0.08em] max-w-[120px] truncate"
+                      style={{ color: allUsed ? "var(--color-muted)" : "var(--color-ink)", opacity: allUsed ? 0.4 : 0.6 }}
+                    >
+                      {r.name || "—"}
+                    </span>
+                    <div className="flex gap-0.5">
+                      {[...Array(r.max)].map((_, i) => (
+                        <span
+                          key={i}
+                          className="w-[8px] h-[8px] rounded-full border"
+                          style={{
+                            background: i < remaining ? "var(--color-sand-deep)" : "transparent",
+                            borderColor: i < remaining ? "var(--color-sand-deep)" : "var(--color-line)",
+                            opacity: allUsed ? 0.4 : 1,
+                          }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Conditions */}
       {conditions.length > 0 && (
         <div className="px-5 pb-4 bg-[var(--color-card)]">

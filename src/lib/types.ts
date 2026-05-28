@@ -95,6 +95,13 @@ export interface Spellcasting {
   spells: Spell[];
 }
 
+export interface CustomResource {
+  id: number;
+  name: string;
+  max: number;
+  used: number;
+}
+
 export interface Character {
   name: string;
   race: string;
@@ -127,6 +134,7 @@ export interface Character {
   notes: Note[];
   skills: Record<string, SkillProficiency>;
   spellcasting?: Spellcasting;
+  customResources?: CustomResource[];
 }
 
 export type UserRole = "player" | "dm";

@@ -237,6 +237,16 @@
       "notesPlaceholder": "Components, effect, range…"
     }
   },
+  "resources": {
+    "title": "Resources",
+    "add": "Add",
+    "namePlaceholder": "Sorcery Points, Ki Points…",
+    "useOne": "Use one",
+    "restoreOne": "Restore one",
+    "emptyStatePre": "No resources yet. Click",
+    "emptyStateHighlight": "Add",
+    "emptyStatePost": "to track a class resource."
+  },
   "notes": {
     "title": "Notes",
     "addNote": "Add note",
