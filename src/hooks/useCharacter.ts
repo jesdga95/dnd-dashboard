@@ -104,6 +104,15 @@ export function useCharacter() {
       },
     }));
 
+  const toggleSaveProficiency = (key: AbilityKey) =>
+    setChar((c) => ({
+      ...c,
+      abilities: {
+        ...c.abilities,
+        [key]: { ...c.abilities[key], saveProficient: !c.abilities[key].saveProficient },
+      },
+    }));
+
   const adjustHp = (delta: number) =>
     setChar((c) => {
       if (delta >= 0) return { ...c, hp: clamp(c.hp + delta, 0, c.hpMax) };
@@ -333,6 +342,7 @@ export function useCharacter() {
     saveSpell,
     deleteSpell,
     toggleSpellPrepared,
+    toggleSaveProficiency,
     resetCharacter,
     hpPercent,
   };

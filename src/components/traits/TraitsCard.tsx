@@ -31,6 +31,13 @@ export function TraitsCard({ traits, onSave, onDelete }: TraitsCardProps) {
           </Btn>
         }
       />
+      {traits.length === 0 && (
+        <div className="text-center py-5 text-[13px] text-[var(--color-muted-soft)]">
+          {dict.traits.emptyStatePre}{" "}
+          <strong className="text-[var(--color-ink)]">{dict.traits.emptyStateHighlight}</strong>{" "}
+          {dict.traits.emptyStatePost}
+        </div>
+      )}
       <div className="flex flex-wrap gap-1.5">
         {traits.map((t) => (
           <span key={t.id}

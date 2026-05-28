@@ -1,6 +1,6 @@
 "use client";
 
-import { Heart, Moon, Shield, X } from "lucide-react";
+import { Heart, Moon, RotateCcw, Shield } from "lucide-react";
 import { IconPill } from "@/components/ui/IconPill";
 import { EditableNumber } from "@/components/ui/EditableNumber";
 import { useDict } from "@/lib/DictContext";
@@ -73,7 +73,7 @@ export function HpCard({ hp, hpMax, tempHp, onAdjust, onUpdate, onTempHpChange, 
       </div>
 
       {/* Quick buttons */}
-      <div className="flex gap-1.5 mt-3 flex-wrap">
+      <div className="flex gap-1.5 mt-3">
         <div className="flex gap-1 bg-[var(--color-bg-warm)] rounded-full p-[3px]">
           {[1, 5, 10].map((n) => (
             <button key={"d" + n}
@@ -100,12 +100,13 @@ export function HpCard({ hp, hpMax, tempHp, onAdjust, onUpdate, onTempHpChange, 
         </div>
         <button
           onClick={onFullRest}
-          className="ml-auto font-[inherit] font-semibold text-[11px] px-2.5 py-[5px] rounded-full
-            border-transparent bg-[var(--color-mint)] text-[var(--color-mint-deep)]
+          className="font-[inherit] font-semibold text-[11px] px-2.5 py-[5px] rounded-full
+            border-none bg-[var(--color-mint)] text-[var(--color-mint-deep)]
             cursor-pointer transition-colors duration-150 hover:bg-[#ddead4] inline-flex items-center gap-1.5"
         >
           <Moon size={11} />
-          {dict.hp.fullRest}
+          <span className="max-[460px]:hidden">{dict.hp.fullRest}</span>
+          <span className="min-[461px]:hidden">{dict.hp.restShort}</span>
         </button>
       </div>
 
@@ -132,19 +133,19 @@ export function HpCard({ hp, hpMax, tempHp, onAdjust, onUpdate, onTempHpChange, 
               +{n}
             </button>
           ))}
+          {tempHp > 0 && (
+            <button
+              onClick={() => onTempHpChange(0)}
+              title={dict.hp.clear}
+              className="border-none bg-transparent rounded-full px-2 py-[5px]
+                font-[inherit] cursor-pointer text-[var(--color-ink-soft)]
+                hover:bg-[rgba(224,74,58,0.12)] hover:text-[var(--color-coral-deep)]
+                transition-colors duration-150 inline-flex items-center"
+            >
+              <RotateCcw size={10} />
+            </button>
+          )}
         </div>
-        {tempHp > 0 && (
-          <button
-            onClick={() => onTempHpChange(0)}
-            className="ml-auto font-[inherit] font-semibold text-[11px] px-2 py-[5px] rounded-full
-              border-transparent bg-[var(--color-bg-warm)] text-[var(--color-ink-soft)]
-              cursor-pointer transition-colors duration-150 hover:bg-[rgba(224,74,58,0.12)]
-              hover:text-[var(--color-coral-deep)] inline-flex items-center gap-1"
-          >
-            <X size={10} />
-            {dict.hp.clear}
-          </button>
-        )}
       </div>
     </div>
   );

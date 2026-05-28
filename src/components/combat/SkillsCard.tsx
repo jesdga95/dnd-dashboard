@@ -83,48 +83,42 @@ export function SkillsCard({
         sub={dict.skills.subtitle}
       />
 
-      <div className="grid grid-cols-3 gap-x-2 gap-y-0.5 max-[700px]:grid-cols-2">
+      <div className="grid grid-cols-3 gap-x-1 gap-y-0 max-[700px]:grid-cols-2">
         {SKILLS.map((skill) => {
           const prof: SkillProficiency = skills[skill.name] ?? "none";
           const mod = calcMod(skill);
           return (
             <div key={skill.name}
-              className="flex items-center gap-2.5 px-2.5 py-2 rounded-[12px]
+              className="flex items-start gap-2 px-2 py-1.5 rounded-[10px]
                 hover:bg-[var(--color-bg-warm)] transition-colors duration-150">
 
               {/* Proficiency badge */}
               <button
                 onClick={() => cycle(skill.name)}
                 title={dict.skills.profTitles[prof]}
-                className={`w-6 h-6 rounded-full border text-[10px] font-bold flex-shrink-0
+                className={`w-6 h-6 mt-0.5 rounded-full border text-[10px] font-bold flex-shrink-0
                   flex items-center justify-center cursor-pointer transition-all duration-150
                   ${PROF_STYLES[prof]}`}
               >
                 {dict.skills.profLabels[prof]}
               </button>
 
-              {/* Modifier */}
-              <span className="font-mono text-[13px] font-bold w-8 text-right flex-shrink-0
-                text-[var(--color-ink)]">
-                {fmtMod(mod)}
-              </span>
-
-              {/* Name + ability stacked on mobile, inline on desktop */}
+              {/* Name + modifier/ability row below */}
               <div className="flex-1 min-w-0">
-                <span className="text-[13px] font-semibold block truncate">
+                <span className="text-[12px] font-semibold block truncate leading-tight">
                   {dict.skills.names[skill.name as keyof typeof dict.skills.names] ?? skill.name}
                 </span>
-                <span className="text-[10px] font-bold tracking-[0.08em] uppercase
-                  text-[var(--color-muted-soft)] max-[700px]:block hidden">
-                  {dict.abilities.abbr[skill.ability]}
-                </span>
+                <div className="flex items-center gap-1 mt-[1px]">
+                  <span className="font-mono text-[11px] font-bold text-[var(--color-ink)]">
+                    {fmtMod(mod)}
+                  </span>
+                  <span className="text-[10px] text-[var(--color-muted-soft)]">·</span>
+                  <span className="text-[11px] font-bold tracking-[0.08em] uppercase
+                    text-[var(--color-muted-soft)]">
+                    {dict.abilities.abbr[skill.ability]}
+                  </span>
+                </div>
               </div>
-
-              {/* Ability abbr — desktop only, right-aligned */}
-              <span className="text-[10px] font-bold tracking-[0.08em] uppercase
-                text-[var(--color-muted-soft)] flex-shrink-0 max-[700px]:hidden">
-                {dict.abilities.abbr[skill.ability]}
-              </span>
             </div>
           );
         })}

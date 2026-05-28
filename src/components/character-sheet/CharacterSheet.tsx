@@ -9,7 +9,6 @@ import { AbilityScores } from "@/components/abilities/AbilityScores";
 import { CombatCard } from "@/components/combat/CombatCard";
 import { SkillsCard } from "@/components/combat/SkillsCard";
 import { EquipmentCard } from "@/components/equipment/EquipmentCard";
-import { CoinPurse } from "@/components/coins/CoinPurse";
 import { TraitsCard } from "@/components/traits/TraitsCard";
 import { InventoryCard } from "@/components/inventory/InventoryCard";
 import { NotesCard } from "@/components/notes/NotesCard";
@@ -22,6 +21,7 @@ export function CharacterSheet() {
     loading,
     update,
     updateAbility,
+    toggleSaveProficiency,
     adjustHp,
     setTempHp,
     fullRest,
@@ -96,7 +96,7 @@ export function CharacterSheet() {
       <div className="h-3" />
 
       {/* Ability Scores */}
-      <AbilityScores abilities={char.abilities} onUpdate={updateAbility} />
+      <AbilityScores abilities={char.abilities} onUpdate={updateAbility} onToggleSave={toggleSaveProficiency} />
 
       <div className="h-3" />
 
@@ -138,23 +138,25 @@ export function CharacterSheet() {
 
       <div className="h-3" />
 
-      {/* Coins + Traits | Inventory */}
-      <div className="grid gap-3 [grid-template-columns:1fr_1.2fr] max-[700px]:grid-cols-1">
-        <div className="grid gap-3 content-start">
-          <CoinPurse gold={char.gold} silver={char.silver} onUpdate={update} />
-          <TraitsCard
-            traits={char.traits}
-            onSave={saveTrait}
-            onDelete={deleteTrait}
-          />
-        </div>
-        <InventoryCard
-          inventory={char.inventory}
-          onSave={saveInventoryItem}
-          onDelete={deleteInventoryItem}
-          onToggle={toggleInventoryItem}
-        />
-      </div>
+      {/* Traits */}
+      <TraitsCard
+        traits={char.traits}
+        onSave={saveTrait}
+        onDelete={deleteTrait}
+      />
+
+      <div className="h-3" />
+
+      {/* Inventory + Coins */}
+      <InventoryCard
+        inventory={char.inventory}
+        gold={char.gold}
+        silver={char.silver}
+        onSave={saveInventoryItem}
+        onDelete={deleteInventoryItem}
+        onToggle={toggleInventoryItem}
+        onUpdate={update}
+      />
 
       <div className="h-3" />
 

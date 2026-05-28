@@ -22,6 +22,7 @@
   "hp": {
     "title": "Hit Points",
     "fullRest": "Full Rest",
+    "restShort": "Rest",
     "tempHp": "Temp HP",
     "clear": "Clear"
   },
@@ -70,7 +71,7 @@
   },
   "skills": {
     "title": "Skills",
-    "subtitle": "Click badge to cycle: — / Proficient / Expert",
+    "subtitle": "Click: — | Proficient | Expert",
     "profLabels": {
       "none": "—",
       "proficient": "P",
@@ -105,6 +106,9 @@
   "equipment": {
     "title": "Equipped",
     "add": "Add",
+    "emptyStatePre": "Nothing equipped. Click",
+    "emptyStateHighlight": "Add",
+    "emptyStatePost": "to equip an item.",
     "modal": {
       "editTitle": "Edit Equipment",
       "addTitle": "Add Equipment",
@@ -120,6 +124,9 @@
     "title": "Pack",
     "add": "Add",
     "itemsCount": "{count} items",
+    "emptyStatePre": "Pack is empty. Click",
+    "emptyStateHighlight": "Add",
+    "emptyStatePost": "to stash an item.",
     "modal": {
       "editTitle": "Edit Item",
       "addTitle": "Add Item",
@@ -138,6 +145,9 @@
   "traits": {
     "title": "Traits & Features",
     "add": "Add",
+    "emptyStatePre": "No traits yet. Click",
+    "emptyStateHighlight": "Add",
+    "emptyStatePost": "to add one.",
     "modal": {
       "editTitle": "Edit Trait",
       "addTitle": "Add Trait",

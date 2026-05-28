@@ -32,6 +32,13 @@ export function EquipmentCard({ equipment, onSave, onDelete }: EquipmentCardProp
           </Btn>
         }
       />
+      {equipment.length === 0 && (
+        <div className="text-center py-5 text-[13px] text-[var(--color-muted-soft)]">
+          {dict.equipment.emptyStatePre}{" "}
+          <strong className="text-[var(--color-ink)]">{dict.equipment.emptyStateHighlight}</strong>{" "}
+          {dict.equipment.emptyStatePost}
+        </div>
+      )}
       <div className="grid gap-2">
         {equipment.map((eq) => (
           <div key={eq.id}

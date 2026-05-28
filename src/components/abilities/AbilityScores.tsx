@@ -1,6 +1,6 @@
 "use client";
 
-import { Zap } from "lucide-react";
+import { Shield, ShieldCheck, Zap } from "lucide-react";
 import { IconPill } from "@/components/ui/IconPill";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { EditableNumber } from "@/components/ui/EditableNumber";
@@ -16,9 +16,10 @@ const fmtMod = (v: number) => (v >= 0 ? `+${v}` : `${v}`);
 interface AbilityScoresProps {
   abilities: Abilities;
   onUpdate: (key: AbilityKey, field: "score" | "mod", val: number) => void;
+  onToggleSave: (key: AbilityKey) => void;
 }
 
-export function AbilityScores({ abilities, onUpdate }: AbilityScoresProps) {
+export function AbilityScores({ abilities, onUpdate, onToggleSave }: AbilityScoresProps) {
   const dict = useDict();
   return (
     <div className="bg-[var(--color-card)] rounded-[22px] px-5 py-[18px]
@@ -30,7 +31,7 @@ export function AbilityScores({ abilities, onUpdate }: AbilityScoresProps) {
       />
       <div className="grid grid-cols-6 gap-1 max-[1100px]:grid-cols-3 max-[460px]:grid-cols-2">
         {ABILITY_KEYS.map((key) => {
-          const { score, mod } = abilities[key];
+          const { score, mod, saveProficient } = abilities[key];
           return (
             <div key={key}
               className="text-center px-2 py-3 rounded-[12px] hover:bg-[var(--color-bg-warm)] transition-colors duration-150">
@@ -52,6 +53,13 @@ export function AbilityScores({ abilities, onUpdate }: AbilityScoresProps) {
                   style={{ width: 30, textAlign: "center", fontWeight: 600 }}
                 />
               </span>
+              <button
+                onClick={() => onToggleSave(key)}
+                className={`flex items-center justify-center mt-2 mx-auto cursor-pointer transition-colors duration-150
+                  ${saveProficient ? "text-[var(--color-lavender-deep)]" : "text-[var(--color-line)]"}`}
+              >
+                {saveProficient ? <ShieldCheck size={14} /> : <Shield size={14} />}
+              </button>
             </div>
           );
         })}

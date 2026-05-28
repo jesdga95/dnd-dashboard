@@ -5,19 +5,23 @@ import { Backpack, Plus, Pencil, X } from "lucide-react";
 import { IconPill } from "@/components/ui/IconPill";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Btn } from "@/components/ui/Btn";
+import { EditableNumber } from "@/components/ui/EditableNumber";
 import { Modal, ModalField, ModalInput, ModalTextarea, ModalBtn } from "@/components/ui/Modal";
 import { IconPicker, InventoryIcon } from "@/components/ui/IconPicker";
 import { useDict } from "@/lib/DictContext";
-import type { InventoryItem } from "@/lib/types";
+import type { InventoryItem, Character } from "@/lib/types";
 
 interface InventoryCardProps {
   inventory: InventoryItem[];
+  gold: number;
+  silver: number;
   onSave: (item: InventoryItem) => void;
   onDelete: (id: number) => void;
   onToggle: (id: number) => void;
+  onUpdate: (patch: Partial<Character>) => void;
 }
 
-export function InventoryCard({ inventory, onSave, onDelete, onToggle }: InventoryCardProps) {
+export function InventoryCard({ inventory, gold, silver, onSave, onDelete, onToggle, onUpdate }: InventoryCardProps) {
   const dict = useDict();
   const [editing, setEditing] = useState<InventoryItem | null>(null);
 
@@ -35,6 +39,38 @@ export function InventoryCard({ inventory, onSave, onDelete, onToggle }: Invento
           </Btn>
         }
       />
+
+      {/* Coins */}
+      <div className="flex gap-2 mb-3">
+        <div className="flex-1 flex items-center gap-2 rounded-[12px] px-3 py-2"
+          style={{ background: "linear-gradient(135deg, #f7e3a8, #e8c878)" }}>
+          <div className="w-6 h-6 rounded-full flex items-center justify-center
+            bg-white/50 text-[11px] font-extrabold text-[#8c6a1a]">G</div>
+          <div>
+            <div className="text-[9px] font-bold tracking-[0.1em] uppercase text-black/50">{dict.coins.gold}</div>
+            <EditableNumber value={gold} onChange={(v) => onUpdate({ gold: Math.max(0, v) })} min={0}
+              style={{ width: 64, fontWeight: 800, fontSize: 18, textAlign: "left" }} />
+          </div>
+        </div>
+        <div className="flex-1 flex items-center gap-2 rounded-[12px] px-3 py-2"
+          style={{ background: "linear-gradient(135deg, #ece8df, #c8c2b4)" }}>
+          <div className="w-6 h-6 rounded-full flex items-center justify-center
+            bg-white/50 text-[11px] font-extrabold text-[#5a5650]">S</div>
+          <div>
+            <div className="text-[9px] font-bold tracking-[0.1em] uppercase text-black/50">{dict.coins.silver}</div>
+            <EditableNumber value={silver} onChange={(v) => onUpdate({ silver: Math.max(0, v) })} min={0}
+              style={{ width: 64, fontWeight: 800, fontSize: 18, textAlign: "left" }} />
+          </div>
+        </div>
+      </div>
+
+      {inventory.length === 0 && (
+        <div className="text-center py-5 text-[13px] text-[var(--color-muted-soft)]">
+          {dict.inventory.emptyStatePre}{" "}
+          <strong className="text-[var(--color-ink)]">{dict.inventory.emptyStateHighlight}</strong>{" "}
+          {dict.inventory.emptyStatePost}
+        </div>
+      )}
       <div className="flex flex-col">
         {inventory.map((item, idx) => (
           <div key={item.id}

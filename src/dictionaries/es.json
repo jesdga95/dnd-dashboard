@@ -22,6 +22,7 @@
   "hp": {
     "title": "Puntos de Vida",
     "fullRest": "Descanso Largo",
+    "restShort": "Descanso",
     "tempHp": "PV Temp.",
     "clear": "Limpiar"
   },
@@ -32,8 +33,8 @@
     "clear": "Limpiar"
   },
   "abilities": {
-    "title": "Puntuaciones de Característica",
-    "subtitle": "Haz clic para editar la puntuación o el modificador",
+    "title": "Características",
+    "subtitle": "Clic para editar",
     "abbr": {
       "Strength": "FUE",
       "Dexterity": "DES",
@@ -70,7 +71,7 @@
   },
   "skills": {
     "title": "Habilidades",
-    "subtitle": "Haz clic en el emblema para ciclar: — / Competente / Experto",
+    "subtitle": "Clic: — | Competente | Experto",
     "profLabels": {
       "none": "—",
       "proficient": "C",
@@ -105,6 +106,9 @@
   "equipment": {
     "title": "Equipado",
     "add": "Agregar",
+    "emptyStatePre": "Nada equipado. Haz clic en",
+    "emptyStateHighlight": "Agregar",
+    "emptyStatePost": "para equipar un objeto.",
     "modal": {
       "editTitle": "Editar Equipo",
       "addTitle": "Agregar Equipo",
@@ -120,6 +124,9 @@
     "title": "Mochila",
     "add": "Agregar",
     "itemsCount": "{count} objetos",
+    "emptyStatePre": "La mochila está vacía. Haz clic en",
+    "emptyStateHighlight": "Agregar",
+    "emptyStatePost": "para guardar un objeto.",
     "modal": {
       "editTitle": "Editar Objeto",
       "addTitle": "Agregar Objeto",
@@ -138,6 +145,9 @@
   "traits": {
     "title": "Rasgos y Características",
     "add": "Agregar",
+    "emptyStatePre": "Sin rasgos. Haz clic en",
+    "emptyStateHighlight": "Agregar",
+    "emptyStatePost": "para añadir uno.",
     "modal": {
       "editTitle": "Editar Rasgo",
       "addTitle": "Agregar Rasgo",
@@ -208,8 +218,8 @@
     "proficiency": "Competencia",
     "hitDice": "Dados de Golpe",
     "inspiration": "Inspiración",
-    "inspiredTitle": "Inspirado — haz clic para gastar",
-    "notInspiredTitle": "Sin inspiración — haz clic para obtener"
+    "inspiredTitle": "Inspirado — clic para gastar",
+    "notInspiredTitle": "Sin inspiración — clic para ganar"
   },
   "common": {
     "cancel": "Cancelar",

@@ -9,6 +9,7 @@ export type AbilityKey =
 export interface AbilityScore {
   score: number;
   mod: number;
+  saveProficient?: boolean;
 }
 
 export interface Abilities {
