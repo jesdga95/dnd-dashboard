@@ -366,7 +366,7 @@ export function CombatMode({
               ))}
               {tempHp > 0 && (
                 <button
-                  onClick={() => onTempHpChange(null)}
+                  onClick={() => onTempHpChange(0)}
                   className="px-2 py-[5px] border-none bg-transparent rounded-full font-[inherit]
                     cursor-pointer flex items-center transition-colors duration-150
                     text-white/35 hover:bg-[rgba(224,74,58,0.15)] hover:text-[var(--color-coral)]"

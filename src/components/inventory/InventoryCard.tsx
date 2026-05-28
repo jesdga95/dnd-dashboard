@@ -13,8 +13,8 @@ import type { InventoryItem, Character } from "@/lib/types";
 
 interface InventoryCardProps {
   inventory: InventoryItem[];
-  gold: number;
-  silver: number;
+  gold: number | null;
+  silver: number | null;
   onSave: (item: InventoryItem) => void;
   onDelete: (id: number) => void;
   onToggle: (id: number) => void;

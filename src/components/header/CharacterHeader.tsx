@@ -183,7 +183,7 @@ export function CharacterHeader({ char, onUpdate, onReset, onStartCombat }: Char
             </span>
             <EditableNumber
               value={char.level}
-              onChange={(v) => onUpdate({ level: Math.max(1, v) })}
+              onChange={(v) => onUpdate({ level: Math.max(1, v ?? 1) })}
               min={1}
               max={99}
               maxLength={2}
@@ -271,7 +271,7 @@ export function CharacterHeader({ char, onUpdate, onReset, onStartCombat }: Char
             </span>
             <EditableNumber
               value={char.level}
-              onChange={(v) => onUpdate({ level: Math.max(1, v) })}
+              onChange={(v) => onUpdate({ level: Math.max(1, v ?? 1) })}
               min={1}
               max={99}
               style={{

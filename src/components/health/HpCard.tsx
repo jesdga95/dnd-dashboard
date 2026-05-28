@@ -120,7 +120,7 @@ export function HpCard({ hp, hpMax, tempHp, onAdjust, onUpdate, onTempHpChange, 
         </span>
         <EditableNumber
           value={tempHp}
-          onChange={onTempHpChange}
+          onChange={(v) => onTempHpChange(v ?? 0)}
           min={0}
           style={{ width: 40, textAlign: "center", fontSize: 16, fontWeight: 700, color: "#818cf8" }}
         />

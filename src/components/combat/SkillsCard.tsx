@@ -47,7 +47,7 @@ function fmtMod(n: number) {
 interface SkillsCardProps {
   skills: Record<string, SkillProficiency>;
   abilities: Abilities;
-  proficiency: number;
+  proficiency: number | null;
   onUpdate: (skill: string, prof: SkillProficiency) => void;
 }
 
@@ -67,10 +67,11 @@ export function SkillsCard({
   };
 
   const calcMod = (skill: SkillDef): number => {
-    const abilMod = abilities[skill.ability].mod;
+    const abilMod = abilities[skill.ability].mod ?? 0;
     const prof: SkillProficiency = skills[skill.name] ?? "none";
-    if (prof === "expert") return abilMod + proficiency * 2;
-    if (prof === "proficient") return abilMod + proficiency;
+    const prof_bonus = proficiency ?? 0;
+    if (prof === "expert") return abilMod + prof_bonus * 2;
+    if (prof === "proficient") return abilMod + prof_bonus;
     return abilMod;
   };
 
