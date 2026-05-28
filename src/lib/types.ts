@@ -7,8 +7,8 @@ export type AbilityKey =
   | "Charisma";
 
 export interface AbilityScore {
-  score: number;
-  mod: number;
+  score: number | null;
+  mod: number | null;
   saveProficient?: boolean;
 }
 
@@ -89,8 +89,8 @@ export interface Spell {
 
 export interface Spellcasting {
   ability: SpellcastingAbility;
-  saveDC: number;
-  attackBonus: number;
+  saveDC: number | null;
+  attackBonus: number | null;
   slots: Record<number, SpellSlot>;
   spells: Spell[];
 }
@@ -103,18 +103,18 @@ export interface Character {
   background: string;
   alignment: string;
   level: number;
-  ac: number;
-  proficiency: number;
+  ac: number | null;
+  proficiency: number | null;
   hitDice: string;
-  speed: number;
-  initiative: number;
-  hp: number;
-  hpMax: number;
+  speed: number | null;
+  initiative: number | null;
+  hp: number | null;
+  hpMax: number | null;
   tempHp: number;
   deathSaves: number;
   deathFails: number;
-  gold: number;
-  silver: number;
+  gold: number | null;
+  silver: number | null;
   inspiration?: boolean;
   abilities: Abilities;
   traits: Trait[];

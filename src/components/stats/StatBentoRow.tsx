@@ -29,7 +29,7 @@ export function StatBentoRow({ char, onUpdate, onToggleInspiration }: StatBentoR
         type="number"
         numValue={char.speed}
         onChangeNum={(v) => onUpdate({ speed: v })}
-        suffix={dict.stats.speedSuffix.replace("{squares}", String(Math.round(char.speed / 5)))}
+        suffix={char.speed !== null ? dict.stats.speedSuffix.replace("{squares}", String(Math.round(char.speed / 5))) : undefined}
       />
       <StatMiniCard
         label={dict.stats.initiative}
@@ -37,7 +37,9 @@ export function StatBentoRow({ char, onUpdate, onToggleInspiration }: StatBentoR
         type="number"
         numValue={char.initiative}
         onChangeNum={(v) => onUpdate({ initiative: v })}
-        prefix="+"
+        prefix={(char.initiative ?? 0) >= 0 ? "+" : "−"}
+        numFormat={(v) => String(Math.abs(v))}
+        signed
       />
       <StatMiniCard
         label={dict.stats.proficiency}

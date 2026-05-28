@@ -171,7 +171,8 @@
     "slots": {
       "title": "Espacios de Conjuro",
       "useSlot": "Usar espacio",
-      "restoreSlot": "Recuperar espacio"
+      "restoreSlot": "Recuperar espacio",
+      "addLevel": "Añadir nivel"
     },
     "list": {
       "title": "Conjuros",

@@ -29,6 +29,8 @@ interface SpellcastingCardProps {
   spellcasting: Spellcasting;
   onUpdateMeta: (patch: Partial<Pick<Spellcasting, "ability" | "saveDC" | "attackBonus">>) => void;
   onUpdateSlot: (level: number, field: "max" | "used", val: number) => void;
+  onAddSlotLevel: (level: number) => void;
+  onRemoveSlotLevel: (level: number) => void;
   onSaveSpell: (spell: Spell) => void;
   onDeleteSpell: (id: number) => void;
   onTogglePrepared: (id: number) => void;
@@ -38,6 +40,8 @@ export function SpellcastingCard({
   spellcasting,
   onUpdateMeta,
   onUpdateSlot,
+  onAddSlotLevel,
+  onRemoveSlotLevel,
   onSaveSpell,
   onDeleteSpell,
   onTogglePrepared,
@@ -130,21 +134,50 @@ export function SpellcastingCard({
           text-[var(--color-muted)] mb-2">
           {dict.spellcasting.slots.title}
         </div>
-        <div className="grid grid-cols-3 max-[600px]:grid-cols-2 gap-2">
-          {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((level) => {
-            const slot: SpellSlot = spellcasting.slots[level] ?? { max: 0, used: 0 };
-            const available = slot.max - slot.used;
-            return (
-              <SlotLevel
-                key={level}
-                level={level}
-                slot={slot}
-                available={available}
-                onUpdateSlot={onUpdateSlot}
-              />
-            );
-          })}
-        </div>
+        {(() => {
+          const trackedLevels = Object.keys(spellcasting.slots).map(Number).sort((a, b) => a - b);
+          const untrackedLevels = [1,2,3,4,5,6,7,8,9].filter(l => !spellcasting.slots[l]);
+          return (
+            <>
+              {trackedLevels.length > 0 && (
+                <div className="grid grid-cols-3 max-[600px]:grid-cols-2 gap-2 mb-2">
+                  {trackedLevels.map((level) => {
+                    const slot = spellcasting.slots[level];
+                    return (
+                      <SlotLevel
+                        key={level}
+                        level={level}
+                        slot={slot}
+                        available={(slot.max ?? 0) - (slot.used ?? 0)}
+                        onUpdateSlot={onUpdateSlot}
+                        onRemove={() => onRemoveSlotLevel(level)}
+                      />
+                    );
+                  })}
+                </div>
+              )}
+              {untrackedLevels.length > 0 && (
+                <div className="flex flex-wrap gap-1.5 items-center">
+                  <span className="text-[10px] font-bold uppercase tracking-[0.08em] text-[var(--color-muted-soft)]">
+                    {dict.spellcasting.slots.addLevel}
+                  </span>
+                  {untrackedLevels.map((level) => (
+                    <button
+                      key={level}
+                      onClick={() => onAddSlotLevel(level)}
+                      className="text-[10px] font-bold rounded-full px-2 py-[3px] cursor-pointer
+                        border border-dashed border-[var(--color-line)] text-[var(--color-muted-soft)]
+                        hover:border-[var(--color-lavender-deep)] hover:text-[var(--color-lavender-deep)]
+                        transition-all duration-150"
+                    >
+                      {dict.spellcasting.ordinals[level]}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </>
+          );
+        })()}
       </div>
 
       {/* Spell list */}
@@ -202,19 +235,32 @@ function SlotLevel({
   slot,
   available,
   onUpdateSlot,
+  onRemove,
 }: {
   level: number;
   slot: SpellSlot;
   available: number;
   onUpdateSlot: (level: number, field: "max" | "used", val: number) => void;
+  onRemove: () => void;
 }) {
   const dict = useDict();
   return (
-    <div className="bg-[var(--color-bg-warm)] rounded-[14px] px-3 py-2.5">
+    <div className="bg-[var(--color-bg-warm)] rounded-[14px] px-3 py-2.5 group/slot">
       <div className="flex items-center justify-between mb-2">
-        <span className="text-[10px] font-bold uppercase tracking-[0.08em] text-[var(--color-muted)]">
-          {dict.spellcasting.ordinals[level]}
-        </span>
+        <div className="flex items-center gap-1">
+          <span className="text-[10px] font-bold uppercase tracking-[0.08em] text-[var(--color-muted)]">
+            {dict.spellcasting.ordinals[level]}
+          </span>
+          <button
+            onClick={onRemove}
+            title="Remove slot level"
+            className="opacity-0 group-hover/slot:opacity-100 w-3.5 h-3.5 flex items-center justify-center
+              rounded-full text-[var(--color-muted-soft)] hover:text-[var(--color-coral-deep)]
+              transition-all duration-150 cursor-pointer"
+          >
+            <X size={9} />
+          </button>
+        </div>
         <div className="flex items-center gap-0.5">
           <button
             onClick={() => onUpdateSlot(level, "max", slot.max - 1)}
@@ -254,7 +300,7 @@ function SlotLevel({
                   transition-all duration-150
                   ${isAvailable
                     ? "bg-[var(--color-lavender-deep)] border-[var(--color-lavender-deep)] hover:opacity-70"
-                    : "bg-transparent border-[var(--color-line)] hover:border-[var(--color-lavender-deep)]"
+                    : "bg-transparent border-[var(--color-lavender-deep)] opacity-30 hover:opacity-60"
                   }`}
               />
             );

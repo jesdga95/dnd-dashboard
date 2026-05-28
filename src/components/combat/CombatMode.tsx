@@ -19,7 +19,7 @@ interface CombatModeProps {
   enemies: CombatEnemy[];
   statuses: string[];
   onAdjustHp: (delta: number) => void;
-  onUpdateHp: (patch: { hp?: number; hpMax?: number }) => void;
+  onUpdateHp: (patch: { hp?: number | null; hpMax?: number | null }) => void;
   onTempHpChange: (val: number) => void;
   onFullRest: () => void;
   onAddEnemy: (enemy: CombatEnemy) => void;
@@ -66,8 +66,8 @@ export function CombatMode({
   const onCloseRef = useRef(onClose);
   onCloseRef.current = onClose;
 
-  const hp = char.hp;
-  const hpMax = char.hpMax;
+  const hp = char.hp ?? 0;
+  const hpMax = char.hpMax ?? 0;
   const tempHp = char.tempHp ?? 0;
   const total = Math.max(1, hpMax + tempHp);
   const hpPct = (hp / total) * 100;
@@ -182,7 +182,7 @@ export function CombatMode({
             <span className="text-[17px] font-extrabold text-white/75 tracking-tight truncate">
               {char.name || cm.unnamed}
             </span>
-            {char.ac > 0 && (
+            {char.ac !== null && char.ac > 0 && (
               <span
                 className="flex items-center gap-1.5 text-[12px] font-bold shrink-0 ml-3 px-2.5 py-1 rounded-full"
                 style={{ color: "rgba(255,255,255,0.4)", background: "rgba(255,255,255,0.06)" }}
@@ -196,8 +196,8 @@ export function CombatMode({
           {/* Big HP numbers */}
           <div className="flex items-baseline gap-2 mb-4 leading-none">
             <EditableNumber
-              value={hp}
-              onChange={(v) => onUpdateHp({ hp: Math.max(0, v) })}
+              value={char.hp}
+              onChange={(v) => onUpdateHp({ hp: v })}
               min={0}
               style={{
                 width: 88,
@@ -220,8 +220,8 @@ export function CombatMode({
             <div className="flex items-baseline gap-1">
               <span className="text-[26px] font-semibold" style={{ color: "rgba(255,255,255,0.2)" }}>/</span>
               <EditableNumber
-                value={hpMax}
-                onChange={(v) => onUpdateHp({ hpMax: Math.max(1, v) })}
+                value={char.hpMax}
+                onChange={(v) => onUpdateHp({ hpMax: v })}
                 min={1}
                 style={{
                   width: 60,
@@ -337,8 +337,8 @@ export function CombatMode({
               {dict.hp.tempHp}
             </span>
             <EditableNumber
-              value={tempHp}
-              onChange={onTempHpChange}
+              value={char.tempHp}
+              onChange={(v) => onTempHpChange(v ?? 0)}
               min={0}
               style={{
                 width: 44,
@@ -365,7 +365,7 @@ export function CombatMode({
               ))}
               {tempHp > 0 && (
                 <button
-                  onClick={() => onTempHpChange(0)}
+                  onClick={() => onTempHpChange(null)}
                   className="px-2 py-[5px] border-none bg-transparent rounded-full font-[inherit]
                     cursor-pointer flex items-center transition-colors duration-150
                     text-white/35 hover:bg-[rgba(224,74,58,0.15)] hover:text-[var(--color-coral)]"

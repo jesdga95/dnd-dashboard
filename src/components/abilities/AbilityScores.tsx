@@ -11,11 +11,11 @@ const ABILITY_KEYS: AbilityKey[] = [
   "Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma",
 ];
 
-const fmtMod = (v: number) => (v >= 0 ? `+${v}` : `${v}`);
+const fmtMod = (v: number) => (v >= 0 ? `+${v}` : String(v));
 
 interface AbilityScoresProps {
   abilities: Abilities;
-  onUpdate: (key: AbilityKey, field: "score" | "mod", val: number) => void;
+  onUpdate: (key: AbilityKey, field: "score" | "mod", val: number | null) => void;
   onToggleSave: (key: AbilityKey) => void;
 }
 

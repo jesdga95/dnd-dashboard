@@ -171,7 +171,8 @@
     "slots": {
       "title": "Spell Slots",
       "useSlot": "Use slot",
-      "restoreSlot": "Restore slot"
+      "restoreSlot": "Restore slot",
+      "addLevel": "Add level"
     },
     "list": {
       "title": "Spells",

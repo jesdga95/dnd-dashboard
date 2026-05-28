@@ -56,6 +56,8 @@ export function CharacterSheet() {
     toggleInspiration,
     updateSpellcasting,
     updateSpellSlot,
+    addSpellSlotLevel,
+    removeSpellSlotLevel,
     saveSpell,
     deleteSpell,
     toggleSpellPrepared,
@@ -148,6 +150,8 @@ export function CharacterSheet() {
         spellcasting={char.spellcasting ?? DEFAULT_SPELLCASTING}
         onUpdateMeta={updateSpellcasting}
         onUpdateSlot={updateSpellSlot}
+        onAddSlotLevel={addSpellSlotLevel}
+        onRemoveSlotLevel={removeSpellSlotLevel}
         onSaveSpell={saveSpell}
         onDeleteSpell={deleteSpell}
         onTogglePrepared={toggleSpellPrepared}

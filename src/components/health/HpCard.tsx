@@ -6,19 +6,21 @@ import { EditableNumber } from "@/components/ui/EditableNumber";
 import { useDict } from "@/lib/DictContext";
 
 interface HpCardProps {
-  hp: number;
-  hpMax: number;
+  hp: number | null;
+  hpMax: number | null;
   tempHp: number;
   onAdjust: (delta: number) => void;
-  onUpdate: (patch: { hp?: number; hpMax?: number }) => void;
+  onUpdate: (patch: { hp?: number | null; hpMax?: number | null }) => void;
   onTempHpChange: (val: number) => void;
   onFullRest: () => void;
 }
 
 export function HpCard({ hp, hpMax, tempHp, onAdjust, onUpdate, onTempHpChange, onFullRest }: HpCardProps) {
   const dict = useDict();
-  const total = Math.max(1, hpMax + tempHp);
-  const hpPct = (hp / total) * 100;
+  const hpVal = hp ?? 0;
+  const hpMaxVal = hpMax ?? 0;
+  const total = Math.max(1, hpMaxVal + tempHp);
+  const hpPct = (hpVal / total) * 100;
   const tempPct = (tempHp / total) * 100;
 
   return (
@@ -36,7 +38,7 @@ export function HpCard({ hp, hpMax, tempHp, onAdjust, onUpdate, onTempHpChange, 
         <span className="flex items-baseline leading-none gap-1">
           <EditableNumber
             value={hp}
-            onChange={(v) => onUpdate({ hp: Math.max(0, v) })}
+            onChange={(v) => onUpdate({ hp: v })}
             min={0}
             style={{ width: 56, textAlign: "right", fontSize: 30, fontWeight: 800, letterSpacing: "-0.02em" }}
           />
@@ -48,7 +50,7 @@ export function HpCard({ hp, hpMax, tempHp, onAdjust, onUpdate, onTempHpChange, 
           <em className="not-italic text-[var(--color-muted)] text-[18px] font-semibold mx-0.5">/</em>
           <EditableNumber
             value={hpMax}
-            onChange={(v) => onUpdate({ hpMax: Math.max(1, v) })}
+            onChange={(v) => onUpdate({ hpMax: v })}
             min={1}
             style={{ width: 42, textAlign: "left", fontSize: 18, fontWeight: 600, color: "var(--color-muted)" }}
           />
@@ -129,6 +131,7 @@ export function HpCard({ hp, hpMax, tempHp, onAdjust, onUpdate, onTempHpChange, 
                 font-semibold font-[inherit] cursor-pointer text-[var(--color-ink-soft)]
                 hover:bg-[rgba(129,140,248,0.15)] hover:text-[#818cf8] transition-colors duration-150"
               onClick={() => onTempHpChange(tempHp + n)}
+
             >
               +{n}
             </button>

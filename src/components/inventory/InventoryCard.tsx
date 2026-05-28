@@ -48,7 +48,7 @@ export function InventoryCard({ inventory, gold, silver, onSave, onDelete, onTog
             bg-white/50 text-[11px] font-extrabold text-[#8c6a1a]">G</div>
           <div>
             <div className="text-[9px] font-bold tracking-[0.1em] uppercase text-black/50">{dict.coins.gold}</div>
-            <EditableNumber value={gold} onChange={(v) => onUpdate({ gold: Math.max(0, v) })} min={0}
+            <EditableNumber value={gold} onChange={(v) => onUpdate({ gold: v })} min={0}
               style={{ width: 64, fontWeight: 800, fontSize: 18, textAlign: "left" }} />
           </div>
         </div>
@@ -58,7 +58,7 @@ export function InventoryCard({ inventory, gold, silver, onSave, onDelete, onTog
             bg-white/50 text-[11px] font-extrabold text-[#5a5650]">S</div>
           <div>
             <div className="text-[9px] font-bold tracking-[0.1em] uppercase text-black/50">{dict.coins.silver}</div>
-            <EditableNumber value={silver} onChange={(v) => onUpdate({ silver: Math.max(0, v) })} min={0}
+            <EditableNumber value={silver} onChange={(v) => onUpdate({ silver: v })} min={0}
               style={{ width: 64, fontWeight: 800, fontSize: 18, textAlign: "left" }} />
           </div>
         </div>

@@ -26,10 +26,12 @@ interface StatMiniCardProps {
   tint: Tint;
   prefix?: string;
   suffix?: string;
+  signed?: boolean;
+  numFormat?: (val: number) => string;
   type?: "number" | "text";
-  numValue?: number;
+  numValue?: number | null;
   textValue?: string;
-  onChangeNum?: (val: number) => void;
+  onChangeNum?: (val: number | null) => void;
   onChangeText?: (val: string) => void;
 }
 
@@ -38,6 +40,8 @@ export function StatMiniCard({
   tint,
   prefix,
   suffix,
+  signed,
+  numFormat,
   type = "number",
   numValue,
   textValue,
@@ -56,6 +60,8 @@ export function StatMiniCard({
           <EditableNumber
             value={numValue}
             onChange={onChangeNum}
+            signed={signed}
+            format={numFormat}
             style={{ width: 56, fontSize: 26, fontWeight: 800, letterSpacing: "-0.02em" }}
           />
         ) : (

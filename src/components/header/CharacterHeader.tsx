@@ -147,25 +147,23 @@ export function CharacterHeader({ char, onUpdate, onReset, onStartCombat }: Char
               value={char.name}
               onChange={(v) => onUpdate({ name: v })}
               dark
+              asDiv
             />
           </div>
-          <div className="flex items-center flex-wrap mt-[7px]">
-            {META_FIELDS.map(({ label, key }, i) => (
-              <span key={key} className="inline-flex items-center text-[12px]">
-                {i > 0 && (
-                  <span className="mx-[10px] text-white/20 select-none leading-none">·</span>
-                )}
-                <span className="text-[9.5px] font-bold tracking-[0.1em] uppercase text-white/35 mr-[5px] leading-none">
+          <div className="grid grid-cols-2 min-[1050px]:grid-cols-5 gap-x-8 gap-y-1.5 mt-[7px]">
+            {META_FIELDS.map(({ label, key }) => (
+              <div key={key} className="flex items-center gap-[5px] min-w-0">
+                <span className="text-[9.5px] font-bold tracking-[0.1em] uppercase text-white/35 leading-none shrink-0">
                   {label}
                 </span>
-                <span className="text-white/75 font-semibold">
+                <span className="text-white/75 font-semibold text-[12px] min-w-0">
                   <EditableInput
                     value={char[key]}
                     onChange={(v) => onUpdate({ [key]: v })}
                     dark
                   />
                 </span>
-              </span>
+              </div>
             ))}
           </div>
         </div>
@@ -175,7 +173,7 @@ export function CharacterHeader({ char, onUpdate, onReset, onStartCombat }: Char
           <div
             className="flex flex-col items-center justify-center
               rounded-[14px] border border-[rgba(180,80,45,0.45)]
-              bg-[rgba(255,255,255,0.03)] px-6 py-3 min-w-[84px]"
+              bg-[rgba(255,255,255,0.03)] px-5 py-3"
           >
             <span className="text-[9px] font-bold tracking-[0.2em] uppercase text-[rgba(200,100,60,0.7)] mb-1">
               {dict.header.level}
@@ -185,13 +183,15 @@ export function CharacterHeader({ char, onUpdate, onReset, onStartCombat }: Char
               onChange={(v) => onUpdate({ level: Math.max(1, v) })}
               min={1}
               max={99}
+              maxLength={2}
+              asDiv
               style={{
-                width: 44,
                 color: "white",
                 fontSize: 38,
                 fontWeight: 800,
                 lineHeight: 1,
                 padding: 0,
+                minWidth: 44,
                 textAlign: "center",
               }}
             />
@@ -234,6 +234,7 @@ export function CharacterHeader({ char, onUpdate, onReset, onStartCombat }: Char
                 value={char.name}
                 onChange={(v) => onUpdate({ name: v })}
                 dark
+                asDiv
               />
             </div>
             <div className="grid grid-cols-3 gap-x-3 gap-y-2.5">

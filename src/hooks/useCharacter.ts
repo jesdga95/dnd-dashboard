@@ -95,7 +95,7 @@ export function useCharacter() {
   const update = (patch: Partial<Character>) =>
     setChar((c) => ({ ...c, ...patch }));
 
-  const updateAbility = (key: AbilityKey, field: "score" | "mod", val: number) =>
+  const updateAbility = (key: AbilityKey, field: "score" | "mod", val: number | null) =>
     setChar((c) => ({
       ...c,
       abilities: {
@@ -115,14 +115,17 @@ export function useCharacter() {
 
   const adjustHp = (delta: number) =>
     setChar((c) => {
-      if (delta >= 0) return { ...c, hp: clamp(c.hp + delta, 0, c.hpMax) };
+      const hp = c.hp ?? 0;
+      const hpMax = c.hpMax ?? 0;
+      const tempHp = c.tempHp ?? 0;
+      if (delta >= 0) return { ...c, hp: clamp(hp + delta, 0, hpMax) };
       // Damage drains temp HP first
-      const tempAbsorb = Math.min(c.tempHp, -delta);
+      const tempAbsorb = Math.min(tempHp, -delta);
       const remaining = -delta - tempAbsorb;
       return {
         ...c,
-        tempHp: c.tempHp - tempAbsorb,
-        hp: clamp(c.hp - remaining, 0, c.hpMax),
+        tempHp: tempHp - tempAbsorb,
+        hp: clamp(hp - remaining, 0, hpMax),
       };
     });
 
@@ -251,7 +254,7 @@ export function useCharacter() {
   const toggleInspiration = () =>
     setChar((c) => ({ ...c, inspiration: !c.inspiration }));
 
-  const updateSpellcasting = (patch: Partial<Pick<Spellcasting, "ability" | "saveDC" | "attackBonus">>) =>
+  const updateSpellcasting = (patch: Partial<Pick<Spellcasting, "ability" | "saveDC" | "attackBonus">>) =>  // saveDC/attackBonus may be null
     setChar((c) => {
       const sc = c.spellcasting ?? DEFAULT_SPELLCASTING;
       return { ...c, spellcasting: { ...sc, ...patch } };
@@ -264,7 +267,7 @@ export function useCharacter() {
       const newMax = field === "max" ? Math.max(0, val) : slot.max;
       const newUsed = field === "used"
         ? Math.max(0, Math.min(val, newMax))
-        : Math.min(slot.used, newMax);
+        : Math.min(slot.used ?? 0, newMax);
       return {
         ...c,
         spellcasting: {
@@ -272,6 +275,26 @@ export function useCharacter() {
           slots: { ...sc.slots, [level]: { max: newMax, used: newUsed } },
         },
       };
+    });
+
+  const addSpellSlotLevel = (level: number) =>
+    setChar((c) => {
+      const sc = c.spellcasting ?? DEFAULT_SPELLCASTING;
+      if (sc.slots[level]) return c;
+      return {
+        ...c,
+        spellcasting: {
+          ...sc,
+          slots: { ...sc.slots, [level]: { max: 1, used: 0 } },
+        },
+      };
+    });
+
+  const removeSpellSlotLevel = (level: number) =>
+    setChar((c) => {
+      const sc = c.spellcasting ?? DEFAULT_SPELLCASTING;
+      const { [level]: _removed, ...rest } = sc.slots;
+      return { ...c, spellcasting: { ...sc, slots: rest } };
     });
 
   const saveSpell = (spell: Spell) =>
@@ -311,7 +334,7 @@ export function useCharacter() {
 
   const resetCharacter = () => setChar(DEFAULT_CHAR);
 
-  const hpPercent = Math.max(0, Math.min(100, (char.hp / Math.max(1, char.hpMax)) * 100));
+  const hpPercent = Math.max(0, Math.min(100, ((char.hp ?? 0) / Math.max(1, char.hpMax ?? 0)) * 100));
 
   return {
     char,
@@ -339,6 +362,8 @@ export function useCharacter() {
     toggleInspiration,
     updateSpellcasting,
     updateSpellSlot,
+    addSpellSlotLevel,
+    removeSpellSlotLevel,
     saveSpell,
     deleteSpell,
     toggleSpellPrepared,
