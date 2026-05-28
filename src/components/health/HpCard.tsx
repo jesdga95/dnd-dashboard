@@ -3,6 +3,7 @@
 import { Heart, Moon, Shield, X } from "lucide-react";
 import { IconPill } from "@/components/ui/IconPill";
 import { EditableNumber } from "@/components/ui/EditableNumber";
+import { useDict } from "@/lib/DictContext";
 
 interface HpCardProps {
   hp: number;
@@ -15,6 +16,7 @@ interface HpCardProps {
 }
 
 export function HpCard({ hp, hpMax, tempHp, onAdjust, onUpdate, onTempHpChange, onFullRest }: HpCardProps) {
+  const dict = useDict();
   const total = Math.max(1, hpMax + tempHp);
   const hpPct = (hp / total) * 100;
   const tempPct = (tempHp / total) * 100;
@@ -29,7 +31,7 @@ export function HpCard({ hp, hpMax, tempHp, onAdjust, onUpdate, onTempHpChange, 
       <div className="flex items-center justify-between gap-2.5">
         <span className="text-[13px] font-bold text-[var(--color-ink)] flex items-center gap-2">
           <IconPill tint="peach"><Heart size={14} /></IconPill>
-          Hit Points
+          {dict.hp.title}
         </span>
         <span className="flex items-baseline leading-none gap-1">
           <EditableNumber
@@ -103,7 +105,7 @@ export function HpCard({ hp, hpMax, tempHp, onAdjust, onUpdate, onTempHpChange, 
             cursor-pointer transition-colors duration-150 hover:bg-[#ddead4] inline-flex items-center gap-1.5"
         >
           <Moon size={11} />
-          Full Rest
+          {dict.hp.fullRest}
         </button>
       </div>
 
@@ -111,7 +113,7 @@ export function HpCard({ hp, hpMax, tempHp, onAdjust, onUpdate, onTempHpChange, 
       <div className="mt-3 pt-3 border-t border-black/[0.06] flex items-center gap-2 flex-wrap">
         <span className="text-[12px] font-semibold text-[#818cf8] flex items-center gap-1 shrink-0">
           <Shield size={12} />
-          Temp HP
+          {dict.hp.tempHp}
         </span>
         <EditableNumber
           value={tempHp}
@@ -140,7 +142,7 @@ export function HpCard({ hp, hpMax, tempHp, onAdjust, onUpdate, onTempHpChange, 
               hover:text-[var(--color-coral-deep)] inline-flex items-center gap-1"
           >
             <X size={10} />
-            Clear
+            {dict.hp.clear}
           </button>
         )}
       </div>

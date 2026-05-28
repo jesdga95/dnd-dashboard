@@ -6,6 +6,7 @@ import { IconPill } from "@/components/ui/IconPill";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Btn } from "@/components/ui/Btn";
 import { Modal, ModalField, ModalInput, ModalTextarea, ModalBtn } from "@/components/ui/Modal";
+import { useDict } from "@/lib/DictContext";
 import type { Trait } from "@/lib/types";
 
 interface TraitsCardProps {
@@ -15,6 +16,7 @@ interface TraitsCardProps {
 }
 
 export function TraitsCard({ traits, onSave, onDelete }: TraitsCardProps) {
+  const dict = useDict();
   const [editing, setEditing] = useState<Trait | null>(null);
 
   return (
@@ -22,10 +24,10 @@ export function TraitsCard({ traits, onSave, onDelete }: TraitsCardProps) {
       shadow-[var(--shadow-md)] border border-black/[0.025]">
       <SectionHeader
         icon={<IconPill tint="mint"><Sparkles size={14} /></IconPill>}
-        title="Traits & Features"
+        title={dict.traits.title}
         actions={
           <Btn variant="default" size="sm" onClick={() => setEditing({ id: 0, name: "", desc: "" })}>
-            <Plus size={11} /> Add
+            <Plus size={11} /> {dict.traits.add}
           </Btn>
         }
       />
@@ -75,26 +77,27 @@ function TraitModal({
   onSave: (t: Trait) => void;
   onClose: () => void;
 }) {
+  const dict = useDict();
   const [d, setD] = useState<Trait>(trait);
   return (
     <Modal
-      title={trait.id ? "Edit Trait" : "Add Trait"}
+      title={trait.id ? dict.traits.modal.editTitle : dict.traits.modal.addTitle}
       onClose={onClose}
       footer={
         <>
-          <ModalBtn onClick={onClose}>Cancel</ModalBtn>
-          <ModalBtn variant="dark" onClick={() => onSave(d)}>Save</ModalBtn>
+          <ModalBtn onClick={onClose}>{dict.common.cancel}</ModalBtn>
+          <ModalBtn variant="dark" onClick={() => onSave(d)}>{dict.common.save}</ModalBtn>
         </>
       }
     >
-      <ModalField label="Name">
+      <ModalField label={dict.traits.modal.name}>
         <ModalInput value={d.name} onChange={(v) => setD({ ...d, name: v })} autoFocus />
       </ModalField>
-      <ModalField label="Description">
+      <ModalField label={dict.traits.modal.description}>
         <ModalTextarea
           value={d.desc}
           onChange={(v) => setD({ ...d, desc: v })}
-          placeholder="Effect, range, or rules text…"
+          placeholder={dict.traits.modal.descPlaceholder}
         />
       </ModalField>
     </Modal>

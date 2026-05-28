@@ -2,6 +2,7 @@
 
 import { Skull, Check, X } from "lucide-react";
 import { IconPill } from "@/components/ui/IconPill";
+import { useDict } from "@/lib/DictContext";
 
 interface DeathSavesProps {
   successes: number;
@@ -12,13 +13,14 @@ interface DeathSavesProps {
 }
 
 export function DeathSaves({ successes, failures, onToggleSuccess, onToggleFailure, onClear }: DeathSavesProps) {
+  const dict = useDict();
   return (
     <div className="bg-[var(--color-card)] rounded-[22px] px-5 pt-[18px] pb-4
       shadow-[var(--shadow-md)] border border-black/[0.025] h-full flex flex-col">
       <div className="flex items-center justify-between mb-3">
         <span className="flex items-center gap-2.5 text-[15px] font-extrabold tracking-tight">
           <IconPill tint="sand"><Skull size={14} /></IconPill>
-          Death Saves
+          {dict.deathSaves.title}
         </span>
         <button
           onClick={onClear}
@@ -26,7 +28,7 @@ export function DeathSaves({ successes, failures, onToggleSuccess, onToggleFailu
             border-transparent bg-transparent text-[var(--color-muted)]
             cursor-pointer hover:bg-[var(--color-bg-warm)] hover:text-[var(--color-ink)] transition-colors duration-150"
         >
-          Clear
+          {dict.deathSaves.clear}
         </button>
       </div>
 
@@ -34,7 +36,7 @@ export function DeathSaves({ successes, failures, onToggleSuccess, onToggleFailu
         {/* Successes */}
         <div className="flex flex-col items-start justify-between bg-[var(--color-mint)] rounded-[14px] px-3 py-3">
           <span className="text-[11px] font-bold tracking-[0.04em] uppercase text-[var(--color-mint-deep)]">
-            Successes
+            {dict.deathSaves.successes}
           </span>
           <div className="flex gap-2 max-[700px]:w-full max-[700px]:justify-between">
             {[0, 1, 2].map((i) => (
@@ -58,7 +60,7 @@ export function DeathSaves({ successes, failures, onToggleSuccess, onToggleFailu
         {/* Failures */}
         <div className="flex flex-col items-start justify-between bg-[var(--color-peach)] rounded-[14px] px-3 py-3">
           <span className="text-[11px] font-bold tracking-[0.04em] uppercase text-[var(--color-coral-deep)]">
-            Failures
+            {dict.deathSaves.failures}
           </span>
           <div className="flex gap-2 max-[700px]:w-full max-[700px]:justify-between">
             {[0, 1, 2].map((i) => (

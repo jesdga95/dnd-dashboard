@@ -7,16 +7,10 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Btn } from "@/components/ui/Btn";
 import { EditableNumber } from "@/components/ui/EditableNumber";
 import { Modal, ModalField, ModalInput, ModalTextarea, ModalBtn } from "@/components/ui/Modal";
+import { useDict } from "@/lib/DictContext";
 import type { Spellcasting, Spell, SpellSlot, SpellcastingAbility } from "@/lib/types";
 
-const ORDINALS = ["Cantrip", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th"];
-
 const ABILITY_OPTIONS: SpellcastingAbility[] = ["Intelligence", "Wisdom", "Charisma"];
-const ABILITY_ABBR: Record<SpellcastingAbility, string> = {
-  Intelligence: "INT",
-  Wisdom: "WIS",
-  Charisma: "CHA",
-};
 
 const BLANK_SPELL: Spell = {
   id: 0,
@@ -48,6 +42,7 @@ export function SpellcastingCard({
   onDeleteSpell,
   onTogglePrepared,
 }: SpellcastingCardProps) {
+  const dict = useDict();
   const [editing, setEditing] = useState<Spell | null>(null);
 
   const byLevel: Record<number, Spell[]> = {};
@@ -66,10 +61,10 @@ export function SpellcastingCard({
 
       <SectionHeader
         icon={<IconPill tint="lavender"><Wand2 size={14} /></IconPill>}
-        title="Spellcasting"
+        title={dict.spellcasting.title}
         actions={
           <Btn variant="default" size="sm" onClick={() => setEditing({ ...BLANK_SPELL })}>
-            <Plus size={11} /> Add Spell
+            <Plus size={11} /> {dict.spellcasting.addSpell}
           </Btn>
         }
       />
@@ -79,7 +74,7 @@ export function SpellcastingCard({
         <div className="bg-[var(--color-lavender)] rounded-[14px] px-3.5 py-3">
           <div className="text-[10px] font-bold tracking-[0.1em] uppercase
             text-[var(--color-lavender-deep)] mb-2">
-            Ability
+            {dict.spellcasting.meta.ability}
           </div>
           <div className="flex gap-1.5 flex-wrap">
             {ABILITY_OPTIONS.map((a) => (
@@ -93,7 +88,7 @@ export function SpellcastingCard({
                     : "bg-white/60 text-[var(--color-lavender-deep)] hover:bg-white"
                   }`}
               >
-                {ABILITY_ABBR[a]}
+                {dict.abilities.abbr[a]}
               </button>
             ))}
           </div>
@@ -102,7 +97,7 @@ export function SpellcastingCard({
         <div className="bg-[var(--color-blue)] rounded-[14px] px-3.5 py-3">
           <div className="text-[10px] font-bold tracking-[0.1em] uppercase
             text-[var(--color-blue-deep)] mb-1">
-            Save DC
+            {dict.spellcasting.meta.saveDC}
           </div>
           <div className="text-[26px] font-extrabold tracking-tight leading-none">
             <EditableNumber
@@ -116,7 +111,7 @@ export function SpellcastingCard({
         <div className="bg-[var(--color-mint)] rounded-[14px] px-3.5 py-3">
           <div className="text-[10px] font-bold tracking-[0.1em] uppercase
             text-[var(--color-mint-deep)] mb-1">
-            Atk Bonus
+            {dict.spellcasting.meta.atkBonus}
           </div>
           <div className="flex items-baseline gap-[2px] leading-none">
             <span className="text-[16px] font-bold text-[var(--color-muted)]">+</span>
@@ -133,7 +128,7 @@ export function SpellcastingCard({
       <div className="mb-4">
         <div className="text-[11px] font-bold tracking-[0.06em] uppercase
           text-[var(--color-muted)] mb-2">
-          Spell Slots
+          {dict.spellcasting.slots.title}
         </div>
         <div className="grid grid-cols-3 max-[600px]:grid-cols-2 gap-2">
           {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((level) => {
@@ -157,14 +152,16 @@ export function SpellcastingCard({
         <div>
           <div className="text-[11px] font-bold tracking-[0.06em] uppercase
             text-[var(--color-muted)] mb-2">
-            Spells
+            {dict.spellcasting.list.title}
           </div>
           <div className="grid gap-3">
             {spellLevels.map((level) => (
               <div key={level}>
                 <div className="text-[10px] font-bold uppercase tracking-[0.08em]
                   text-[var(--color-muted-soft)] mb-0.5 px-1">
-                  {level === 0 ? "Cantrips" : `${ORDINALS[level]} Level`}
+                  {level === 0
+                    ? dict.spellcasting.list.cantrips
+                    : `${dict.spellcasting.ordinals[level]} ${dict.spellcasting.list.levelSuffix}`}
                 </div>
                 {(byLevel[level] ?? []).map((spell) => (
                   <SpellRow
@@ -183,7 +180,9 @@ export function SpellcastingCard({
 
       {spellcasting.spells.length === 0 && (
         <p className="text-center py-4 text-[13px] text-[var(--color-muted-soft)]">
-          No spells — click <strong>Add Spell</strong> to get started.
+          {dict.spellcasting.noSpellsPre}{" "}
+          <strong>{dict.spellcasting.noSpellsHighlight}</strong>{" "}
+          {dict.spellcasting.noSpellsPost}
         </p>
       )}
 
@@ -209,11 +208,12 @@ function SlotLevel({
   available: number;
   onUpdateSlot: (level: number, field: "max" | "used", val: number) => void;
 }) {
+  const dict = useDict();
   return (
     <div className="bg-[var(--color-bg-warm)] rounded-[14px] px-3 py-2.5">
       <div className="flex items-center justify-between mb-2">
         <span className="text-[10px] font-bold uppercase tracking-[0.08em] text-[var(--color-muted)]">
-          {ORDINALS[level]}
+          {dict.spellcasting.ordinals[level]}
         </span>
         <div className="flex items-center gap-0.5">
           <button
@@ -246,7 +246,7 @@ function SlotLevel({
             return (
               <button
                 key={i}
-                title={isAvailable ? "Use slot" : "Restore slot"}
+                title={isAvailable ? dict.spellcasting.slots.useSlot : dict.spellcasting.slots.restoreSlot}
                 onClick={() =>
                   onUpdateSlot(level, "used", isAvailable ? slot.used + 1 : slot.used - 1)
                 }
@@ -278,6 +278,7 @@ function SpellRow({
   onDelete: () => void;
   onTogglePrepared: () => void;
 }) {
+  const dict = useDict();
   return (
     <div className="flex items-center gap-2.5 px-2.5 py-2 rounded-[10px]
       hover:bg-[var(--color-bg-warm)] transition-colors duration-150 group">
@@ -285,7 +286,7 @@ function SpellRow({
       {spell.level > 0 ? (
         <button
           onClick={onTogglePrepared}
-          title={spell.prepared ? "Prepared" : "Unprepared"}
+          title={spell.prepared ? dict.spellcasting.list.prepared : dict.spellcasting.list.unprepared}
           className={`w-[15px] h-[15px] rounded-full border-2 flex-shrink-0 cursor-pointer
             transition-all duration-150
             ${spell.prepared
@@ -301,7 +302,7 @@ function SpellRow({
         className="flex-1 text-[13px] font-semibold text-[var(--color-ink)] cursor-pointer truncate min-w-0"
         onClick={onEdit}
       >
-        {spell.name || <em className="text-[var(--color-muted-soft)] font-normal not-italic">Unnamed</em>}
+        {spell.name || <em className="text-[var(--color-muted-soft)] font-normal not-italic">{dict.spellcasting.list.unnamed}</em>}
       </span>
 
       {spell.concentration && (
@@ -352,6 +353,7 @@ function SpellModal({
   onSave: (s: Spell) => void;
   onClose: () => void;
 }) {
+  const dict = useDict();
   const [d, setD] = useState<Spell>(spell);
 
   const toggle = (key: "prepared" | "concentration" | "ritual") =>
@@ -359,21 +361,21 @@ function SpellModal({
 
   return (
     <Modal
-      title={spell.id ? "Edit Spell" : "Add Spell"}
+      title={spell.id ? dict.spellcasting.modal.editTitle : dict.spellcasting.modal.addTitle}
       onClose={onClose}
       footer={
         <>
-          <ModalBtn onClick={onClose}>Cancel</ModalBtn>
-          <ModalBtn variant="dark" onClick={() => onSave(d)}>Save</ModalBtn>
+          <ModalBtn onClick={onClose}>{dict.common.cancel}</ModalBtn>
+          <ModalBtn variant="dark" onClick={() => onSave(d)}>{dict.common.save}</ModalBtn>
         </>
       }
     >
-      <ModalField label="Name">
+      <ModalField label={dict.spellcasting.modal.name}>
         <ModalInput value={d.name} onChange={(v) => setD({ ...d, name: v })} autoFocus />
       </ModalField>
 
       <div className="grid grid-cols-2 gap-3">
-        <ModalField label="Level">
+        <ModalField label={dict.spellcasting.modal.level}>
           <select
             value={d.level}
             onChange={(e) => setD({ ...d, level: Number(e.target.value), prepared: Number(e.target.value) === 0 ? false : d.prepared })}
@@ -382,27 +384,27 @@ function SpellModal({
               focus:border-[var(--color-coral)] focus:shadow-[0_0_0_3px_rgba(244,123,95,0.15)]
               transition-all duration-150 cursor-pointer"
           >
-            {ORDINALS.map((o, i) => (
+            {dict.spellcasting.ordinals.map((o, i) => (
               <option key={i} value={i}>{o}</option>
             ))}
           </select>
         </ModalField>
-        <ModalField label="Cast Time">
-          <ModalInput value={d.castTime} onChange={(v) => setD({ ...d, castTime: v })} placeholder="1 action" />
+        <ModalField label={dict.spellcasting.modal.castTime}>
+          <ModalInput value={d.castTime} onChange={(v) => setD({ ...d, castTime: v })} placeholder={dict.spellcasting.modal.castTimePlaceholder} />
         </ModalField>
-        <ModalField label="Range">
-          <ModalInput value={d.range} onChange={(v) => setD({ ...d, range: v })} placeholder="60 ft" />
+        <ModalField label={dict.spellcasting.modal.range}>
+          <ModalInput value={d.range} onChange={(v) => setD({ ...d, range: v })} placeholder={dict.spellcasting.modal.rangePlaceholder} />
         </ModalField>
-        <ModalField label="Duration">
-          <ModalInput value={d.duration} onChange={(v) => setD({ ...d, duration: v })} placeholder="Instantaneous" />
+        <ModalField label={dict.spellcasting.modal.duration}>
+          <ModalInput value={d.duration} onChange={(v) => setD({ ...d, duration: v })} placeholder={dict.spellcasting.modal.durationPlaceholder} />
         </ModalField>
       </div>
 
       <div className="flex flex-wrap gap-2">
         {([
-          { key: "prepared" as const, label: "Prepared", disabled: d.level === 0 },
-          { key: "concentration" as const, label: "Concentration", disabled: false },
-          { key: "ritual" as const, label: "Ritual", disabled: false },
+          { key: "prepared" as const, label: dict.spellcasting.modal.prepared, disabled: d.level === 0 },
+          { key: "concentration" as const, label: dict.spellcasting.modal.concentration, disabled: false },
+          { key: "ritual" as const, label: dict.spellcasting.modal.ritual, disabled: false },
         ] as const).map(({ key, label, disabled }) => (
           <button
             key={key}
@@ -420,11 +422,11 @@ function SpellModal({
         ))}
       </div>
 
-      <ModalField label="Notes">
+      <ModalField label={dict.spellcasting.modal.notes}>
         <ModalTextarea
           value={d.desc}
           onChange={(v) => setD({ ...d, desc: v })}
-          placeholder="Components, effect, range…"
+          placeholder={dict.spellcasting.modal.notesPlaceholder}
         />
       </ModalField>
     </Modal>

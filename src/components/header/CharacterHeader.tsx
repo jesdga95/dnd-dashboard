@@ -5,6 +5,7 @@ import { RotateCcw, LogOut } from "lucide-react";
 import { EditableInput } from "@/components/ui/EditableInput";
 import { EditableNumber } from "@/components/ui/EditableNumber";
 import { useAuth } from "@/hooks/useAuth";
+import { useDict } from "@/lib/DictContext";
 import type { Character } from "@/lib/types";
 
 interface CharacterHeaderProps {
@@ -12,14 +13,6 @@ interface CharacterHeaderProps {
   onUpdate: (patch: Partial<Character>) => void;
   onReset: () => void;
 }
-
-const META_FIELDS: { label: string; key: keyof Pick<Character, "race" | "className" | "subclass" | "background" | "alignment"> }[] = [
-  { label: "Race", key: "race" },
-  { label: "Class", key: "className" },
-  { label: "Path", key: "subclass" },
-  { label: "Bg", key: "background" },
-  { label: "Align", key: "alignment" },
-];
 
 function AvatarMenu({
   size,
@@ -36,6 +29,7 @@ function AvatarMenu({
   user: { displayName?: string | null; email?: string | null } | null;
   onSignOut: () => void;
 }) {
+  const dict = useDict();
   const [open, setOpen] = useState(false);
   const [resetConfirm, setResetConfirm] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -98,7 +92,7 @@ function AvatarMenu({
               text-white/50 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer text-left"
           >
             <RotateCcw size={12} />
-            {resetConfirm ? "Confirm reset?" : "Reset character"}
+            {resetConfirm ? dict.header.confirmReset : dict.header.resetCharacter}
           </button>
           {user && (
             <button
@@ -107,7 +101,7 @@ function AvatarMenu({
                 text-white/50 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer text-left"
             >
               <LogOut size={12} />
-              Sign out
+              {dict.header.signOut}
             </button>
           )}
         </div>
@@ -117,8 +111,17 @@ function AvatarMenu({
 }
 
 export function CharacterHeader({ char, onUpdate, onReset }: CharacterHeaderProps) {
+  const dict = useDict();
   const { user, signOut } = useAuth();
   const initial = char.name?.[0]?.toUpperCase() ?? "?";
+
+  const META_FIELDS: { label: string; key: keyof Pick<Character, "race" | "className" | "subclass" | "background" | "alignment"> }[] = [
+    { label: dict.header.race, key: "race" },
+    { label: dict.header.class, key: "className" },
+    { label: dict.header.subclass, key: "subclass" },
+    { label: dict.header.bg, key: "background" },
+    { label: dict.header.align, key: "alignment" },
+  ];
 
   return (
     <div
@@ -173,7 +176,7 @@ export function CharacterHeader({ char, onUpdate, onReset }: CharacterHeaderProp
             bg-[rgba(255,255,255,0.03)] px-6 py-3 min-w-[84px]"
         >
           <span className="text-[9px] font-bold tracking-[0.2em] uppercase text-[rgba(200,100,60,0.7)] mb-1">
-            Level
+            {dict.header.level}
           </span>
           <EditableNumber
             value={char.level}
@@ -240,7 +243,7 @@ export function CharacterHeader({ char, onUpdate, onReset }: CharacterHeaderProp
             bg-[rgba(255,255,255,0.03)] px-4 py-3"
         >
           <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[rgba(200,100,60,0.7)]">
-            Level
+            {dict.header.level}
           </span>
           <EditableNumber
             value={char.level}

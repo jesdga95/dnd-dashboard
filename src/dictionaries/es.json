@@ -1,0 +1,218 @@
+{
+  "meta": {
+    "title": "D&D Dashboard",
+    "description": "Panel de personaje de D&D"
+  },
+  "auth": {
+    "title": "D&D Dashboard",
+    "subtitle": "Inicia sesión para acceder a tu hoja de personaje",
+    "signInGoogle": "Iniciar sesión con Google"
+  },
+  "header": {
+    "race": "Raza",
+    "class": "Clase",
+    "subclass": "Subclase",
+    "bg": "Trasf.",
+    "align": "Alin.",
+    "level": "Nivel",
+    "resetCharacter": "Reiniciar personaje",
+    "confirmReset": "¿Confirmar reinicio?",
+    "signOut": "Cerrar sesión"
+  },
+  "hp": {
+    "title": "Puntos de Vida",
+    "fullRest": "Descanso Largo",
+    "tempHp": "PV Temp.",
+    "clear": "Limpiar"
+  },
+  "deathSaves": {
+    "title": "Tiradas de Muerte",
+    "successes": "Éxitos",
+    "failures": "Fallos",
+    "clear": "Limpiar"
+  },
+  "abilities": {
+    "title": "Puntuaciones de Característica",
+    "subtitle": "Haz clic para editar la puntuación o el modificador",
+    "abbr": {
+      "Strength": "FUE",
+      "Dexterity": "DES",
+      "Constitution": "CON",
+      "Intelligence": "INT",
+      "Wisdom": "SAB",
+      "Charisma": "CAR"
+    }
+  },
+  "combat": {
+    "title": "Combate",
+    "addAttack": "Agregar ataque",
+    "emptyStatePre": "Aún no hay ataques. Haz clic en",
+    "emptyStateHighlight": "Agregar ataque",
+    "emptyStatePost": "para añadir uno.",
+    "types": {
+      "melee": "Cuerpo a cuerpo",
+      "ranged": "A distancia",
+      "special": "Especial"
+    },
+    "modal": {
+      "editTitle": "Editar Ataque",
+      "addTitle": "Agregar Ataque",
+      "type": "Tipo",
+      "name": "Nombre",
+      "hit": "Ataque",
+      "damage": "Daño",
+      "note": "Nota",
+      "namePlaceholder": "Daga, Arco largo, Ataque furtivo…",
+      "hitPlaceholder": "1d20+5",
+      "damagePlaceholder": "2d6+3",
+      "notePlaceholder": "Sutileza · una vez por turno · etc."
+    }
+  },
+  "skills": {
+    "title": "Habilidades",
+    "subtitle": "Haz clic en el emblema para ciclar: — / Competente / Experto",
+    "profLabels": {
+      "none": "—",
+      "proficient": "C",
+      "expert": "E"
+    },
+    "profTitles": {
+      "none": "Sin competencia",
+      "proficient": "Competente",
+      "expert": "Experto"
+    },
+    "names": {
+      "Acrobatics": "Acrobacias",
+      "Animal Handling": "Trato con Animales",
+      "Arcana": "Arcanos",
+      "Athletics": "Atletismo",
+      "Deception": "Engaño",
+      "History": "Historia",
+      "Insight": "Perspicacia",
+      "Intimidation": "Intimidación",
+      "Investigation": "Investigación",
+      "Medicine": "Medicina",
+      "Nature": "Naturaleza",
+      "Perception": "Percepción",
+      "Performance": "Interpretación",
+      "Persuasion": "Persuasión",
+      "Religion": "Religión",
+      "Sleight of Hand": "Juego de Manos",
+      "Stealth": "Sigilo",
+      "Survival": "Supervivencia"
+    }
+  },
+  "equipment": {
+    "title": "Equipado",
+    "add": "Agregar",
+    "modal": {
+      "editTitle": "Editar Equipo",
+      "addTitle": "Agregar Equipo",
+      "name": "Nombre",
+      "slot": "Ranura",
+      "modifier": "Modificador",
+      "description": "Descripción",
+      "slotPlaceholder": "Manos, Cabeza…",
+      "modifierPlaceholder": "+1 CA"
+    }
+  },
+  "inventory": {
+    "title": "Mochila",
+    "add": "Agregar",
+    "itemsCount": "{count} objetos",
+    "modal": {
+      "editTitle": "Editar Objeto",
+      "addTitle": "Agregar Objeto",
+      "name": "Nombre",
+      "quantity": "Cantidad",
+      "icon": "Ícono",
+      "noteModifier": "Nota / Modificador",
+      "quantityPlaceholder": "Dejar en blanco para N/A"
+    }
+  },
+  "coins": {
+    "title": "Bolsa de Monedas",
+    "gold": "Oro",
+    "silver": "Plata"
+  },
+  "traits": {
+    "title": "Rasgos y Características",
+    "add": "Agregar",
+    "modal": {
+      "editTitle": "Editar Rasgo",
+      "addTitle": "Agregar Rasgo",
+      "name": "Nombre",
+      "description": "Descripción",
+      "descPlaceholder": "Efecto, alcance o texto de reglas…"
+    }
+  },
+  "spellcasting": {
+    "title": "Lanzamiento de Conjuros",
+    "addSpell": "Agregar Conjuro",
+    "noSpellsPre": "Sin conjuros — haz clic en",
+    "noSpellsHighlight": "Agregar Conjuro",
+    "noSpellsPost": "para comenzar.",
+    "ordinals": ["Truco", "1.°", "2.°", "3.°", "4.°", "5.°", "6.°", "7.°", "8.°", "9.°"],
+    "meta": {
+      "ability": "Característica",
+      "saveDC": "CD de salvación",
+      "atkBonus": "Bono de ataque"
+    },
+    "slots": {
+      "title": "Espacios de Conjuro",
+      "useSlot": "Usar espacio",
+      "restoreSlot": "Recuperar espacio"
+    },
+    "list": {
+      "title": "Conjuros",
+      "cantrips": "Trucos",
+      "levelSuffix": "Nivel",
+      "unnamed": "Sin nombre",
+      "prepared": "Preparado",
+      "unprepared": "No preparado"
+    },
+    "modal": {
+      "editTitle": "Editar Conjuro",
+      "addTitle": "Agregar Conjuro",
+      "name": "Nombre",
+      "level": "Nivel",
+      "castTime": "Tiempo de lanzamiento",
+      "range": "Alcance",
+      "duration": "Duración",
+      "prepared": "Preparado",
+      "concentration": "Concentración",
+      "ritual": "Ritual",
+      "notes": "Notas",
+      "castTimePlaceholder": "1 acción",
+      "rangePlaceholder": "18 m",
+      "durationPlaceholder": "Instantáneo",
+      "notesPlaceholder": "Componentes, efecto, alcance…"
+    }
+  },
+  "notes": {
+    "title": "Notas",
+    "addNote": "Agregar nota",
+    "emptyStatePre": "Aún no hay notas. Haz clic en",
+    "emptyStateHighlight": "Agregar nota",
+    "emptyStatePost": "para registrar una misión, PNJ o rumor.",
+    "titlePlaceholder": "Nota sin título",
+    "bodyPlaceholder": "Escribe una nota…",
+    "entryOne": "{count} entrada",
+    "entryOther": "{count} entradas"
+  },
+  "stats": {
+    "armor": "Armadura",
+    "speed": "Velocidad",
+    "speedSuffix": "m · {squares} cas.",
+    "initiative": "Iniciativa",
+    "proficiency": "Competencia",
+    "hitDice": "Dados de Golpe",
+    "inspiration": "Inspiración",
+    "inspiredTitle": "Inspirado — haz clic para gastar",
+    "notInspiredTitle": "Sin inspiración — haz clic para obtener"
+  },
+  "common": {
+    "cancel": "Cancelar",
+    "save": "Guardar"
+  }
+}

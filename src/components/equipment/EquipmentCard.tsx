@@ -6,6 +6,7 @@ import { IconPill } from "@/components/ui/IconPill";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Btn } from "@/components/ui/Btn";
 import { Modal, ModalField, ModalInput, ModalTextarea, ModalBtn } from "@/components/ui/Modal";
+import { useDict } from "@/lib/DictContext";
 import type { EquipmentItem } from "@/lib/types";
 
 interface EquipmentCardProps {
@@ -15,6 +16,7 @@ interface EquipmentCardProps {
 }
 
 export function EquipmentCard({ equipment, onSave, onDelete }: EquipmentCardProps) {
+  const dict = useDict();
   const [editing, setEditing] = useState<EquipmentItem | null>(null);
 
   return (
@@ -22,11 +24,11 @@ export function EquipmentCard({ equipment, onSave, onDelete }: EquipmentCardProp
       shadow-[var(--shadow-md)] border border-black/[0.025]">
       <SectionHeader
         icon={<IconPill tint="blue"><Shield size={14} /></IconPill>}
-        title="Equipped"
+        title={dict.equipment.title}
         actions={
           <Btn variant="default" size="sm"
             onClick={() => setEditing({ id: 0, name: "", slot: "", mod: "", desc: "" })}>
-            <Plus size={11} /> Add
+            <Plus size={11} /> {dict.equipment.add}
           </Btn>
         }
       />
@@ -83,30 +85,31 @@ function EquipmentModal({
   onSave: (item: EquipmentItem) => void;
   onClose: () => void;
 }) {
+  const dict = useDict();
   const [d, setD] = useState<EquipmentItem>(item);
   return (
     <Modal
-      title={item.id ? "Edit Equipment" : "Add Equipment"}
+      title={item.id ? dict.equipment.modal.editTitle : dict.equipment.modal.addTitle}
       onClose={onClose}
       footer={
         <>
-          <ModalBtn onClick={onClose}>Cancel</ModalBtn>
-          <ModalBtn variant="dark" onClick={() => onSave(d)}>Save</ModalBtn>
+          <ModalBtn onClick={onClose}>{dict.common.cancel}</ModalBtn>
+          <ModalBtn variant="dark" onClick={() => onSave(d)}>{dict.common.save}</ModalBtn>
         </>
       }
     >
-      <ModalField label="Name">
+      <ModalField label={dict.equipment.modal.name}>
         <ModalInput value={d.name} onChange={(v) => setD({ ...d, name: v })} autoFocus />
       </ModalField>
       <div className="grid grid-cols-2 gap-2.5">
-        <ModalField label="Slot">
-          <ModalInput value={d.slot} onChange={(v) => setD({ ...d, slot: v })} placeholder="Hands, Head…" />
+        <ModalField label={dict.equipment.modal.slot}>
+          <ModalInput value={d.slot} onChange={(v) => setD({ ...d, slot: v })} placeholder={dict.equipment.modal.slotPlaceholder} />
         </ModalField>
-        <ModalField label="Modifier">
-          <ModalInput value={d.mod} onChange={(v) => setD({ ...d, mod: v })} placeholder="+1 AC" />
+        <ModalField label={dict.equipment.modal.modifier}>
+          <ModalInput value={d.mod} onChange={(v) => setD({ ...d, mod: v })} placeholder={dict.equipment.modal.modifierPlaceholder} />
         </ModalField>
       </div>
-      <ModalField label="Description">
+      <ModalField label={dict.equipment.modal.description}>
         <ModalTextarea value={d.desc} onChange={(v) => setD({ ...d, desc: v })} />
       </ModalField>
     </Modal>

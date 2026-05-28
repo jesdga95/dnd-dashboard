@@ -1,12 +1,14 @@
 "use client";
 
 import { Swords } from "lucide-react";
+import { useDict } from "@/lib/DictContext";
 
 interface Props {
   onSignIn: () => Promise<void>;
 }
 
 export function SignInScreen({ onSignIn }: Props) {
+  const dict = useDict();
   return (
     <div className="min-h-screen flex items-center justify-center px-4"
       style={{ background: "radial-gradient(ellipse 800px 500px at 80% 0%, #f0e6d8 0%, transparent 60%), radial-gradient(ellipse 800px 500px at 0% 100%, #e8dfd2 0%, transparent 60%), #f4f1ec" }}>
@@ -14,8 +16,8 @@ export function SignInScreen({ onSignIn }: Props) {
         <Swords size={48} strokeWidth={1.25} className="text-muted" />
 
         <div className="text-center">
-          <h1 className="text-xl font-bold text-ink">D&D Dashboard</h1>
-          <p className="text-sm text-muted mt-1">Sign in to access your character sheet</p>
+          <h1 className="text-xl font-bold text-ink">{dict.auth.title}</h1>
+          <p className="text-sm text-muted mt-1">{dict.auth.subtitle}</p>
         </div>
 
         <button
@@ -23,7 +25,7 @@ export function SignInScreen({ onSignIn }: Props) {
           className="flex items-center gap-3 w-full justify-center px-5 py-3 rounded-xl hover:bg-bg-warm transition-colors text-sm font-medium text-ink cursor-pointer"
         >
           <GoogleIcon />
-          Sign in with Google
+          {dict.auth.signInGoogle}
         </button>
       </div>
     </div>

@@ -1,4 +1,7 @@
+"use client";
+
 import { StatMiniCard } from "./StatMiniCard";
+import { useDict } from "@/lib/DictContext";
 import type { Character } from "@/lib/types";
 
 interface StatBentoRowProps {
@@ -8,27 +11,28 @@ interface StatBentoRowProps {
 }
 
 export function StatBentoRow({ char, onUpdate, onToggleInspiration }: StatBentoRowProps) {
+  const dict = useDict();
   const inspired = char.inspiration ?? false;
 
   return (
     <div className="grid grid-cols-6 gap-2.5 max-[1100px]:grid-cols-3 max-[700px]:grid-cols-2">
       <StatMiniCard
-        label="Armor"
+        label={dict.stats.armor}
         tint="mint"
         type="number"
         numValue={char.ac}
         onChangeNum={(v) => onUpdate({ ac: v })}
       />
       <StatMiniCard
-        label="Speed"
+        label={dict.stats.speed}
         tint="peach"
         type="number"
         numValue={char.speed}
         onChangeNum={(v) => onUpdate({ speed: v })}
-        suffix={`ft · ${Math.round(char.speed / 5)} sq`}
+        suffix={dict.stats.speedSuffix.replace("{squares}", String(Math.round(char.speed / 5)))}
       />
       <StatMiniCard
-        label="Initiative"
+        label={dict.stats.initiative}
         tint="blue"
         type="number"
         numValue={char.initiative}
@@ -36,7 +40,7 @@ export function StatBentoRow({ char, onUpdate, onToggleInspiration }: StatBentoR
         prefix="+"
       />
       <StatMiniCard
-        label="Proficiency"
+        label={dict.stats.proficiency}
         tint="lavender"
         type="number"
         numValue={char.proficiency}
@@ -44,7 +48,7 @@ export function StatBentoRow({ char, onUpdate, onToggleInspiration }: StatBentoR
         prefix="+"
       />
       <StatMiniCard
-        label="Hit Dice"
+        label={dict.stats.hitDice}
         tint="sand"
         type="text"
         textValue={char.hitDice}
@@ -54,7 +58,7 @@ export function StatBentoRow({ char, onUpdate, onToggleInspiration }: StatBentoR
       {/* Inspiration toggle */}
       <button
         onClick={onToggleInspiration}
-        title={inspired ? "Inspired — click to spend" : "No inspiration — click to gain"}
+        title={inspired ? dict.stats.inspiredTitle : dict.stats.notInspiredTitle}
         className={`rounded-[16px] px-4 py-[14px] text-left w-full cursor-pointer
           transition-all duration-200 active:translate-y-px border
           shadow-[var(--shadow-sm)]
@@ -68,7 +72,7 @@ export function StatBentoRow({ char, onUpdate, onToggleInspiration }: StatBentoR
       >
         <div className={`text-[10px] font-bold tracking-[0.1em] uppercase
           ${inspired ? "text-[#8c6a1a]" : "text-[var(--color-sand-deep)]"}`}>
-          Inspiration
+          {dict.stats.inspiration}
         </div>
         <div className="mt-1 text-[30px] font-extrabold tracking-tight leading-none select-none"
           style={{ color: inspired ? "#8c6a1a" : "var(--color-muted)" }}>

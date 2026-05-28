@@ -3,6 +3,7 @@
 import { Shield } from "lucide-react";
 import { IconPill } from "@/components/ui/IconPill";
 import { SectionHeader } from "@/components/ui/SectionHeader";
+import { useDict } from "@/lib/DictContext";
 import type { Abilities, AbilityKey, SkillProficiency } from "@/lib/types";
 
 interface SkillDef {
@@ -39,21 +40,6 @@ const PROF_STYLES: Record<SkillProficiency, string> = {
   expert: "bg-[var(--color-lavender)] border-[var(--color-lavender-deep)]/30 text-[var(--color-lavender-deep)]",
 };
 
-const PROF_LABELS: Record<SkillProficiency, string> = {
-  none: "—",
-  proficient: "P",
-  expert: "E",
-};
-
-const ABILITY_ABBR: Record<AbilityKey, string> = {
-  Strength: "STR",
-  Dexterity: "DEX",
-  Constitution: "CON",
-  Intelligence: "INT",
-  Wisdom: "WIS",
-  Charisma: "CHA",
-};
-
 function fmtMod(n: number) {
   return n >= 0 ? `+${n}` : `${n}`;
 }
@@ -71,6 +57,7 @@ export function CombatSkillsCard({
   proficiency,
   onUpdate,
 }: CombatSkillsCardProps) {
+  const dict = useDict();
   const skills = combatSkills ?? {};
 
   const cycle = (name: string) => {
@@ -92,8 +79,8 @@ export function CombatSkillsCard({
       shadow-[var(--shadow-md)] border border-black/[0.025]">
       <SectionHeader
         icon={<IconPill tint="mint"><Shield size={14} /></IconPill>}
-        title="Skills"
-        sub="Click badge to cycle: — / Proficient / Expert"
+        title={dict.skills.title}
+        sub={dict.skills.subtitle}
       />
 
       <div className="grid grid-cols-3 gap-x-2 gap-y-0.5 max-[700px]:grid-cols-2">
@@ -108,12 +95,12 @@ export function CombatSkillsCard({
               {/* Proficiency badge */}
               <button
                 onClick={() => cycle(skill.name)}
-                title={prof === "none" ? "Not proficient" : prof === "proficient" ? "Proficient" : "Expertise"}
+                title={dict.skills.profTitles[prof]}
                 className={`w-6 h-6 rounded-full border text-[10px] font-bold flex-shrink-0
                   flex items-center justify-center cursor-pointer transition-all duration-150
                   ${PROF_STYLES[prof]}`}
               >
-                {PROF_LABELS[prof]}
+                {dict.skills.profLabels[prof]}
               </button>
 
               {/* Modifier */}
@@ -124,17 +111,19 @@ export function CombatSkillsCard({
 
               {/* Name + ability stacked on mobile, inline on desktop */}
               <div className="flex-1 min-w-0">
-                <span className="text-[13px] font-semibold block truncate">{skill.name}</span>
+                <span className="text-[13px] font-semibold block truncate">
+                  {dict.skills.names[skill.name as keyof typeof dict.skills.names] ?? skill.name}
+                </span>
                 <span className="text-[10px] font-bold tracking-[0.08em] uppercase
                   text-[var(--color-muted-soft)] max-[700px]:block hidden">
-                  {ABILITY_ABBR[skill.ability]}
+                  {dict.abilities.abbr[skill.ability]}
                 </span>
               </div>
 
               {/* Ability abbr — desktop only, right-aligned */}
               <span className="text-[10px] font-bold tracking-[0.08em] uppercase
                 text-[var(--color-muted-soft)] flex-shrink-0 max-[700px]:hidden">
-                {ABILITY_ABBR[skill.ability]}
+                {dict.abilities.abbr[skill.ability]}
               </span>
             </div>
           );

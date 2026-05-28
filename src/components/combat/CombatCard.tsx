@@ -6,6 +6,7 @@ import { IconPill } from "@/components/ui/IconPill";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Btn } from "@/components/ui/Btn";
 import { Modal, ModalField, ModalInput, ModalBtn } from "@/components/ui/Modal";
+import { useDict } from "@/lib/DictContext";
 import type { Attack, AttackType, Combat } from "@/lib/types";
 
 interface CombatCardProps {
@@ -13,12 +14,6 @@ interface CombatCardProps {
   onSaveAttack: (a: Attack) => void;
   onDeleteAttack: (id: number) => void;
 }
-
-const TYPE_LABELS: Record<AttackType, string> = {
-  melee: "Melee",
-  ranged: "Ranged",
-  special: "Special",
-};
 
 const TYPE_STYLES: Record<AttackType, string> = {
   melee: "bg-[var(--color-peach)] text-[var(--color-peach-deep)]",
@@ -37,6 +32,7 @@ type AttackDraft = Omit<Attack, "id"> & { id?: number };
 const EMPTY_DRAFT: AttackDraft = { name: "", type: "melee", hit: "", dmg: "", note: "" };
 
 export function CombatCard({ combat, onSaveAttack, onDeleteAttack }: CombatCardProps) {
+  const dict = useDict();
   const [editing, setEditing] = useState<AttackDraft | null>(null);
 
   const handleSave = (d: AttackDraft) => {
@@ -49,17 +45,19 @@ export function CombatCard({ combat, onSaveAttack, onDeleteAttack }: CombatCardP
       shadow-[var(--shadow-md)] border border-black/[0.025]">
       <SectionHeader
         icon={<IconPill tint="peach"><Sword size={14} /></IconPill>}
-        title="Combat"
+        title={dict.combat.title}
         actions={
           <Btn variant="default" size="sm" onClick={() => setEditing({ ...EMPTY_DRAFT })}>
-            <Plus size={11} /> Add attack
+            <Plus size={11} /> {dict.combat.addAttack}
           </Btn>
         }
       />
 
       {combat.attacks.length === 0 ? (
         <div className="text-center py-5 text-[13px] text-[var(--color-muted-soft)]">
-          No attacks yet. Click <strong className="text-[var(--color-ink)]">Add attack</strong> to add one.
+          {dict.combat.emptyStatePre}{" "}
+          <strong className="text-[var(--color-ink)]">{dict.combat.emptyStateHighlight}</strong>{" "}
+          {dict.combat.emptyStatePost}
         </div>
       ) : (
         <div className="flex flex-col gap-0.5">
@@ -70,7 +68,7 @@ export function CombatCard({ combat, onSaveAttack, onDeleteAttack }: CombatCardP
               {/* Type badge */}
               <span className={`text-[9px] font-bold tracking-[0.08em] uppercase px-2 py-[3px]
                 rounded-full flex-shrink-0 ${TYPE_STYLES[a.type]}`}>
-                {TYPE_LABELS[a.type]}
+                {dict.combat.types[a.type]}
               </span>
 
               {/* Name */}
@@ -132,23 +130,24 @@ function AttackModal({
   onSave: (a: AttackDraft) => void;
   onClose: () => void;
 }) {
+  const dict = useDict();
   const [d, setD] = useState<AttackDraft>(attack);
 
   return (
     <Modal
-      title={attack.id ? "Edit Attack" : "Add Attack"}
+      title={attack.id ? dict.combat.modal.editTitle : dict.combat.modal.addTitle}
       onClose={onClose}
       footer={
         <>
-          <ModalBtn onClick={onClose}>Cancel</ModalBtn>
-          <ModalBtn variant="dark" onClick={() => onSave(d)}>Save</ModalBtn>
+          <ModalBtn onClick={onClose}>{dict.common.cancel}</ModalBtn>
+          <ModalBtn variant="dark" onClick={() => onSave(d)}>{dict.common.save}</ModalBtn>
         </>
       }
     >
       {/* Type selector */}
       <div>
         <label className="block text-[11px] font-semibold text-[var(--color-muted)] tracking-[0.04em] mb-[8px]">
-          Type
+          {dict.combat.modal.type}
         </label>
         <div className="flex gap-2">
           {(["melee", "ranged", "special"] as AttackType[]).map((t) => (
@@ -161,27 +160,27 @@ function AttackModal({
                   : "bg-[var(--color-bg-warm)] text-[var(--color-muted)] border-[var(--color-line)] hover:bg-[var(--color-line)]"
                 }`}
             >
-              {TYPE_LABELS[t]}
+              {dict.combat.types[t]}
             </button>
           ))}
         </div>
       </div>
 
-      <ModalField label="Name">
-        <ModalInput value={d.name} onChange={(v) => setD({ ...d, name: v })} autoFocus placeholder="Dagger, Longbow, Sneak Attack…" />
+      <ModalField label={dict.combat.modal.name}>
+        <ModalInput value={d.name} onChange={(v) => setD({ ...d, name: v })} autoFocus placeholder={dict.combat.modal.namePlaceholder} />
       </ModalField>
 
       <div className="grid grid-cols-2 gap-2.5">
-        <ModalField label="Hit">
-          <ModalInput value={d.hit} onChange={(v) => setD({ ...d, hit: v })} placeholder="1d20+5" />
+        <ModalField label={dict.combat.modal.hit}>
+          <ModalInput value={d.hit} onChange={(v) => setD({ ...d, hit: v })} placeholder={dict.combat.modal.hitPlaceholder} />
         </ModalField>
-        <ModalField label="Damage">
-          <ModalInput value={d.dmg} onChange={(v) => setD({ ...d, dmg: v })} placeholder="2d6+3" />
+        <ModalField label={dict.combat.modal.damage}>
+          <ModalInput value={d.dmg} onChange={(v) => setD({ ...d, dmg: v })} placeholder={dict.combat.modal.damagePlaceholder} />
         </ModalField>
       </div>
 
-      <ModalField label="Note">
-        <ModalInput value={d.note} onChange={(v) => setD({ ...d, note: v })} placeholder="Finesse · once per turn · etc." />
+      <ModalField label={dict.combat.modal.note}>
+        <ModalInput value={d.note} onChange={(v) => setD({ ...d, note: v })} placeholder={dict.combat.modal.notePlaceholder} />
       </ModalField>
     </Modal>
   );

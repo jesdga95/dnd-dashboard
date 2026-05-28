@@ -7,6 +7,7 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Btn } from "@/components/ui/Btn";
 import { Modal, ModalField, ModalInput, ModalTextarea, ModalBtn } from "@/components/ui/Modal";
 import { IconPicker, InventoryIcon } from "@/components/ui/IconPicker";
+import { useDict } from "@/lib/DictContext";
 import type { InventoryItem } from "@/lib/types";
 
 interface InventoryCardProps {
@@ -17,6 +18,7 @@ interface InventoryCardProps {
 }
 
 export function InventoryCard({ inventory, onSave, onDelete, onToggle }: InventoryCardProps) {
+  const dict = useDict();
   const [editing, setEditing] = useState<InventoryItem | null>(null);
 
   return (
@@ -24,12 +26,12 @@ export function InventoryCard({ inventory, onSave, onDelete, onToggle }: Invento
       shadow-[var(--shadow-md)] border border-black/[0.025]">
       <SectionHeader
         icon={<IconPill tint="peach"><Backpack size={14} /></IconPill>}
-        title="Pack"
-        sub={`${inventory.length} items`}
+        title={dict.inventory.title}
+        sub={dict.inventory.itemsCount.replace("{count}", String(inventory.length))}
         actions={
           <Btn variant="default" size="sm"
             onClick={() => setEditing({ id: 0, name: "", qty: "", note: "", icon: "Package", checked: false })}>
-            <Plus size={11} /> Add
+            <Plus size={11} /> {dict.inventory.add}
           </Btn>
         }
       />
@@ -111,34 +113,35 @@ function InventoryModal({
   onSave: (item: InventoryItem) => void;
   onClose: () => void;
 }) {
+  const dict = useDict();
   const [d, setD] = useState<InventoryItem>(item);
   return (
     <Modal
-      title={item.id ? "Edit Item" : "Add Item"}
+      title={item.id ? dict.inventory.modal.editTitle : dict.inventory.modal.addTitle}
       onClose={onClose}
       footer={
         <>
-          <ModalBtn onClick={onClose}>Cancel</ModalBtn>
-          <ModalBtn variant="dark" onClick={() => onSave(d)}>Save</ModalBtn>
+          <ModalBtn onClick={onClose}>{dict.common.cancel}</ModalBtn>
+          <ModalBtn variant="dark" onClick={() => onSave(d)}>{dict.common.save}</ModalBtn>
         </>
       }
     >
       <div className="grid grid-cols-2 gap-2.5">
-        <ModalField label="Name">
+        <ModalField label={dict.inventory.modal.name}>
           <ModalInput value={d.name} onChange={(v) => setD({ ...d, name: v })} autoFocus />
         </ModalField>
-        <ModalField label="Quantity">
+        <ModalField label={dict.inventory.modal.quantity}>
           <ModalInput
             value={d.qty === "" ? "" : String(d.qty)}
             onChange={(v) => setD({ ...d, qty: v === "" ? "" : (parseInt(v, 10) || 0) })}
-            placeholder="Leave blank for N/A"
+            placeholder={dict.inventory.modal.quantityPlaceholder}
           />
         </ModalField>
       </div>
-      <ModalField label="Icon">
+      <ModalField label={dict.inventory.modal.icon}>
         <IconPicker value={d.icon || ""} onChange={(v) => setD({ ...d, icon: v })} />
       </ModalField>
-      <ModalField label="Note / Modifier">
+      <ModalField label={dict.inventory.modal.noteModifier}>
         <ModalTextarea value={d.note || ""} onChange={(v) => setD({ ...d, note: v })} />
       </ModalField>
     </Modal>

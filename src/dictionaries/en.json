@@ -1,0 +1,218 @@
+{
+  "meta": {
+    "title": "D&D Dashboard",
+    "description": "D&D character dashboard"
+  },
+  "auth": {
+    "title": "D&D Dashboard",
+    "subtitle": "Sign in to access your dashboard",
+    "signInGoogle": "Sign in with Google"
+  },
+  "header": {
+    "race": "Race",
+    "class": "Class",
+    "subclass": "Subclass",
+    "bg": "Bg",
+    "align": "Align",
+    "level": "Level",
+    "resetCharacter": "Reset character",
+    "confirmReset": "Confirm reset?",
+    "signOut": "Sign out"
+  },
+  "hp": {
+    "title": "Hit Points",
+    "fullRest": "Full Rest",
+    "tempHp": "Temp HP",
+    "clear": "Clear"
+  },
+  "deathSaves": {
+    "title": "Death Saves",
+    "successes": "Successes",
+    "failures": "Failures",
+    "clear": "Clear"
+  },
+  "abilities": {
+    "title": "Ability Scores",
+    "subtitle": "Click to edit score or modifier",
+    "abbr": {
+      "Strength": "STR",
+      "Dexterity": "DEX",
+      "Constitution": "CON",
+      "Intelligence": "INT",
+      "Wisdom": "WIS",
+      "Charisma": "CHA"
+    }
+  },
+  "combat": {
+    "title": "Combat",
+    "addAttack": "Add attack",
+    "emptyStatePre": "No attacks yet. Click",
+    "emptyStateHighlight": "Add attack",
+    "emptyStatePost": "to add one.",
+    "types": {
+      "melee": "Melee",
+      "ranged": "Ranged",
+      "special": "Special"
+    },
+    "modal": {
+      "editTitle": "Edit Attack",
+      "addTitle": "Add Attack",
+      "type": "Type",
+      "name": "Name",
+      "hit": "Hit",
+      "damage": "Damage",
+      "note": "Note",
+      "namePlaceholder": "Dagger, Longbow, Sneak Attack…",
+      "hitPlaceholder": "1d20+5",
+      "damagePlaceholder": "2d6+3",
+      "notePlaceholder": "Finesse · once per turn · etc."
+    }
+  },
+  "skills": {
+    "title": "Skills",
+    "subtitle": "Click badge to cycle: — / Proficient / Expert",
+    "profLabels": {
+      "none": "—",
+      "proficient": "P",
+      "expert": "E"
+    },
+    "profTitles": {
+      "none": "Not proficient",
+      "proficient": "Proficient",
+      "expert": "Expertise"
+    },
+    "names": {
+      "Acrobatics": "Acrobatics",
+      "Animal Handling": "Animal Handling",
+      "Arcana": "Arcana",
+      "Athletics": "Athletics",
+      "Deception": "Deception",
+      "History": "History",
+      "Insight": "Insight",
+      "Intimidation": "Intimidation",
+      "Investigation": "Investigation",
+      "Medicine": "Medicine",
+      "Nature": "Nature",
+      "Perception": "Perception",
+      "Performance": "Performance",
+      "Persuasion": "Persuasion",
+      "Religion": "Religion",
+      "Sleight of Hand": "Sleight of Hand",
+      "Stealth": "Stealth",
+      "Survival": "Survival"
+    }
+  },
+  "equipment": {
+    "title": "Equipped",
+    "add": "Add",
+    "modal": {
+      "editTitle": "Edit Equipment",
+      "addTitle": "Add Equipment",
+      "name": "Name",
+      "slot": "Slot",
+      "modifier": "Modifier",
+      "description": "Description",
+      "slotPlaceholder": "Hands, Head…",
+      "modifierPlaceholder": "+1 AC"
+    }
+  },
+  "inventory": {
+    "title": "Pack",
+    "add": "Add",
+    "itemsCount": "{count} items",
+    "modal": {
+      "editTitle": "Edit Item",
+      "addTitle": "Add Item",
+      "name": "Name",
+      "quantity": "Quantity",
+      "icon": "Icon",
+      "noteModifier": "Note / Modifier",
+      "quantityPlaceholder": "Leave blank for N/A"
+    }
+  },
+  "coins": {
+    "title": "Coin Purse",
+    "gold": "Gold",
+    "silver": "Silver"
+  },
+  "traits": {
+    "title": "Traits & Features",
+    "add": "Add",
+    "modal": {
+      "editTitle": "Edit Trait",
+      "addTitle": "Add Trait",
+      "name": "Name",
+      "description": "Description",
+      "descPlaceholder": "Effect, range, or rules text…"
+    }
+  },
+  "spellcasting": {
+    "title": "Spellcasting",
+    "addSpell": "Add Spell",
+    "noSpellsPre": "No spells — click",
+    "noSpellsHighlight": "Add Spell",
+    "noSpellsPost": "to get started.",
+    "ordinals": ["Cantrip", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th"],
+    "meta": {
+      "ability": "Ability",
+      "saveDC": "Save DC",
+      "atkBonus": "Atk Bonus"
+    },
+    "slots": {
+      "title": "Spell Slots",
+      "useSlot": "Use slot",
+      "restoreSlot": "Restore slot"
+    },
+    "list": {
+      "title": "Spells",
+      "cantrips": "Cantrips",
+      "levelSuffix": "Level",
+      "unnamed": "Unnamed",
+      "prepared": "Prepared",
+      "unprepared": "Unprepared"
+    },
+    "modal": {
+      "editTitle": "Edit Spell",
+      "addTitle": "Add Spell",
+      "name": "Name",
+      "level": "Level",
+      "castTime": "Cast Time",
+      "range": "Range",
+      "duration": "Duration",
+      "prepared": "Prepared",
+      "concentration": "Concentration",
+      "ritual": "Ritual",
+      "notes": "Notes",
+      "castTimePlaceholder": "1 action",
+      "rangePlaceholder": "60 ft",
+      "durationPlaceholder": "Instantaneous",
+      "notesPlaceholder": "Components, effect, range…"
+    }
+  },
+  "notes": {
+    "title": "Notes",
+    "addNote": "Add note",
+    "emptyStatePre": "No notes yet. Click",
+    "emptyStateHighlight": "Add note",
+    "emptyStatePost": "to record a quest, NPC, or rumor.",
+    "titlePlaceholder": "Untitled note",
+    "bodyPlaceholder": "Write a note…",
+    "entryOne": "{count} entry",
+    "entryOther": "{count} entries"
+  },
+  "stats": {
+    "armor": "Armor",
+    "speed": "Speed",
+    "speedSuffix": "ft · {squares} sq",
+    "initiative": "Initiative",
+    "proficiency": "Proficiency",
+    "hitDice": "Hit Dice",
+    "inspiration": "Inspiration",
+    "inspiredTitle": "Inspired — click to spend",
+    "notInspiredTitle": "No inspiration — click to gain"
+  },
+  "common": {
+    "cancel": "Cancel",
+    "save": "Save"
+  }
+}

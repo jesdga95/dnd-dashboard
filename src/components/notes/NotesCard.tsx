@@ -4,6 +4,7 @@ import { FileText, Plus, X } from "lucide-react";
 import { IconPill } from "@/components/ui/IconPill";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Btn } from "@/components/ui/Btn";
+import { useDict } from "@/lib/DictContext";
 import type { Note } from "@/lib/types";
 
 interface NotesCardProps {
@@ -14,22 +15,28 @@ interface NotesCardProps {
 }
 
 export function NotesCard({ notes, onAdd, onUpdate, onDelete }: NotesCardProps) {
+  const dict = useDict();
+  const entrySub = (notes.length === 1 ? dict.notes.entryOne : dict.notes.entryOther)
+    .replace("{count}", String(notes.length));
+
   return (
     <div className="bg-[var(--color-card)] rounded-[22px] px-5 py-[18px]
       shadow-[var(--shadow-md)] border border-black/[0.025]">
       <SectionHeader
         icon={<IconPill tint="sand"><FileText size={14} /></IconPill>}
-        title="Notes"
-        sub={`${notes.length} ${notes.length === 1 ? "entry" : "entries"}`}
+        title={dict.notes.title}
+        sub={entrySub}
         actions={
           <Btn variant="dark" size="sm" onClick={onAdd}>
-            <Plus size={11} /> Add note
+            <Plus size={11} /> {dict.notes.addNote}
           </Btn>
         }
       />
       {notes.length === 0 ? (
         <div className="text-center py-5 px-2.5 text-[13px] text-[var(--color-muted-soft)]">
-          No notes yet. Click <strong className="text-[var(--color-ink)]">Add note</strong> to record a quest, NPC, or rumor.
+          {dict.notes.emptyStatePre}{" "}
+          <strong className="text-[var(--color-ink)]">{dict.notes.emptyStateHighlight}</strong>{" "}
+          {dict.notes.emptyStatePost}
         </div>
       ) : (
         <div className="flex flex-col gap-2.5">
@@ -56,6 +63,7 @@ function NoteRow({
   onChange: (patch: Partial<Note>) => void;
   onDelete: () => void;
 }) {
+  const dict = useDict();
   return (
     <div className="bg-[var(--color-bg-warm)] rounded-[14px] px-[14px] py-3
       hover:bg-[#ebe5db] focus-within:bg-[var(--color-card)]
@@ -67,7 +75,7 @@ function NoteRow({
           text-[14px] font-bold text-[var(--color-ink)] p-0 mb-1
           placeholder:text-[var(--color-muted-soft)] placeholder:font-semibold"
         value={note.title}
-        placeholder="Untitled note"
+        placeholder={dict.notes.titlePlaceholder}
         onChange={(e) => onChange({ title: e.target.value })}
       />
       <textarea
@@ -75,7 +83,7 @@ function NoteRow({
           text-[13.5px] text-[var(--color-ink-soft)] p-0 leading-[1.45]
           placeholder:text-[var(--color-muted-soft)]"
         value={note.body}
-        placeholder="Write a note…"
+        placeholder={dict.notes.bodyPlaceholder}
         onChange={(e) => onChange({ body: e.target.value })}
         rows={1}
       />

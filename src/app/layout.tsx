@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { Manrope, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -13,11 +12,6 @@ const jetbrainsMono = JetBrains_Mono({
   variable: "--font-mono",
   display: "swap",
 });
-
-export const metadata: Metadata = {
-  title: "D&D Character Sheet",
-  description: "D&D 5e character dashboard",
-};
 
 export default function RootLayout({
   children,
