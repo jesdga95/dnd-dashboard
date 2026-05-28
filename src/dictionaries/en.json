@@ -221,6 +221,21 @@
     "inspiredTitle": "Inspired — click to spend",
     "notInspiredTitle": "No inspiration — click to gain"
   },
+  "combatMode": {
+    "exit": "Exit Combat",
+    "unnamed": "Unnamed",
+    "statusConditions": "Status Conditions",
+    "addStatus": "Add Status",
+    "noStatuses": "None",
+    "statusPlaceholder": "e.g. Poisoned",
+    "enemies": "Enemies",
+    "addEnemy": "Add Enemy",
+    "noEnemies": "No enemies yet.",
+    "enemyNamePlaceholder": "Name",
+    "maxHpPlaceholder": "Max HP",
+    "amountPlaceholder": "Amount…",
+    "heal": "Heal"
+  },
   "common": {
     "cancel": "Cancel",
     "save": "Save"

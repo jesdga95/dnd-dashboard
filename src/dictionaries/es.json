@@ -221,6 +221,21 @@
     "inspiredTitle": "Inspirado — clic para gastar",
     "notInspiredTitle": "Sin inspiración — clic para ganar"
   },
+  "combatMode": {
+    "exit": "Salir",
+    "unnamed": "Sin nombre",
+    "statusConditions": "Condiciones",
+    "addStatus": "Agregar estado",
+    "noStatuses": "Ninguna",
+    "statusPlaceholder": "ej. Envenenado",
+    "enemies": "Enemigos",
+    "addEnemy": "Agregar enemigo",
+    "noEnemies": "Sin enemigos aún.",
+    "enemyNamePlaceholder": "Nombre",
+    "maxHpPlaceholder": "PV máx.",
+    "amountPlaceholder": "Cantidad…",
+    "heal": "Curar"
+  },
   "common": {
     "cancel": "Cancelar",
     "save": "Guardar"

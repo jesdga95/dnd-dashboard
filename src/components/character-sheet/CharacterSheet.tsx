@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useCharacter } from "@/hooks/useCharacter";
 import { CharacterHeader } from "@/components/header/CharacterHeader";
 import { StatBentoRow } from "@/components/stats/StatBentoRow";
@@ -13,9 +14,24 @@ import { TraitsCard } from "@/components/traits/TraitsCard";
 import { InventoryCard } from "@/components/inventory/InventoryCard";
 import { NotesCard } from "@/components/notes/NotesCard";
 import { SpellcastingCard } from "@/components/spellcasting/SpellcastingCard";
+import { CombatMode, type CombatEnemy } from "@/components/combat/CombatMode";
 import { DEFAULT_SPELLCASTING } from "@/lib/defaults";
+import { clamp } from "@/lib/utils";
 
 export function CharacterSheet() {
+  const [combatOpen, setCombatOpen] = useState(false);
+  const [combatEnemies, setCombatEnemies] = useState<CombatEnemy[]>([]);
+  const [combatStatuses, setCombatStatuses] = useState<string[]>([]);
+
+  const addEnemy = (enemy: CombatEnemy) => setCombatEnemies((p) => [...p, enemy]);
+  const adjustEnemyHp = (id: number, delta: number) =>
+    setCombatEnemies((p) =>
+      p.map((e) => (e.id === id ? { ...e, hp: clamp(e.hp + delta, 0, e.hpMax) } : e))
+    );
+  const removeEnemy = (id: number) => setCombatEnemies((p) => p.filter((e) => e.id !== id));
+  const addStatus = (s: string) => setCombatStatuses((p) => [...p, s]);
+  const removeStatus = (i: number) => setCombatStatuses((p) => p.filter((_, idx) => idx !== i));
+
   const {
     char,
     loading,
@@ -64,6 +80,7 @@ export function CharacterSheet() {
         char={char}
         onUpdate={update}
         onReset={resetCharacter}
+        onStartCombat={() => setCombatOpen(true)}
       />
 
       <div className="h-3" />
@@ -167,6 +184,24 @@ export function CharacterSheet() {
         onUpdate={updateNote}
         onDelete={deleteNote}
       />
+
+      {combatOpen && (
+        <CombatMode
+          char={char}
+          enemies={combatEnemies}
+          statuses={combatStatuses}
+          onAdjustHp={adjustHp}
+          onUpdateHp={update}
+          onTempHpChange={setTempHp}
+          onFullRest={fullRest}
+          onAddEnemy={addEnemy}
+          onAdjustEnemyHp={adjustEnemyHp}
+          onRemoveEnemy={removeEnemy}
+          onAddStatus={addStatus}
+          onRemoveStatus={removeStatus}
+          onClose={() => setCombatOpen(false)}
+        />
+      )}
     </div>
   );
 }

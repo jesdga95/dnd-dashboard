@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { RotateCcw, LogOut } from "lucide-react";
+import { RotateCcw, LogOut, Swords } from "lucide-react";
 import { EditableInput } from "@/components/ui/EditableInput";
 import { EditableNumber } from "@/components/ui/EditableNumber";
 import { useAuth } from "@/hooks/useAuth";
@@ -12,6 +12,7 @@ interface CharacterHeaderProps {
   char: Pick<Character, "name" | "race" | "className" | "subclass" | "background" | "alignment" | "level">;
   onUpdate: (patch: Partial<Character>) => void;
   onReset: () => void;
+  onStartCombat?: () => void;
 }
 
 function AvatarMenu({
@@ -110,7 +111,7 @@ function AvatarMenu({
   );
 }
 
-export function CharacterHeader({ char, onUpdate, onReset }: CharacterHeaderProps) {
+export function CharacterHeader({ char, onUpdate, onReset, onStartCombat }: CharacterHeaderProps) {
   const dict = useDict();
   const { user, signOut } = useAuth();
   const initial = char.name?.[0]?.toUpperCase() ?? "?";
@@ -169,30 +170,48 @@ export function CharacterHeader({ char, onUpdate, onReset }: CharacterHeaderProp
           </div>
         </div>
 
-        {/* Level badge */}
-        <div
-          className="flex flex-col items-center justify-center flex-shrink-0
-            rounded-[14px] border border-[rgba(180,80,45,0.45)]
-            bg-[rgba(255,255,255,0.03)] px-6 py-3 min-w-[84px]"
-        >
-          <span className="text-[9px] font-bold tracking-[0.2em] uppercase text-[rgba(200,100,60,0.7)] mb-1">
-            {dict.header.level}
-          </span>
-          <EditableNumber
-            value={char.level}
-            onChange={(v) => onUpdate({ level: Math.max(1, v) })}
-            min={1}
-            max={99}
-            style={{
-              width: 44,
-              color: "white",
-              fontSize: 38,
-              fontWeight: 800,
-              lineHeight: 1,
-              padding: 0,
-              textAlign: "center",
-            }}
-          />
+        {/* Level badge + combat button stacked */}
+        <div className="flex flex-col gap-2 flex-shrink-0">
+          <div
+            className="flex flex-col items-center justify-center
+              rounded-[14px] border border-[rgba(180,80,45,0.45)]
+              bg-[rgba(255,255,255,0.03)] px-6 py-3 min-w-[84px]"
+          >
+            <span className="text-[9px] font-bold tracking-[0.2em] uppercase text-[rgba(200,100,60,0.7)] mb-1">
+              {dict.header.level}
+            </span>
+            <EditableNumber
+              value={char.level}
+              onChange={(v) => onUpdate({ level: Math.max(1, v) })}
+              min={1}
+              max={99}
+              style={{
+                width: 44,
+                color: "white",
+                fontSize: 38,
+                fontWeight: 800,
+                lineHeight: 1,
+                padding: 0,
+                textAlign: "center",
+              }}
+            />
+          </div>
+          {onStartCombat && (
+            <button
+              onClick={onStartCombat}
+              className="w-full flex items-center justify-center gap-2 py-2 rounded-[12px]
+                border-none cursor-pointer font-[inherit] font-semibold text-[12px]
+                transition-colors duration-150"
+              style={{
+                background: "rgba(244,123,95,0.14)",
+                color: "var(--color-coral)",
+                border: "1px solid rgba(244,123,95,0.25)",
+              }}
+            >
+              <Swords size={13} />
+              <span>{dict.combat.title}</span>
+            </button>
+          )}
         </div>
       </div>
 
@@ -237,29 +256,46 @@ export function CharacterHeader({ char, onUpdate, onReset }: CharacterHeaderProp
         </div>
 
         {/* Level bar */}
-        <div
-          className="mt-4 flex items-center justify-between
-            rounded-[12px] border border-[rgba(180,80,45,0.45)]
-            bg-[rgba(255,255,255,0.03)] px-4 py-3"
-        >
-          <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[rgba(200,100,60,0.7)]">
-            {dict.header.level}
-          </span>
-          <EditableNumber
-            value={char.level}
-            onChange={(v) => onUpdate({ level: Math.max(1, v) })}
-            min={1}
-            max={99}
-            style={{
-              width: 36,
-              color: "white",
-              fontSize: 28,
-              fontWeight: 800,
-              lineHeight: 1,
-              padding: 0,
-              textAlign: "right",
-            }}
-          />
+        <div className="mt-4 flex items-stretch gap-2">
+          <div
+            className="flex-1 flex items-center justify-between
+              rounded-[12px] border border-[rgba(180,80,45,0.45)]
+              bg-[rgba(255,255,255,0.03)] px-4 py-3"
+          >
+            <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[rgba(200,100,60,0.7)]">
+              {dict.header.level}
+            </span>
+            <EditableNumber
+              value={char.level}
+              onChange={(v) => onUpdate({ level: Math.max(1, v) })}
+              min={1}
+              max={99}
+              style={{
+                width: 36,
+                color: "white",
+                fontSize: 28,
+                fontWeight: 800,
+                lineHeight: 1,
+                padding: 0,
+                textAlign: "right",
+              }}
+            />
+          </div>
+          {onStartCombat && (
+            <button
+              onClick={onStartCombat}
+              className="flex items-center justify-center w-[56px] rounded-[12px]
+                border-none cursor-pointer font-[inherit] shrink-0
+                transition-colors duration-150"
+              style={{
+                background: "rgba(244,123,95,0.14)",
+                color: "var(--color-coral)",
+                border: "1px solid rgba(244,123,95,0.25)",
+              }}
+            >
+              <Swords size={20} />
+            </button>
+          )}
         </div>
       </div>
     </div>
