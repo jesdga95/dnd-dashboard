@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { StatMiniCard } from "./StatMiniCard";
 import { useDict } from "@/lib/DictContext";
 import { abilityMod } from "@/lib/utils";
@@ -16,6 +17,16 @@ interface StatBentoRowProps {
 export function StatBentoRow({ char, abilities, skills, onUpdate, onToggleInspiration }: StatBentoRowProps) {
   const dict = useDict();
   const inspired = char.inspiration ?? false;
+
+  const inspireStars = useMemo(() =>
+    Array.from({ length: 18 }, () => ({
+      char: Math.random() > 0.5 ? "✦" : "✧",
+      size: Math.random() * 30 + 7,
+      top: Math.random() * 90 + 5,
+      left: Math.random() * 90 + 5,
+      opacity: Math.random() * 0.4 + 0.08,
+      rotate: Math.random() * 40 - 20,
+    })), []);
 
   // Passive Perception = 10 + Perception skill bonus
   const wisScore = abilities?.Wisdom?.score ?? 10;
@@ -67,8 +78,8 @@ export function StatBentoRow({ char, abilities, skills, onUpdate, onToggleInspir
         />
       </div>
 
-      {/* Row 2: Hit Dice, Passive Perception, Inspiration — always 33/33/33 */}
-      <div className="grid grid-cols-3 gap-2.5">
+      {/* Row 2: Hit Dice, Passive Perception, Inspiration */}
+      <div className="grid grid-cols-3 gap-2.5 max-[600px]:grid-cols-2">
         <StatMiniCard
           label={dict.stats.hitDice}
           tint="sand"
@@ -92,7 +103,7 @@ export function StatBentoRow({ char, abilities, skills, onUpdate, onToggleInspir
         <button
           onClick={onToggleInspiration}
           title={inspired ? dict.stats.inspiredTitle : dict.stats.notInspiredTitle}
-          className={`rounded-[16px] px-4 py-[14px] text-left w-full cursor-pointer relative overflow-hidden
+          className={`max-[600px]:col-span-2 rounded-[16px] px-4 py-[14px] text-left w-full cursor-pointer relative overflow-hidden
             transition-all duration-200 active:translate-y-px border
             shadow-[var(--shadow-sm)]
             ${inspired
@@ -107,20 +118,25 @@ export function StatBentoRow({ char, abilities, skills, onUpdate, onToggleInspir
             ${inspired ? "text-[#8c6a1a]" : "text-[var(--color-sand-deep)]"}`}>
             {dict.stats.inspiration}
           </div>
-          <div className="mt-1 text-[30px] font-extrabold tracking-tight leading-none select-none"
+
+          <div className="mt-1 text-[30px] font-extrabold tracking-tight leading-none select-none relative z-10"
             style={{ color: inspired ? "#8c6a1a" : "var(--color-muted)" }}>
             {inspired ? "★" : "—"}
           </div>
 
-          {/* Decorative stars */}
-          <div className="flex absolute right-4 top-1/2 -translate-y-1/2 items-center gap-3 select-none pointer-events-none">
-            <span className="text-[24px] transition-all duration-300"
-              style={{ color: inspired ? "#c8a84b" : "var(--color-muted)", opacity: inspired ? 0.7 : 0.12 }}>✦</span>
-            <span className="text-[17px] transition-all duration-300"
-              style={{ color: inspired ? "#c8a84b" : "var(--color-muted)", opacity: inspired ? 0.45 : 0.08 }}>✧</span>
-            <span className="text-[11px] transition-all duration-300"
-              style={{ color: inspired ? "#c8a84b" : "var(--color-muted)", opacity: inspired ? 0.25 : 0.04 }}>✦</span>
-          </div>
+          {/* Random star field */}
+          {inspireStars.map((s, i) => (
+            <span key={i} className="absolute select-none pointer-events-none transition-all duration-300"
+              style={{
+                top: `${s.top}%`, left: `${s.left}%`,
+                fontSize: `${s.size}px`, lineHeight: 1,
+                color: inspired ? "#c8a84b" : "var(--color-muted)",
+                opacity: inspired ? s.opacity : s.opacity * 0.25,
+                transform: `rotate(${s.rotate}deg)`,
+              }}>
+              {s.char}
+            </span>
+          ))}
         </button>
       </div>
     </div>
