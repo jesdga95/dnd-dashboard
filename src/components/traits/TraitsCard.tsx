@@ -46,16 +46,15 @@ export function TraitsCard({ traits, onSave, onDelete }: TraitsCardProps) {
               hover:bg-[#e1d4ef] transition-colors duration-150"
             onClick={() => setEditing(t)}
           >
-            <div className="flex items-center justify-between gap-2">
-              <span className="text-[12px] font-bold">{t.name}</span>
-              <span
-                className="max-[700px]:opacity-100 opacity-0 group-hover:opacity-100 text-black/40 hover:text-[var(--color-coral-deep)]
-                  transition-opacity duration-150 shrink-0"
-                onClick={(e) => { e.stopPropagation(); onDelete(t.id); }}
-              >
-                <X size={10} />
-              </span>
-            </div>
+            <span className="text-[12px] font-bold">{t.name}</span>
+            {/* Delete — absolute, no layout impact on desktop */}
+            <Btn variant="default" size="xs" iconOnly
+              className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 [@media(hover:none)]:opacity-100
+                transition-opacity hover:bg-[var(--color-peach)] hover:text-[var(--color-coral-deep)] hover:border-transparent"
+              onClick={(e) => { e.stopPropagation(); onDelete(t.id); }}
+            >
+              <X size={10} />
+            </Btn>
             {t.desc && (
               <p className="text-[11px] font-medium text-[var(--color-lavender-deep)]/70 mt-0.5 leading-snug">
                 {t.desc}

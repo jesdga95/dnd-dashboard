@@ -44,7 +44,7 @@ export function EquipmentCard({ equipment, onSave, onDelete }: EquipmentCardProp
           <div key={eq.id}
             className="flex flex-col gap-1 px-[14px] py-3 rounded-[14px] min-w-0 overflow-hidden
               bg-[var(--color-bg-warm)] hover:bg-[#ebe5db] transition-colors duration-150 relative group">
-            <div className="flex items-center gap-2 max-[700px]:pr-14">
+            <div className="flex items-center gap-2 [@media(hover:none)]:pr-14">
               <span className="text-[9px] font-bold tracking-[0.1em] uppercase
                 bg-[var(--color-card)] rounded-full px-2 py-[3px] text-[var(--color-muted)]">
                 {eq.slot}
@@ -60,11 +60,13 @@ export function EquipmentCard({ equipment, onSave, onDelete }: EquipmentCardProp
             {eq.desc && (
               <div className="text-[12.5px] text-[var(--color-muted)] leading-[1.4] line-clamp-2 break-all">{eq.desc}</div>
             )}
-            <div className="absolute top-2 right-2 flex gap-0.5 max-[700px]:opacity-100 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="absolute top-2 right-2 flex gap-0.5 opacity-0 group-hover:opacity-100 [@media(hover:none)]:opacity-100 transition-opacity">
               <Btn variant="default" size="xs" iconOnly onClick={() => setEditing(eq)}>
                 <Pencil size={11} />
               </Btn>
-              <Btn variant="default" size="xs" iconOnly onClick={() => onDelete(eq.id)}>
+              <Btn variant="default" size="xs" iconOnly
+                className="hover:bg-[var(--color-peach)] hover:text-[var(--color-coral-deep)] hover:border-transparent"
+                onClick={() => onDelete(eq.id)}>
                 <X size={11} />
               </Btn>
             </div>

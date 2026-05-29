@@ -264,11 +264,11 @@ export function CharacterHeader({ char, onUpdate, onImport, onReset, onShortRest
 
   return (
     <div
-      className="px-5 py-5 max-[700px]:px-4 max-[700px]:py-4
+      className="px-5 py-5 max-[1024px]:px-4 max-[1024px]:py-4
         bg-[var(--color-ink)] rounded-[22px] shadow-[var(--shadow-md)]"
     >
       {/* ── Desktop ── */}
-      <div className="max-[700px]:hidden">
+      <div className="max-[1024px]:hidden">
         <div className="flex items-center gap-4">
           <AvatarMenu
             size="md"
@@ -349,7 +349,7 @@ export function CharacterHeader({ char, onUpdate, onImport, onReset, onShortRest
       </div>
 
       {/* ── Mobile ── */}
-      <div className="hidden max-[700px]:block">
+      <div className="hidden max-[1024px]:block">
         <div className="flex items-start gap-3.5">
           <AvatarMenu
             size="sm"

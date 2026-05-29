@@ -44,7 +44,7 @@ function SetupPhase({
         ac: monsterAc ? parseInt(monsterAc, 10) : undefined,
         initiativeRoll: parseInt(monsterInit, 10) || 0,
         conditions: [],
-        revealed: false,
+        visibility: 0,
       },
     ]);
     setMonsterName("");
@@ -254,7 +254,7 @@ function AddMonsterInline({ onAdd }: { onAdd: (m: MonsterCombatant) => void }) {
       ac: ac ? parseInt(ac, 10) : undefined,
       initiativeRoll: parseInt(init, 10) || 0,
       conditions: [],
-      revealed: false,
+      visibility: 0,
     });
     setName(""); setHp(""); setAc(""); setInit(""); setOpen(false);
   };

@@ -25,7 +25,7 @@
     "hint": "Share this ID with your DM"
   },
   "dm": {
-    "title": "Party Overview",
+    "title": "Dungeon Master",
     "liveUpdates": "live updates",
     "addPlayer": "Add Player",
     "addPlayerPlaceholder": "Paste player ID…",
@@ -270,7 +270,7 @@
     "initiative": "Initiative",
     "proficiency": "Proficiency",
     "hitDice": "Hit Dice",
-    "passivePerc": "Passive Perc",
+    "passivePerc": "Passive Perception",
     "inspiration": "Inspiration",
     "inspiredTitle": "Inspired — click to spend",
     "notInspiredTitle": "No inspiration — click to gain"
@@ -309,8 +309,11 @@
     "startRequirements": "Requires ≥1 player, ≥1 monster, and all initiatives set",
     "noParty": "Add players to your party first.",
     "exit": "Exit",
-    "reveal": "Reveal to players",
+    "revealName": "Reveal name",
+    "revealStats": "Reveal stats",
     "hide": "Hide from players",
+    "visName": "Name",
+    "visStats": "Stats",
     "unknown": "????"
   },
   "iconPicker": {

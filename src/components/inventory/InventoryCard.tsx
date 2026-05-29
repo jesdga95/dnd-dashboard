@@ -74,8 +74,9 @@ export function InventoryCard({ inventory, gold, silver, onSave, onDelete, onTog
       <div className="flex flex-col">
         {inventory.map((item, idx) => (
           <div key={item.id}
-            className={`flex items-center gap-2.5 px-2.5 py-2 rounded-[10px]
+            className={`relative flex items-center gap-2.5 px-2.5 py-2 rounded-[10px]
               hover:bg-[var(--color-bg-warm)] transition-colors duration-150 group
+              [@media(hover:none)]:pr-[70px]
               ${item.checked ? "opacity-70" : ""}
               ${idx > 0 ? "border-t border-[var(--color-line-soft)]" : ""}`}
           >
@@ -116,12 +117,14 @@ export function InventoryCard({ inventory, gold, silver, onSave, onDelete, onTog
               </span>
             )}
 
-            {/* Actions */}
-            <div className="flex gap-0.5 max-[700px]:opacity-100 opacity-0 group-hover:opacity-100 transition-opacity">
-              <Btn variant="ghost" size="xs" iconOnly onClick={() => setEditing(item)}>
+            {/* Actions — absolute, no layout impact on desktop */}
+            <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-0.5 opacity-0 group-hover:opacity-100 [@media(hover:none)]:opacity-100 transition-opacity">
+              <Btn variant="default" size="xs" iconOnly onClick={() => setEditing(item)}>
                 <Pencil size={11} />
               </Btn>
-              <Btn variant="ghost" size="xs" iconOnly onClick={() => onDelete(item.id)}>
+              <Btn variant="default" size="xs" iconOnly
+                className="hover:bg-[var(--color-peach)] hover:text-[var(--color-coral-deep)] hover:border-transparent"
+                onClick={() => onDelete(item.id)}>
                 <X size={11} />
               </Btn>
             </div>

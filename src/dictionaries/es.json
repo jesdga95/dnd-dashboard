@@ -25,7 +25,7 @@
     "hint": "Comparte este ID con tu DM"
   },
   "dm": {
-    "title": "Vista del Grupo",
+    "title": "Dungeon Master",
     "liveUpdates": "en vivo",
     "addPlayer": "Agregar Jugador",
     "addPlayerPlaceholder": "Pega el ID del jugador…",
@@ -270,7 +270,7 @@
     "initiative": "Iniciativa",
     "proficiency": "Competencia",
     "hitDice": "Dados de Golpe",
-    "passivePerc": "Perc. Pasiva",
+    "passivePerc": "Percepción Pasiva",
     "inspiration": "Inspiración",
     "inspiredTitle": "Inspirado — clic para gastar",
     "notInspiredTitle": "Sin inspiración — clic para ganar"
@@ -309,8 +309,11 @@
     "startRequirements": "Se requieren ≥1 jugador, ≥1 monstruo e iniciativas para todos",
     "noParty": "Agrega jugadores a tu grupo primero.",
     "exit": "Salir",
-    "reveal": "Revelar a jugadores",
+    "revealName": "Revelar nombre",
+    "revealStats": "Revelar estadísticas",
     "hide": "Ocultar a jugadores",
+    "visName": "Nombre",
+    "visStats": "Estadísticas",
     "unknown": "????"
   },
   "iconPicker": {

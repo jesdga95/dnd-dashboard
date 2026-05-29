@@ -38,7 +38,7 @@ export function DeathSaves({ successes, failures, onToggleSuccess, onToggleFailu
           <span className="text-[11px] font-bold tracking-[0.04em] uppercase text-[var(--color-mint-deep)]">
             {dict.deathSaves.successes}
           </span>
-          <div className="flex gap-2 max-[700px]:w-full max-[700px]:justify-between">
+          <div className="flex gap-2 max-[1024px]:w-full max-[1024px]:justify-between">
             {[0, 1, 2].map((i) => (
               <button
                 key={"s" + i}
@@ -62,7 +62,7 @@ export function DeathSaves({ successes, failures, onToggleSuccess, onToggleFailu
           <span className="text-[11px] font-bold tracking-[0.04em] uppercase text-[var(--color-coral-deep)]">
             {dict.deathSaves.failures}
           </span>
-          <div className="flex gap-2 max-[700px]:w-full max-[700px]:justify-between">
+          <div className="flex gap-2 max-[1024px]:w-full max-[1024px]:justify-between">
             {[0, 1, 2].map((i) => (
               <button
                 key={"f" + i}

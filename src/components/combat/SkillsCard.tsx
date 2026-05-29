@@ -85,7 +85,7 @@ export function SkillsCard({
         sub={dict.skills.subtitle}
       />
 
-      <div className="grid grid-cols-3 gap-x-1 gap-y-0 max-[700px]:grid-cols-2">
+      <div className="grid grid-cols-3 gap-x-1 gap-y-0 max-[1024px]:grid-cols-2">
         {SKILLS.map((skill) => {
           const prof: SkillProficiency = skills[skill.name] ?? "none";
           const mod = calcMod(skill);

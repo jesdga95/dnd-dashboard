@@ -67,12 +67,12 @@ export function CombatCard({ combat, onSaveAttack, onDeleteAttack }: CombatCardP
                 hover:bg-[var(--color-bg-warm)] transition-colors duration-150 group">
 
               {/* Row 1: type + name + (desktop: stats) + actions */}
-              <div className="flex items-center gap-2.5">
+              <div className="relative flex items-center gap-2.5 [@media(min-width:1025px)_and_(hover:none)]:pr-[64px]">
                 {/* Type badge — initial on mobile, full label on desktop */}
                 <span className={`text-[9px] font-bold tracking-[0.08em] uppercase px-2 py-[3px]
                   rounded-full flex-shrink-0 ${TYPE_STYLES[a.type]}`}>
-                  <span className="sm:hidden">{dict.combat.types[a.type][0]}</span>
-                  <span className="hidden sm:inline">{dict.combat.types[a.type]}</span>
+                  <span className="min-[1025px]:hidden">{dict.combat.types[a.type][0]}</span>
+                  <span className="hidden min-[1025px]:inline">{dict.combat.types[a.type]}</span>
                 </span>
 
                 {/* Name */}
@@ -80,7 +80,7 @@ export function CombatCard({ combat, onSaveAttack, onDeleteAttack }: CombatCardP
 
                 {/* Hit — desktop only */}
                 {a.hit && (
-                  <span className="hidden sm:inline font-mono text-[11px] font-semibold text-[var(--color-muted)]
+                  <span className="hidden min-[1025px]:inline font-mono text-[11px] font-semibold text-[var(--color-muted)]
                     bg-[var(--color-bg-warm)] px-2 py-[3px] rounded-full flex-shrink-0">
                     {a.hit}
                   </span>
@@ -88,24 +88,26 @@ export function CombatCard({ combat, onSaveAttack, onDeleteAttack }: CombatCardP
 
                 {/* Note — desktop only */}
                 {a.note && (
-                  <span className="text-[12px] text-[var(--color-muted)] flex-shrink-0 hidden sm:block">
+                  <span className="text-[12px] text-[var(--color-muted)] flex-shrink-0 hidden min-[1025px]:block">
                     {a.note}
                   </span>
                 )}
 
                 {/* Dmg — desktop only */}
                 {a.dmg && (
-                  <span className={`hidden sm:inline font-mono text-[12px] font-bold px-2.5 py-1 rounded-full flex-shrink-0 ${DMG_STYLES[a.type]}`}>
+                  <span className={`hidden min-[1025px]:inline font-mono text-[12px] font-bold px-2.5 py-1 rounded-full flex-shrink-0 ${DMG_STYLES[a.type]}`}>
                     {a.dmg}
                   </span>
                 )}
 
-                {/* Actions */}
-                <span className="max-[700px]:opacity-100 opacity-0 group-hover:opacity-100 transition-opacity flex gap-0.5 flex-shrink-0">
-                  <Btn variant="ghost" size="xs" iconOnly onClick={() => setEditing(a)}>
+                {/* Actions: in-flow below 1025px (Row 2 visible there), absolute above */}
+                <span className="flex-shrink-0 min-[1025px]:absolute min-[1025px]:right-0 min-[1025px]:top-1/2 min-[1025px]:-translate-y-1/2 opacity-0 group-hover:opacity-100 [@media(hover:none)]:opacity-100 transition-opacity flex gap-0.5">
+                  <Btn variant="default" size="xs" iconOnly onClick={() => setEditing(a)}>
                     <Pencil size={11} />
                   </Btn>
-                  <Btn variant="ghost" size="xs" iconOnly onClick={() => onDeleteAttack(a.id)}>
+                  <Btn variant="default" size="xs" iconOnly
+                    className="hover:bg-[var(--color-peach)] hover:text-[var(--color-coral-deep)] hover:border-transparent"
+                    onClick={() => onDeleteAttack(a.id)}>
                     <X size={11} />
                   </Btn>
                 </span>
@@ -113,7 +115,7 @@ export function CombatCard({ combat, onSaveAttack, onDeleteAttack }: CombatCardP
 
               {/* Row 2 (mobile only): hit + dmg, 50/50 grid or full width */}
               {(a.hit || a.dmg) && (
-                <div className={`sm:hidden mt-1 grid gap-1.5 ${a.hit && a.dmg ? "grid-cols-2" : "grid-cols-1"}`}>
+                <div className={`min-[1025px]:hidden mt-1 grid gap-1.5 ${a.hit && a.dmg ? "grid-cols-2" : "grid-cols-1"}`}>
                   {a.hit && (
                     <div className="font-mono text-[11px] font-semibold text-[var(--color-muted)]
                       bg-[var(--color-bg-warm)] px-2 py-[5px] rounded-lg text-center">

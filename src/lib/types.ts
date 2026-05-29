@@ -161,7 +161,7 @@ export interface MonsterCombatant {
   ac?: number;
   initiativeRoll: number;
   conditions: string[];
-  revealed: boolean;
+  visibility: 0 | 1 | 2; // 0=hidden, 1=name only, 2=name+stats
 }
 
 export type Combatant = PlayerCombatant | MonsterCombatant;

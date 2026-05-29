@@ -25,7 +25,20 @@ export function useDmCombat() {
     const unsubscribe = onSnapshot(
       docRef,
       (snap) => {
-        const data = snap.exists() ? (snap.data() as DmCombat) : null;
+        let data: DmCombat | null = snap.exists() ? (snap.data() as DmCombat) : null;
+        if (data) {
+          data = {
+            ...data,
+            combatants: data.combatants.map((cm) => {
+              if (cm.type !== "monster") return cm;
+              if (cm.visibility === undefined) {
+                const old = (cm as unknown as { revealed?: boolean }).revealed;
+                return { ...cm, visibility: old ? 2 : 0 } as typeof cm;
+              }
+              return cm;
+            }),
+          };
+        }
         combatRef.current = data;
         setCombat(data);
         setLoading(false);
@@ -112,7 +125,9 @@ export function useDmCombat() {
     await write({
       ...c,
       combatants: c.combatants.map((cm) =>
-        cm.type === "monster" && cm.id === id ? { ...cm, revealed: !cm.revealed } : cm
+        cm.type === "monster" && cm.id === id
+          ? { ...cm, visibility: (((cm.visibility ?? 0) + 1) % 3) as 0 | 1 | 2 }
+          : cm
       ),
     });
   };

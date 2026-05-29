@@ -87,7 +87,7 @@ export function CharacterSheet() {
   }
 
   return (
-    <div className="max-w-[1280px] mx-auto px-6 py-8 pb-[60px] max-[700px]:px-[14px] max-[700px]:py-[18px]">
+    <div className="max-w-[1280px] mx-auto px-6 py-8 pb-[60px] max-[1024px]:px-[14px] max-[1024px]:py-[18px]">
       {/* Header */}
       <CharacterHeader
         char={char}
@@ -104,7 +104,7 @@ export function CharacterSheet() {
       <div className="h-3" />
 
       {/* HP + Death Saves */}
-      <div className="grid gap-3 [grid-template-columns:1fr_auto] max-[700px]:grid-cols-1">
+      <div className="grid gap-3 [grid-template-columns:1fr_auto] max-[1024px]:grid-cols-1">
         <HpCard
           hp={char.hp}
           hpMax={char.hpMax}
@@ -146,7 +146,7 @@ export function CharacterSheet() {
       <div className="h-3" />
 
       {/* Combat + Equipment */}
-      <div className="grid gap-3 [grid-template-columns:1.4fr_1fr] max-[700px]:grid-cols-1">
+      <div className="grid gap-3 [grid-template-columns:1.4fr_1fr] max-[1024px]:grid-cols-1">
         <CombatCard
           combat={char.combat}
           onSaveAttack={saveAttack}
@@ -188,7 +188,7 @@ export function CharacterSheet() {
       <div className="h-3" />
 
       {/* Resources + Traits */}
-      <div className="grid gap-3 grid-cols-2 max-[700px]:grid-cols-1">
+      <div className="grid gap-3 grid-cols-2 max-[1024px]:grid-cols-1">
         <ResourcesCard
           resources={char.customResources ?? []}
           onAdd={addCustomResource}

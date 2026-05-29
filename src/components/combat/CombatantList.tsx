@@ -146,8 +146,10 @@ function MonsterRow({
   const [customDelta, setCustomDelta] = useState("");
 
   const isDead = monster.hp <= 0;
-  const hidden = !monster.revealed;
   const isDm = !!controls;
+  const vis = monster.visibility ?? 0;
+  const nameVisible = isDm || vis >= 1;
+  const statsVisible = isDm || vis >= 2;
 
   const handleCustom = (sign: 1 | -1) => {
     const n = parseInt(customDelta, 10);
@@ -178,15 +180,17 @@ function MonsterRow({
         {isDm ? (
           <button
             onClick={() => controls.onToggleReveal(monster.id)}
-            title={monster.revealed ? dict.dmCombat.hide : dict.dmCombat.reveal}
+            title={vis === 0 ? dict.dmCombat.revealName : vis === 1 ? dict.dmCombat.revealStats : dict.dmCombat.hide}
             className="w-6 h-6 rounded-full flex items-center justify-center cursor-pointer shrink-0 transition-colors duration-150"
             style={
-              monster.revealed
+              vis === 2
                 ? { background: "rgba(72,200,160,0.18)", color: "var(--color-mint-deep)" }
+                : vis === 1
+                ? { background: "rgba(251,191,36,0.18)", color: "#fbbf24" }
                 : { background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.35)" }
             }
           >
-            {monster.revealed ? <Eye size={11} /> : <EyeOff size={11} />}
+            {vis === 0 ? <EyeOff size={11} /> : <Eye size={11} />}
           </button>
         ) : (
           <span
@@ -199,19 +203,19 @@ function MonsterRow({
 
         <div className="flex-1 min-w-0">
           {/* Name + AC row */}
-          <div className={`flex items-center gap-2 ${(!hidden || isDm) ? "mb-1.5" : ""}`}>
+          <div className={`flex items-center gap-2 ${statsVisible ? "mb-1.5" : ""}`}>
             <span
               className={`text-[13px] font-bold truncate ${
-                hidden && !isDm
+                !nameVisible
                   ? "text-white/25 tracking-[0.25em]"
                   : isDead
                   ? "text-white/30 line-through"
                   : "text-white"
               }`}
             >
-              {hidden && !isDm ? dict.dmCombat.unknown : monster.name}
+              {!nameVisible ? dict.dmCombat.unknown : monster.name}
             </span>
-            {(!hidden || isDm) && (
+            {statsVisible && (
               isDm ? (
                 <span className="flex items-center gap-0.5 text-[10px] text-white/35 shrink-0">
                   {dict.dmCombat.acLabel}
@@ -228,18 +232,26 @@ function MonsterRow({
                 )
               )
             )}
-            {isDm && monster.revealed && (
+            {isDm && vis === 1 && (
+              <span
+                className="text-[9px] px-1.5 py-0.5 rounded-full font-semibold shrink-0"
+                style={{ background: "rgba(251,191,36,0.15)", color: "#fbbf24" }}
+              >
+                {dict.dmCombat.visName}
+              </span>
+            )}
+            {isDm && vis === 2 && (
               <span
                 className="text-[9px] px-1.5 py-0.5 rounded-full font-semibold shrink-0"
                 style={{ background: "rgba(72,200,160,0.15)", color: "var(--color-mint-deep)" }}
               >
-                {dict.dmCombat.reveal}
+                {dict.dmCombat.visStats}
               </span>
             )}
           </div>
 
           {/* HP bar + numbers */}
-          {(!hidden || isDm) && (
+          {statsVisible && (
             <div className="flex items-center gap-2">
               <HpBar hp={monster.hp} hpMax={monster.hpMax} />
               <span className="text-[11px] font-semibold text-white/55 shrink-0 flex items-center gap-0.5">
@@ -259,7 +271,7 @@ function MonsterRow({
           )}
 
           {/* Conditions — read-only (player view) */}
-          {!isDm && !hidden && monster.conditions.length > 0 && (
+          {!isDm && vis >= 2 && monster.conditions.length > 0 && (
             <div className="flex flex-wrap gap-1 mt-1.5">
               {monster.conditions.map((cond) => (
                 <span

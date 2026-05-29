@@ -79,7 +79,7 @@ function ResourceEntry({
             placeholder:font-normal focus:text-[var(--color-ink)]"
         />
         {/* S / L rest reset toggle */}
-        <div className="flex items-center gap-0.5 flex-shrink-0 opacity-0 group-hover/res:opacity-100 transition-opacity duration-150">
+        <div className="flex items-center gap-0.5 flex-shrink-0 opacity-0 group-hover/res:opacity-100 [@media(hover:none)]:opacity-100 transition-opacity duration-150">
           {(["short", "long"] as const).map((r) => (
             <button
               key={r}
@@ -95,15 +95,15 @@ function ResourceEntry({
             </button>
           ))}
         </div>
-        <button
+        <Btn variant="default" size="xs" iconOnly
           onClick={onRemove}
           title="Remove resource"
-          className="opacity-0 group-hover/res:opacity-100 w-3.5 h-3.5 flex-shrink-0 flex items-center justify-center
-            rounded-full text-[var(--color-muted-soft)] hover:text-[var(--color-coral-deep)]
-            transition-all duration-150 cursor-pointer"
+          className="opacity-0 group-hover/res:opacity-100 [@media(hover:none)]:opacity-100 flex-shrink-0
+            hover:bg-[var(--color-peach)] hover:text-[var(--color-coral-deep)] hover:border-transparent
+            transition-opacity duration-150"
         >
           <X size={9} />
-        </button>
+        </Btn>
         <div className="flex items-center gap-0.5 flex-shrink-0">
           <button
             onClick={() => onUpdate({ max: resource.max - 1 })}

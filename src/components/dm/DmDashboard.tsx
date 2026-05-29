@@ -118,10 +118,10 @@ export function DmDashboard() {
   }
 
   return (
-    <div className="max-w-[1280px] mx-auto px-6 py-8 pb-[60px] max-[700px]:px-[14px] max-[700px]:py-[18px]">
+    <div className="max-w-[1280px] mx-auto px-6 py-8 pb-[60px] max-[1024px]:px-[14px] max-[1024px]:py-[18px]">
       {/* Header */}
       <div
-        className="px-5 py-5 max-[700px]:px-4 max-[700px]:py-4
+        className="px-5 py-5 max-[1024px]:px-4 max-[1024px]:py-4
           bg-[var(--color-ink)] rounded-[22px] shadow-[var(--shadow-md)] mb-4"
       >
         <div className="flex items-center gap-3">
