@@ -149,6 +149,19 @@
     "emptyStatePre": "Nada equipado. Haz clic en",
     "emptyStateHighlight": "Agregar",
     "emptyStatePost": "para equipar un objeto.",
+    "slots": {
+      "head": "Cabeza",
+      "neck": "Cuello",
+      "chest": "Pecho",
+      "back": "Espalda",
+      "hands": "Manos",
+      "waist": "Cintura",
+      "feet": "Pies",
+      "ring": "Anillo",
+      "weapon": "Arma",
+      "shield": "Escudo",
+      "trinket": "Amuleto"
+    },
     "modal": {
       "editTitle": "Editar Equipo",
       "addTitle": "Agregar Equipo",

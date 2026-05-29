@@ -1,13 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { Backpack, Plus, Pencil, X } from "lucide-react";
+import { Backpack, Plus, Minus } from "lucide-react";
 import { IconPill } from "@/components/ui/IconPill";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Btn } from "@/components/ui/Btn";
 import { EditableNumber } from "@/components/ui/EditableNumber";
 import { Modal, ModalField, ModalInput, ModalTextarea, ModalBtn } from "@/components/ui/Modal";
 import { IconPicker, InventoryIcon } from "@/components/ui/IconPicker";
+import { RowActions } from "@/components/ui/RowActions";
 import { useDict } from "@/lib/DictContext";
 import type { InventoryItem, Character } from "@/lib/types";
 
@@ -24,6 +25,11 @@ interface InventoryCardProps {
 export function InventoryCard({ inventory, gold, silver, onSave, onDelete, onToggle, onUpdate }: InventoryCardProps) {
   const dict = useDict();
   const [editing, setEditing] = useState<InventoryItem | null>(null);
+
+  const handleQtyChange = (item: InventoryItem, delta: number) => {
+    if (item.qty === "" || item.qty == null) return;
+    onSave({ ...item, qty: Math.max(0, Number(item.qty) + delta) });
+  };
 
   return (
     <div className="bg-[var(--color-card)] rounded-[22px] px-5 py-[18px]
@@ -74,9 +80,8 @@ export function InventoryCard({ inventory, gold, silver, onSave, onDelete, onTog
       <div className="flex flex-col">
         {inventory.map((item, idx) => (
           <div key={item.id}
-            className={`relative flex items-center gap-2.5 px-2.5 py-2 rounded-[10px]
-              hover:bg-[var(--color-bg-warm)] transition-colors duration-150 group
-              [@media(hover:none)]:pr-[70px]
+            className={`flex items-center gap-2.5 px-2.5 py-2 rounded-[10px]
+              hover:bg-[var(--color-bg-warm)] transition-colors duration-150
               ${item.checked ? "opacity-70" : ""}
               ${idx > 0 ? "border-t border-[var(--color-line-soft)]" : ""}`}
           >
@@ -109,25 +114,36 @@ export function InventoryCard({ inventory, gold, silver, onSave, onDelete, onTog
               )}
             </div>
 
-            {/* Qty */}
+            {/* Qty stepper */}
             {item.qty !== "" && item.qty != null && (
-              <span className="bg-[var(--color-bg-warm)] rounded-full px-[9px] py-[3px]
-                text-[11px] font-bold text-[var(--color-ink-soft)] flex-shrink-0">
-                ×{item.qty}
-              </span>
+              <div className="flex items-center flex-shrink-0 bg-[var(--color-card)]
+                rounded-full border border-[var(--color-line)] overflow-hidden">
+                <button
+                  onClick={(e) => { e.stopPropagation(); handleQtyChange(item, -1); }}
+                  className="w-[22px] h-[22px] flex items-center justify-center
+                    text-[var(--color-muted)] hover:bg-[var(--color-bg-warm)]
+                    hover:text-[var(--color-ink)] transition-colors cursor-pointer">
+                  <Minus size={9} />
+                </button>
+                <span className="min-w-[16px] text-center text-[11px] font-bold
+                  text-[var(--color-ink)] leading-none px-0.5">
+                  {item.qty}
+                </span>
+                <button
+                  onClick={(e) => { e.stopPropagation(); handleQtyChange(item, +1); }}
+                  className="w-[22px] h-[22px] flex items-center justify-center
+                    text-[var(--color-muted)] hover:bg-[var(--color-bg-warm)]
+                    hover:text-[var(--color-ink)] transition-colors cursor-pointer">
+                  <Plus size={9} />
+                </button>
+              </div>
             )}
 
-            {/* Actions — absolute, no layout impact on desktop */}
-            <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-0.5 opacity-0 group-hover:opacity-100 [@media(hover:none)]:opacity-100 transition-opacity">
-              <Btn variant="default" size="xs" iconOnly onClick={() => setEditing(item)}>
-                <Pencil size={11} />
-              </Btn>
-              <Btn variant="default" size="xs" iconOnly
-                className="hover:bg-[var(--color-peach)] hover:text-[var(--color-coral-deep)] hover:border-transparent"
-                onClick={() => onDelete(item.id)}>
-                <X size={11} />
-              </Btn>
-            </div>
+            <RowActions
+              onEdit={() => setEditing(item)}
+              onDelete={() => onDelete(item.id)}
+              className="flex-shrink-0"
+            />
           </div>
         ))}
       </div>

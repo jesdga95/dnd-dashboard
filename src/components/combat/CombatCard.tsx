@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Sword, Plus, Pencil, X } from "lucide-react";
+import { Sword, Plus } from "lucide-react";
 import { IconPill } from "@/components/ui/IconPill";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Btn } from "@/components/ui/Btn";
 import { Modal, ModalField, ModalInput, ModalBtn } from "@/components/ui/Modal";
+import { RowActions } from "@/components/ui/RowActions";
 import { useDict } from "@/lib/DictContext";
 import type { Attack, AttackType, Combat } from "@/lib/types";
 
@@ -64,10 +65,10 @@ export function CombatCard({ combat, onSaveAttack, onDeleteAttack }: CombatCardP
           {combat.attacks.map((a) => (
             <div key={a.id}
               className="px-2.5 py-2 rounded-[12px]
-                hover:bg-[var(--color-bg-warm)] transition-colors duration-150 group">
+                hover:bg-[var(--color-bg-warm)] transition-colors duration-150">
 
-              {/* Row 1: type + name + (desktop: stats) + actions */}
-              <div className="relative flex items-center gap-2.5 [@media(min-width:1025px)_and_(hover:none)]:pr-[64px]">
+              {/* Row 1: type + name + desktop stats + desktop actions */}
+              <div className="flex items-center gap-2.5">
                 {/* Type badge — initial on mobile, full label on desktop */}
                 <span className={`text-[9px] font-bold tracking-[0.08em] uppercase px-2 py-[3px]
                   rounded-full flex-shrink-0 ${TYPE_STYLES[a.type]}`}>
@@ -100,22 +101,18 @@ export function CombatCard({ combat, onSaveAttack, onDeleteAttack }: CombatCardP
                   </span>
                 )}
 
-                {/* Actions: in-flow below 1025px (Row 2 visible there), absolute above */}
-                <span className="flex-shrink-0 min-[1025px]:absolute min-[1025px]:right-0 min-[1025px]:top-1/2 min-[1025px]:-translate-y-1/2 opacity-0 group-hover:opacity-100 [@media(hover:none)]:opacity-100 transition-opacity flex gap-0.5">
-                  <Btn variant="default" size="xs" iconOnly onClick={() => setEditing(a)}>
-                    <Pencil size={11} />
-                  </Btn>
-                  <Btn variant="default" size="xs" iconOnly
-                    className="hover:bg-[var(--color-peach)] hover:text-[var(--color-coral-deep)] hover:border-transparent"
-                    onClick={() => onDeleteAttack(a.id)}>
-                    <X size={11} />
-                  </Btn>
-                </span>
+                {/* Desktop-only actions */}
+                <div className="hidden min-[1025px]:flex flex-shrink-0 items-center">
+                  <RowActions
+                    onEdit={() => setEditing(a)}
+                    onDelete={() => onDeleteAttack(a.id)}
+                  />
+                </div>
               </div>
 
-              {/* Row 2 (mobile only): hit + dmg, 50/50 grid or full width */}
-              {(a.hit || a.dmg) && (
-                <div className={`min-[1025px]:hidden mt-1 grid gap-1.5 ${a.hit && a.dmg ? "grid-cols-2" : "grid-cols-1"}`}>
+              {/* Row 2 (mobile only): stats + actions */}
+              <div className="min-[1025px]:hidden mt-1 flex items-center gap-1.5">
+                <div className="flex items-center gap-1.5 flex-1 min-w-0">
                   {a.hit && (
                     <div className="font-mono text-[11px] font-semibold text-[var(--color-muted)]
                       bg-[var(--color-bg-warm)] px-2 py-[5px] rounded-lg text-center">
@@ -128,7 +125,12 @@ export function CombatCard({ combat, onSaveAttack, onDeleteAttack }: CombatCardP
                     </div>
                   )}
                 </div>
-              )}
+                <RowActions
+                  onEdit={() => setEditing(a)}
+                  onDelete={() => onDeleteAttack(a.id)}
+                  className="flex-shrink-0"
+                />
+              </div>
             </div>
           ))}
         </div>

@@ -149,6 +149,19 @@
     "emptyStatePre": "Nothing equipped. Click",
     "emptyStateHighlight": "Add",
     "emptyStatePost": "to equip an item.",
+    "slots": {
+      "head": "Head",
+      "neck": "Neck",
+      "chest": "Chest",
+      "back": "Back",
+      "hands": "Hands",
+      "waist": "Waist",
+      "feet": "Feet",
+      "ring": "Ring",
+      "weapon": "Weapon",
+      "shield": "Shield",
+      "trinket": "Trinket"
+    },
     "modal": {
       "editTitle": "Edit Equipment",
       "addTitle": "Add Equipment",
