@@ -1,14 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { Backpack, Plus, Minus } from "lucide-react";
+import { Backpack, Plus, Minus, Pencil, X } from "lucide-react";
 import { IconPill } from "@/components/ui/IconPill";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Btn } from "@/components/ui/Btn";
 import { EditableNumber } from "@/components/ui/EditableNumber";
 import { Modal, ModalField, ModalInput, ModalTextarea, ModalBtn } from "@/components/ui/Modal";
 import { IconPicker, InventoryIcon } from "@/components/ui/IconPicker";
-import { RowActions } from "@/components/ui/RowActions";
+import { SparkleBackground } from "@/components/ui/SparkleBackground";
 import { useDict } from "@/lib/DictContext";
 import type { InventoryItem, Character } from "@/lib/types";
 
@@ -20,6 +20,20 @@ interface InventoryCardProps {
   onDelete: (id: number) => void;
   onToggle: (id: number) => void;
   onUpdate: (patch: Partial<Character>) => void;
+}
+
+// Flat coin medallion that bleeds off the right edge of a coin card.
+function CoinGlyph({ color }: { color: string }) {
+  return (
+    <svg viewBox="0 0 120 120" aria-hidden
+      className="absolute pointer-events-none select-none"
+      style={{ right: -34, top: "50%", transform: "translateY(-50%)", height: 168, width: 168, opacity: 0.13, color }}>
+      <circle cx="60" cy="60" r="55" fill="none" stroke="currentColor" strokeWidth="4" />
+      <circle cx="60" cy="60" r="43" fill="none" stroke="currentColor" strokeWidth="2.5" strokeDasharray="2 6" />
+      <text x="60" y="61" textAnchor="middle" dominantBaseline="central"
+        fill="currentColor" fontSize="46" fontWeight="900">✦</text>
+    </svg>
+  );
 }
 
 export function InventoryCard({ inventory, gold, silver, onSave, onDelete, onToggle, onUpdate }: InventoryCardProps) {
@@ -47,25 +61,38 @@ export function InventoryCard({ inventory, gold, silver, onSave, onDelete, onTog
       />
 
       {/* Coins */}
-      <div className="flex gap-2 mb-3">
-        <div className="flex-1 flex items-center gap-2 rounded-[12px] px-3 py-2"
-          style={{ background: "linear-gradient(135deg, #f7e3a8, #e8c878)" }}>
-          <div className="w-6 h-6 rounded-full flex items-center justify-center
-            bg-white/50 text-[11px] font-extrabold text-[#8c6a1a]">G</div>
-          <div>
-            <div className="text-[9px] font-bold tracking-[0.1em] uppercase text-black/50">{dict.coins.gold}</div>
+      <div className="flex flex-col sm:flex-row gap-2 mb-3">
+        {/* Gold */}
+        <div className="flex-1 flex flex-col justify-center min-h-[80px] rounded-[14px] px-5 py-3 relative overflow-hidden"
+          style={{
+            background: "linear-gradient(155deg, #fffbe8 0%, #f7d84a 45%, #c49010 100%)",
+            border: "1px solid rgba(196,160,20,0.5)",
+          }}>
+          <SparkleBackground color="#c8a010" chars={["◉", "◎", "○"]} />
+          <CoinGlyph color="#7a5010" />
+          <div className="relative z-10 flex flex-col items-center">
+            <div className="self-start text-[9px] font-extrabold tracking-[0.18em] uppercase text-[#7a5010]/60 mb-0.5">
+              {dict.coins.gold}
+            </div>
             <EditableNumber value={gold} onChange={(v) => onUpdate({ gold: v })} min={0}
-              style={{ width: 64, fontWeight: 800, fontSize: 18, textAlign: "left" }} />
+              style={{ fontWeight: 900, fontSize: 36, color: "#5a3808", lineHeight: 1, textAlign: "center" }} />
           </div>
         </div>
-        <div className="flex-1 flex items-center gap-2 rounded-[12px] px-3 py-2"
-          style={{ background: "linear-gradient(135deg, #ece8df, #c8c2b4)" }}>
-          <div className="w-6 h-6 rounded-full flex items-center justify-center
-            bg-white/50 text-[11px] font-extrabold text-[#5a5650]">S</div>
-          <div>
-            <div className="text-[9px] font-bold tracking-[0.1em] uppercase text-black/50">{dict.coins.silver}</div>
+
+        {/* Silver */}
+        <div className="flex-1 flex flex-col justify-center min-h-[80px] rounded-[14px] px-5 py-3 relative overflow-hidden"
+          style={{
+            background: "linear-gradient(155deg, #f8f6f2 0%, #d8d2c8 45%, #928880 100%)",
+            border: "1px solid rgba(160,148,138,0.45)",
+          }}>
+          <SparkleBackground color="#908880" chars={["◉", "◎", "○"]} />
+          <CoinGlyph color="#5a5248" />
+          <div className="relative z-10 flex flex-col items-center">
+            <div className="self-start text-[9px] font-extrabold tracking-[0.18em] uppercase text-[#5a5248]/60 mb-0.5">
+              {dict.coins.silver}
+            </div>
             <EditableNumber value={silver} onChange={(v) => onUpdate({ silver: v })} min={0}
-              style={{ width: 64, fontWeight: 800, fontSize: 18, textAlign: "left" }} />
+              style={{ fontWeight: 900, fontSize: 36, color: "#3a3430", lineHeight: 1, textAlign: "center" }} />
           </div>
         </div>
       </div>
@@ -77,73 +104,78 @@ export function InventoryCard({ inventory, gold, silver, onSave, onDelete, onTog
           {dict.inventory.emptyStatePost}
         </div>
       )}
-      <div className="flex flex-col">
-        {inventory.map((item, idx) => (
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+        {inventory.map((item) => (
           <div key={item.id}
-            className={`flex items-center gap-2.5 px-2.5 py-2 rounded-[10px]
-              hover:bg-[var(--color-bg-warm)] transition-colors duration-150
-              ${item.checked ? "opacity-70" : ""}
-              ${idx > 0 ? "border-t border-[var(--color-line-soft)]" : ""}`}
-          >
-            {/* Checkbox */}
-            <button
-              onClick={() => onToggle(item.id)}
-              className={`w-5 h-5 rounded-[7px] border flex-shrink-0 flex items-center justify-center
-                cursor-pointer transition-all duration-150 text-[12px] font-extrabold p-0
-                ${item.checked
-                  ? "bg-[var(--color-mint-deep)] border-[var(--color-mint-deep)] text-white"
-                  : "bg-[var(--color-card)] border-[var(--color-line)] text-transparent hover:border-[var(--color-muted)]"
-                }`}
-            >
-              ✓
-            </button>
-
-            {/* Icon */}
-            <span className="leading-none w-[22px] text-center flex-shrink-0 flex items-center justify-center
-              text-[var(--color-ink-soft)]">
-              <InventoryIcon name={item.icon} size={18} />
-            </span>
-
-            {/* Name + note */}
-            <div className="flex-1 min-w-0">
-              <div className={`text-[14px] font-semibold ${item.checked ? "line-through text-[var(--color-muted-soft)]" : "text-[var(--color-ink)]"}`}>
-                {item.name}
+            className="flex flex-col rounded-[14px] overflow-hidden relative
+              border border-[var(--color-line)]"
+            style={{
+              background:
+                "linear-gradient(to bottom, #ffffff 0%, #ffffff 38%, color-mix(in srgb, var(--color-peach) 12%, white) 100%)",
+              boxShadow:
+                "inset 0 1px 0 rgba(255,255,255,0.9), inset 0 -10px 18px -14px rgba(194,80,42,0.18), 0 1px 2px rgba(120,90,50,0.06), 0 4px 10px -4px rgba(120,90,50,0.10)",
+            }}>
+            {/* Icon + name body */}
+            <div className="flex flex-col items-center justify-center flex-1 pt-2.5 px-2 pb-2 gap-1.5 relative z-10">
+              {/* Actions — always visible, top-right */}
+              <div className="absolute top-1.5 right-1.5 z-20 flex gap-1">
+                <button onClick={() => setEditing(item)}
+                  className="w-[26px] h-[26px] flex items-center justify-center rounded-full
+                    bg-white/80 text-[var(--color-muted)]
+                    shadow-[0_1px_2px_rgba(120,90,50,0.10)] ring-1 ring-black/[0.04]
+                    hover:bg-white hover:text-[var(--color-blue-deep)]
+                    cursor-pointer active:opacity-60 transition-colors">
+                  <Pencil size={11} />
+                </button>
+                <button onClick={() => onDelete(item.id)}
+                  className="w-[26px] h-[26px] flex items-center justify-center rounded-full
+                    bg-white/80 text-[var(--color-muted)]
+                    shadow-[0_1px_2px_rgba(120,90,50,0.10)] ring-1 ring-black/[0.04]
+                    hover:bg-white hover:text-[var(--color-coral-deep)]
+                    cursor-pointer active:opacity-60 transition-colors">
+                  <X size={11} />
+                </button>
               </div>
-              {item.note && (
-                <div className="text-[12px] text-[var(--color-muted)] mt-[1px]">{item.note}</div>
-              )}
+              <span className="text-[var(--color-peach-deep)] drop-shadow-[0_1px_0_rgba(255,255,255,0.8)]">
+                <InventoryIcon name={item.icon} size={28} />
+              </span>
+              <div className="w-full text-center">
+                <div className="text-[12px] font-semibold text-[var(--color-ink)] truncate leading-tight">
+                  {item.name}
+                </div>
+                {item.note && (
+                  <div className="text-[10px] text-[var(--color-muted)] truncate leading-tight mt-0.5">
+                    {item.note}
+                  </div>
+                )}
+              </div>
             </div>
 
-            {/* Qty stepper */}
+            {/* Horizontal stepper */}
             {item.qty !== "" && item.qty != null && (
-              <div className="flex items-center flex-shrink-0 bg-[var(--color-card)]
-                rounded-full border border-[var(--color-line)] overflow-hidden">
+              <div className="relative z-10 flex items-center border-t border-[var(--color-line)]"
+                style={{ background: "color-mix(in srgb, var(--color-peach) 14%, white)" }}>
                 <button
                   onClick={(e) => { e.stopPropagation(); handleQtyChange(item, -1); }}
-                  className="w-[22px] h-[22px] flex items-center justify-center
-                    text-[var(--color-muted)] hover:bg-[var(--color-bg-warm)]
-                    hover:text-[var(--color-ink)] transition-colors cursor-pointer">
-                  <Minus size={9} />
+                  className="flex-1 h-[30px] flex items-center justify-center
+                    text-[var(--color-muted)] border-r border-[var(--color-line-soft)]
+                    hover:bg-[var(--color-peach)] hover:text-[var(--color-peach-deep)]
+                    active:opacity-70 cursor-pointer transition-colors">
+                  <Minus size={10} strokeWidth={2.5} />
                 </button>
-                <span className="min-w-[16px] text-center text-[11px] font-bold
-                  text-[var(--color-ink)] leading-none px-0.5">
+                <span className="w-[32px] text-center text-[12px] font-extrabold text-[var(--color-peach-deep)]">
                   {item.qty}
                 </span>
                 <button
                   onClick={(e) => { e.stopPropagation(); handleQtyChange(item, +1); }}
-                  className="w-[22px] h-[22px] flex items-center justify-center
-                    text-[var(--color-muted)] hover:bg-[var(--color-bg-warm)]
-                    hover:text-[var(--color-ink)] transition-colors cursor-pointer">
-                  <Plus size={9} />
+                  className="flex-1 h-[30px] flex items-center justify-center
+                    text-[var(--color-muted)] border-l border-[var(--color-line-soft)]
+                    hover:bg-[var(--color-mint)] hover:text-[var(--color-mint-deep)]
+                    active:opacity-70 cursor-pointer transition-colors">
+                  <Plus size={10} strokeWidth={2.5} />
                 </button>
               </div>
             )}
-
-            <RowActions
-              onEdit={() => setEditing(item)}
-              onDelete={() => onDelete(item.id)}
-              className="flex-shrink-0"
-            />
           </div>
         ))}
       </div>

@@ -1,7 +1,7 @@
 "use client";
 
-import { useMemo } from "react";
 import { StatMiniCard } from "./StatMiniCard";
+import { SparkleBackground } from "@/components/ui/SparkleBackground";
 import { useDict } from "@/lib/DictContext";
 import { abilityMod } from "@/lib/utils";
 import type { Character, Abilities, SkillProficiency } from "@/lib/types";
@@ -17,16 +17,6 @@ interface StatBentoRowProps {
 export function StatBentoRow({ char, abilities, skills, onUpdate, onToggleInspiration }: StatBentoRowProps) {
   const dict = useDict();
   const inspired = char.inspiration ?? false;
-
-  const inspireStars = useMemo(() =>
-    Array.from({ length: 18 }, () => ({
-      char: Math.random() > 0.5 ? "✦" : "✧",
-      size: Math.random() * 30 + 7,
-      top: Math.random() * 90 + 5,
-      left: Math.random() * 90 + 5,
-      opacity: Math.random() * 0.4 + 0.08,
-      rotate: Math.random() * 40 - 20,
-    })), []);
 
   // Passive Perception = 10 + Perception skill bonus
   const wisScore = abilities?.Wisdom?.score ?? 10;
@@ -124,19 +114,7 @@ export function StatBentoRow({ char, abilities, skills, onUpdate, onToggleInspir
             {inspired ? "★" : "—"}
           </div>
 
-          {/* Random star field */}
-          {inspireStars.map((s, i) => (
-            <span key={i} className="absolute select-none pointer-events-none transition-all duration-300"
-              style={{
-                top: `${s.top}%`, left: `${s.left}%`,
-                fontSize: `${s.size}px`, lineHeight: 1,
-                color: inspired ? "#c8a84b" : "var(--color-muted)",
-                opacity: inspired ? s.opacity : s.opacity * 0.25,
-                transform: `rotate(${s.rotate}deg)`,
-              }}>
-              {s.char}
-            </span>
-          ))}
+          <SparkleBackground color={inspired ? "#c8a84b" : "var(--color-muted)"} chars={["✦", "✧"]} dim={!inspired} />
         </button>
       </div>
     </div>
