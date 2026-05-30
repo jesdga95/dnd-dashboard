@@ -135,21 +135,20 @@ export function DmDashboard() {
               {(members.length === 1 ? dict.dm.playerCount : dict.dm.playersCount).replace("{count}", String(members.length))} · {dict.dm.liveUpdates}
             </p>
           </div>
-          <button
-            onClick={() => setCombatOpen(true)}
-            disabled={!combat && members.length === 0}
-            className="flex items-center gap-2 px-3.5 py-2 rounded-[12px] text-[13px] font-semibold
-              cursor-pointer transition-colors duration-150 shrink-0
-              disabled:opacity-30 disabled:cursor-not-allowed"
-            style={{
-              background: "rgba(244,123,95,0.14)",
-              color: "var(--color-coral)",
-              border: "1px solid rgba(244,123,95,0.25)",
-            }}
-          >
-            <Swords size={14} />
-            <span className="max-[480px]:hidden">{combat ? dict.dmCombat.resume : dict.dmCombat.start}</span>
-          </button>
+          {!combatOpen && (
+            <button
+              onClick={() => setCombatOpen(true)}
+              disabled={!combat && members.length === 0}
+              className="flex items-center gap-2 px-3.5 py-2 rounded-[12px] text-[13px] font-semibold
+                cursor-pointer transition-colors duration-150 shrink-0
+                disabled:opacity-30 disabled:cursor-not-allowed
+                bg-[rgba(244,123,95,0.14)] text-[var(--color-coral)] border border-[rgba(244,123,95,0.25)]
+                max-[768px]:bg-[rgba(244,123,95,1)] max-[768px]:text-white max-[768px]:border-[rgba(244,123,95,1)]"
+            >
+              <Swords size={14} />
+              <span className="max-[480px]:hidden">{combat ? dict.dmCombat.resume : dict.dmCombat.start}</span>
+            </button>
+          )}
         </div>
 
         {/* Add player input */}

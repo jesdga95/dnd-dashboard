@@ -2,8 +2,9 @@
 
 import { useState, useRef, useEffect } from "react";
 import { usePlayerCombat } from "@/hooks/usePlayerCombat";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useDict } from "@/lib/DictContext";
-import { Swords, X, Shield, Plus, Check } from "lucide-react";
+import { Swords, X, Shield, Plus, Check, Maximize2, Minimize2 } from "lucide-react";
 import { EditableNumber } from "@/components/ui/EditableNumber";
 import { CombatantList } from "@/components/combat/CombatantList";
 import type { DmCombat, Character } from "@/lib/types";
@@ -33,6 +34,9 @@ function PlayerCombatViewInner({
   onDismiss,
 }: PlayerCombatViewProps & { combat: DmCombat }) {
   const dict = useDict();
+  const isDesktop = useMediaQuery("(min-width: 1280px)");
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const isSidebar = isDesktop && !isFullscreen;
 
   const [customAmount, setCustomAmount] = useState("");
   const [statusInput, setStatusInput] = useState("");
@@ -51,16 +55,26 @@ function PlayerCombatViewInner({
   const tempPct = (tempHp / total) * 100;
 
   useEffect(() => {
-    document.body.style.overflow = "hidden";
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onDismissRef.current();
     };
     document.addEventListener("keydown", onKey);
-    return () => {
-      document.body.style.overflow = "";
-      document.removeEventListener("keydown", onKey);
-    };
+    return () => document.removeEventListener("keydown", onKey);
   }, []);
+
+  useEffect(() => {
+    if (isSidebar) {
+      document.body.style.paddingRight = "420px";
+      document.body.style.overflow = "";
+    } else {
+      document.body.style.paddingRight = "";
+      document.body.style.overflow = "hidden";
+    }
+    return () => {
+      document.body.style.paddingRight = "";
+      document.body.style.overflow = "";
+    };
+  }, [isSidebar]);
 
 
 
@@ -88,39 +102,47 @@ function PlayerCombatViewInner({
 
   return (
     <div
-      className="fixed inset-0 z-[200] overflow-y-auto"
+      className={isSidebar
+        ? "fixed top-0 right-0 bottom-0 z-[200] overflow-y-auto w-[420px] border-l border-white/[0.08]"
+        : "fixed inset-0 z-[200] overflow-y-auto"
+      }
       style={{
         background:
           "radial-gradient(ellipse 110% 55% at 50% -5%, rgba(160,25,8,0.3) 0%, transparent 65%), #0e0906",
       }}
     >
-      {/* ── Top bar ── */}
+      {/* ── Header ── */}
       <div
-        className="sticky top-0 z-10 flex items-center justify-between px-5 py-3"
+        className="sticky top-0 z-10 flex items-center px-3 py-2 gap-1"
         style={{
           background: "rgba(14,9,6,0.92)",
           backdropFilter: "blur(10px)",
           borderBottom: "1px solid rgba(255,255,255,0.06)",
         }}
       >
+        <div className="flex items-center gap-2 text-[11.5px] font-bold tracking-[0.22em] uppercase text-white/30 px-1.5">
+          <Swords size={13} style={{ color: "var(--color-coral)" }} />
+          {dict.combat.title}
+        </div>
+        <div className="flex-1" />
+        {isDesktop && (
+          <button
+            onClick={() => setIsFullscreen(f => !f)}
+            className="flex items-center p-1.5 rounded-[7px] bg-transparent cursor-pointer
+              transition-colors text-white/40 hover:text-white/65 hover:bg-white/[0.06]
+              border border-white/15 hover:border-white/25"
+          >
+            {isFullscreen ? <Minimize2 size={12} /> : <Maximize2 size={12} />}
+          </button>
+        )}
         <button
           onClick={onDismiss}
-          className="flex items-center gap-2 text-[13.5px] font-semibold px-3 py-2 rounded-lg
-            border-none bg-transparent cursor-pointer font-[inherit] transition-colors
-            text-white/35 hover:text-white/65 hover:bg-white/[0.06]"
+          className="flex items-center p-1.5 rounded-[7px] bg-transparent cursor-pointer
+            transition-colors text-white/40 hover:text-white/65 hover:bg-white/[0.06]
+            border border-white/15 hover:border-white/25"
         >
-          <X size={14} />
-          <span className="max-[460px]:hidden">{dict.combatMode.exit}</span>
+          <X size={12} />
         </button>
-
-        <div className="flex flex-col items-center gap-0.5">
-          <div className="flex items-center gap-2 text-[12px] font-bold tracking-[0.22em] uppercase text-white/30">
-            <Swords size={14} style={{ color: "var(--color-coral)" }} />
-            {dict.combat.title}
-          </div>
-        </div>
-
-        <div className="w-[80px]" />
       </div>
 
       {/* ── Main content ── */}

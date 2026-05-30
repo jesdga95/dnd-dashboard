@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { X, Plus, Swords, SkipForward } from "lucide-react";
+import { X, Plus, Swords, SkipForward, Maximize2, Minimize2 } from "lucide-react";
 import { useDict } from "@/lib/DictContext";
 import { useDmCombat } from "@/hooks/useDmCombat";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { CombatantList, type MonsterControls, type MemberLiveData } from "@/components/combat/CombatantList";
 import type { PartyMember } from "@/hooks/useDmParty";
 import type { Combatant, MonsterCombatant } from "@/lib/types";
@@ -333,20 +334,35 @@ export function DmCombatMode({ members, onClose }: DmCombatModeProps) {
     updateMonster,
   } = useDmCombat();
 
+  const isDesktop = useMediaQuery("(min-width: 1280px)");
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const isSidebar = isDesktop && !isFullscreen;
   const onCloseRef = useRef(onClose);
   onCloseRef.current = onClose;
 
+  // Keyboard handler
   useEffect(() => {
-    document.body.style.overflow = "hidden";
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onCloseRef.current();
     };
     document.addEventListener("keydown", onKey);
-    return () => {
-      document.body.style.overflow = "";
-      document.removeEventListener("keydown", onKey);
-    };
+    return () => document.removeEventListener("keydown", onKey);
   }, []);
+
+  // Body scroll / padding
+  useEffect(() => {
+    if (isSidebar) {
+      document.body.style.paddingRight = "420px";
+      document.body.style.overflow = "";
+    } else {
+      document.body.style.paddingRight = "";
+      document.body.style.overflow = "hidden";
+    }
+    return () => {
+      document.body.style.paddingRight = "";
+      document.body.style.overflow = "";
+    };
+  }, [isSidebar]);
 
   // Build live member data for CombatantList
   const memberData: Record<string, MemberLiveData> = Object.fromEntries(
@@ -373,71 +389,81 @@ export function DmCombatMode({ members, onClose }: DmCombatModeProps) {
 
   return (
     <div
-      className="fixed inset-0 z-[200] overflow-y-auto"
+      className={isSidebar
+        ? "fixed top-0 right-0 bottom-0 z-[200] overflow-y-auto w-[420px] border-l border-white/[0.08]"
+        : "fixed inset-0 z-[200] overflow-y-auto"
+      }
       style={{
         background:
           "radial-gradient(ellipse 110% 55% at 50% -5%, rgba(160,25,8,0.3) 0%, transparent 65%), #0e0906",
       }}
     >
-      {/* ── Top bar ── */}
+      {/* ── Header ── */}
       <div
-        className="sticky top-0 z-10 flex items-center px-5 py-3 gap-2"
+        className="sticky top-0 z-10"
         style={{
           background: "rgba(14,9,6,0.92)",
           backdropFilter: "blur(10px)",
           borderBottom: "1px solid rgba(255,255,255,0.06)",
         }}
       >
-        <div className="flex items-center gap-1.5">
+        {/* Title bar */}
+        <div
+          className="flex items-center px-3 py-2 gap-1"
+          style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}
+        >
+          <div className="flex items-center gap-2 text-[11.5px] font-bold tracking-[0.22em] uppercase text-white/30 px-1.5">
+            <Swords size={13} style={{ color: "var(--color-coral)" }} />
+            <span>{combat ? dict.dmCombat.title : dict.dmCombat.setupTitle}</span>
+          </div>
+          <div className="flex-1" />
+          {isDesktop && (
+            <button
+              onClick={() => setIsFullscreen(f => !f)}
+              className="flex items-center p-1.5 rounded-[7px] bg-transparent cursor-pointer
+                transition-colors text-white/40 hover:text-white/65 hover:bg-white/[0.06]
+                border border-white/15 hover:border-white/25"
+            >
+              {isFullscreen ? <Minimize2 size={12} /> : <Maximize2 size={12} />}
+            </button>
+          )}
           <button
             onClick={onClose}
-            className="flex items-center gap-2 text-[13.5px] font-semibold px-3 py-2 rounded-lg
-              border-none bg-transparent cursor-pointer font-[inherit] transition-colors
-              text-white/35 hover:text-white/65 hover:bg-white/[0.06]"
+            className="flex items-center p-1.5 rounded-[7px] bg-transparent cursor-pointer
+              transition-colors text-white/40 hover:text-white/65 hover:bg-white/[0.06]
+              border border-white/15 hover:border-white/25"
           >
-            <X size={14} />
-            <span className="max-[460px]:hidden">{dict.dmCombat.exit}</span>
+            <X size={12} />
           </button>
-          {combat && (
+        </div>
+
+        {/* Round / actions bar — only during active combat */}
+        {combat && (
+          <div className="flex items-center px-3 py-1.5 gap-1">
+            <span className="text-[12px] font-semibold text-white/25 px-1.5">
+              {dict.dmCombat.round} {combat.round}
+            </span>
+            <div className="flex-1" />
+            <button
+              onClick={nextTurn}
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-[7px] text-[12px] font-semibold
+                cursor-pointer font-[inherit] transition-colors
+                bg-[rgba(244,123,95,0.12)] text-[var(--color-coral)] border border-[rgba(244,123,95,0.25)]
+                hover:bg-[rgba(244,123,95,0.22)] hover:border-[rgba(244,123,95,0.4)]"
+            >
+              <SkipForward size={12} />
+              {dict.dmCombat.nextTurn}
+            </button>
             <button
               onClick={endCombat}
-              className="flex items-center gap-1.5 text-[13px] font-semibold px-3 py-2 rounded-full
-                border-none cursor-pointer font-[inherit] transition-colors
-                text-white/35 hover:text-white/60 hover:bg-white/[0.06] max-[460px]:hidden"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-[7px] text-[12px] font-semibold
+                cursor-pointer font-[inherit] transition-colors
+                bg-[rgba(244,123,95,0.12)] text-[var(--color-coral)] border border-[rgba(244,123,95,0.25)]
+                hover:bg-[rgba(244,123,95,0.22)] hover:border-[rgba(244,123,95,0.4)]"
             >
               {dict.dmCombat.endCombat}
             </button>
-          )}
-        </div>
-
-        <div className="flex-1 flex justify-center">
-          <div className="flex items-center gap-2 text-[12px] font-bold tracking-[0.22em] uppercase text-white/30">
-            <Swords size={14} style={{ color: "var(--color-coral)" }} />
-            <span>{combat ? dict.dmCombat.title : dict.dmCombat.setupTitle}</span>
-            {combat && (
-              <span className="text-white/20">· {dict.dmCombat.round} {combat.round}</span>
-            )}
           </div>
-        </div>
-
-        {combat ? (
-          <button
-            onClick={nextTurn}
-            className="flex items-center gap-1.5 text-[13px] font-semibold px-3 py-2 rounded-full
-              border-none cursor-pointer font-[inherit] transition-colors"
-            style={{ background: "rgba(244,123,95,0.16)", color: "var(--color-coral)" }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.background = "rgba(244,123,95,0.26)";
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.background = "rgba(244,123,95,0.16)";
-            }}
-          >
-            <SkipForward size={13} />
-            <span className="max-[460px]:hidden">{dict.dmCombat.nextTurn}</span>
-          </button>
-        ) : (
-          <div className="w-[80px]" />
         )}
       </div>
 
