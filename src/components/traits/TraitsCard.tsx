@@ -43,8 +43,8 @@ export function TraitsCard({ traits, onSave, onDelete }: TraitsCardProps) {
         {traits.map((t) => (
           <div key={t.id}
             role="button" tabIndex={0} aria-label={t.name}
-            className="group relative bg-[var(--color-lavender)] text-[var(--color-lavender-deep)]
-              rounded-[12px] px-3 py-2 cursor-pointer
+            className="group relative min-w-0 bg-[var(--color-lavender)] text-[var(--color-lavender-deep)]
+              rounded-[12px] pl-3 pr-10 py-2 cursor-pointer
               hover:bg-[#e1d4ef] transition-colors duration-150"
             onClick={() => setEditing(t)}
             onKeyDown={(e) => {
@@ -54,17 +54,17 @@ export function TraitsCard({ traits, onSave, onDelete }: TraitsCardProps) {
               }
             }}
           >
-            <span className="text-[13px] font-bold">{t.name}</span>
-            {/* Delete — absolute, no layout impact on desktop */}
+            <span className="block text-[13px] font-bold break-words">{t.name}</span>
+            {/* Delete — absolute, always visible (also on mobile/tablet) */}
             <Btn variant="default" size="xs" iconOnly
-              className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 [@media(hover:none)]:opacity-100
-                transition-opacity hover:bg-[var(--color-peach)] hover:text-[var(--color-coral-deep)] hover:border-transparent"
+              className="absolute right-2 top-2
+                transition-colors hover:bg-[var(--color-peach)] hover:text-[var(--color-coral-deep)] hover:border-transparent"
               onClick={(e) => { e.stopPropagation(); onDelete(t.id); }}
             >
               <X size={10} />
             </Btn>
             {t.desc && (
-              <p className="text-[12px] font-medium text-[var(--color-lavender-deep)]/70 mt-0.5 leading-snug">
+              <p className="text-[12px] font-medium text-[var(--color-lavender-deep)]/70 mt-0.5 leading-snug break-words">
                 {withDice(t.desc)}
               </p>
             )}

@@ -66,7 +66,8 @@ function ResourceEntry({
 
   return (
     <div className="bg-[var(--color-bg-warm)] rounded-[14px] px-3 py-2.5 group/res w-full">
-      <div className="flex items-center justify-between mb-2 gap-1">
+      {/* Header — name gets the full row, delete pinned right */}
+      <div className="flex items-center gap-1.5 mb-2">
         <input
           type="text"
           value={resource.name}
@@ -78,8 +79,22 @@ function ResourceEntry({
             placeholder:text-[var(--color-muted-soft)] placeholder:normal-case placeholder:tracking-normal
             placeholder:font-normal focus:text-[var(--color-ink)]"
         />
-        {/* S / L rest reset toggle */}
-        <div className="flex items-center gap-0.5 flex-shrink-0 opacity-0 group-hover/res:opacity-100 [@media(hover:none)]:opacity-100 transition-opacity duration-150">
+        {/* Delete — far right, always visible */}
+        <Btn variant="default" size="xs" iconOnly
+          onClick={onRemove}
+          title="Remove resource"
+          className="flex-shrink-0
+            hover:bg-[var(--color-peach)] hover:text-[var(--color-coral-deep)] hover:border-transparent
+            transition-colors duration-150"
+        >
+          <X size={9} />
+        </Btn>
+      </div>
+
+      {/* Controls — reset toggle + max stepper share a line with the usage slots */}
+      <div className="flex items-start gap-2">
+        {/* S / L rest reset toggle — always visible */}
+        <div className="flex items-center gap-0.5 flex-shrink-0 h-7">
           {(["short", "long"] as const).map((r) => (
             <button
               key={r}
@@ -97,66 +112,59 @@ function ResourceEntry({
             </button>
           ))}
         </div>
-        <Btn variant="default" size="xs" iconOnly
-          onClick={onRemove}
-          title="Remove resource"
-          className="opacity-0 group-hover/res:opacity-100 [@media(hover:none)]:opacity-100 flex-shrink-0
-            hover:bg-[var(--color-peach)] hover:text-[var(--color-coral-deep)] hover:border-transparent
-            transition-opacity duration-150"
-        >
-          <X size={9} />
-        </Btn>
-        <div className="flex items-center gap-0.5 flex-shrink-0">
+        {/* Max stepper — segmented button control */}
+        <div className="flex items-center flex-shrink-0 h-7 rounded-full overflow-hidden
+          border border-[var(--color-line)] bg-[var(--color-card)]">
           <button
             onClick={() => onUpdate({ max: resource.max - 1 })}
             disabled={resource.max === 0}
-            className="relative w-5 h-5 rounded-full flex items-center justify-center cursor-pointer
-              text-[var(--color-muted)] hover:bg-[var(--color-peach)] hover:text-[var(--color-coral-deep)]
-              active:scale-90 transition-[background,color,transform] duration-150
-              disabled:opacity-30 disabled:cursor-default
-              [@media(hover:none)]:before:absolute [@media(hover:none)]:before:content-[''] [@media(hover:none)]:before:-inset-2"
+            className="h-full px-1.5 flex items-center justify-center cursor-pointer
+              text-[var(--color-muted)] border-r border-[var(--color-line-soft)]
+              hover:bg-[var(--color-peach)] hover:text-[var(--color-coral-deep)]
+              active:opacity-70 transition-colors
+              disabled:opacity-30 disabled:pointer-events-none"
           >
-            <Minus size={9} />
+            <Minus size={11} strokeWidth={2.5} />
           </button>
-          <span className="text-[12px] font-semibold w-4 text-center text-[var(--color-ink)]">
+          <span className="w-6 text-center text-[12px] font-bold text-[var(--color-ink)] tabular-nums">
             {resource.max}
           </span>
           <button
             onClick={() => onUpdate({ max: resource.max + 1 })}
-            className="relative w-5 h-5 rounded-full flex items-center justify-center cursor-pointer
-              text-[var(--color-muted)] hover:bg-[var(--color-mint)] hover:text-[var(--color-mint-deep)]
-              active:scale-90 transition-[background,color,transform] duration-150
-              [@media(hover:none)]:before:absolute [@media(hover:none)]:before:content-[''] [@media(hover:none)]:before:-inset-2"
+            className="h-full px-1.5 flex items-center justify-center cursor-pointer
+              text-[var(--color-muted)] border-l border-[var(--color-line-soft)]
+              hover:bg-[var(--color-mint)] hover:text-[var(--color-mint-deep)]
+              active:opacity-70 transition-colors"
           >
-            <Plus size={9} />
+            <Plus size={11} strokeWidth={2.5} />
           </button>
         </div>
-      </div>
-
-      <div className="flex flex-wrap gap-1 min-h-[20px]">
-        {resource.max > 0 ? (
-          Array.from({ length: resource.max }).map((_, i) => {
-            const isAvailable = i < available;
-            return (
-              <button
-                key={i}
-                title={isAvailable ? dict.resources.useOne : dict.resources.restoreOne}
-                onClick={() =>
-                  onUpdate({ used: isAvailable ? resource.used + 1 : resource.used - 1 })
-                }
-                className={`relative w-5 h-5 rounded-full border-2 cursor-pointer flex-shrink-0
-                  transition-all duration-150 active:scale-90
-                  [@media(hover:none)]:before:absolute [@media(hover:none)]:before:content-[''] [@media(hover:none)]:before:-inset-1
-                  ${isAvailable
-                    ? "bg-[var(--color-sand-deep)] border-[var(--color-sand-deep)] hover:opacity-70"
-                    : "bg-transparent border-[var(--color-sand-deep)] opacity-30 hover:opacity-60"
-                  }`}
-              />
-            );
-          })
-        ) : (
-          <span className="text-[13px] text-[var(--color-muted-soft)]">—</span>
-        )}
+        {/* Usage slots — fill remaining width, wrap as needed */}
+        <div className="flex flex-wrap items-center gap-1 flex-1 min-h-[28px]">
+          {resource.max > 0 ? (
+            Array.from({ length: resource.max }).map((_, i) => {
+              const isAvailable = i < available;
+              return (
+                <button
+                  key={i}
+                  title={isAvailable ? dict.resources.useOne : dict.resources.restoreOne}
+                  onClick={() =>
+                    onUpdate({ used: isAvailable ? resource.used + 1 : resource.used - 1 })
+                  }
+                  className={`relative w-5 h-5 rounded-full border-2 cursor-pointer flex-shrink-0
+                    transition-all duration-150 active:scale-90
+                    [@media(hover:none)]:before:absolute [@media(hover:none)]:before:content-[''] [@media(hover:none)]:before:-inset-1
+                    ${isAvailable
+                      ? "bg-[var(--color-sand-deep)] border-[var(--color-sand-deep)] hover:opacity-70"
+                      : "bg-transparent border-[var(--color-sand-deep)] opacity-30 hover:opacity-60"
+                    }`}
+                />
+              );
+            })
+          ) : (
+            <span className="text-[13px] text-[var(--color-muted-soft)] self-center">—</span>
+          )}
+        </div>
       </div>
     </div>
   );
