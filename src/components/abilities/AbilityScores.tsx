@@ -27,7 +27,6 @@ export function AbilityScores({ abilities, proficiency, onUpdate, onToggleSave }
       <SectionHeader
         icon={<IconPill tint="lavender"><Zap size={14} /></IconPill>}
         title={dict.abilities.title}
-        sub={dict.abilities.subtitle}
       />
       <div className="grid grid-cols-6 gap-1 max-[1100px]:grid-cols-3 max-[460px]:grid-cols-2">
         {ABILITY_KEYS.map((key) => {

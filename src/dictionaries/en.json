@@ -61,11 +61,11 @@
     "signOut": "Sign out"
   },
   "hp": {
-    "title": "Hit Points",
+    "title": "HP",
     "longRest": "Long Rest",
     "tempHp": "Temp HP",
     "clear": "Clear",
-    "bloodied": "Bloodied"
+    "bloodied": "½ HP"
   },
   "deathSaves": {
     "title": "Death Saves",
@@ -75,7 +75,6 @@
   },
   "abilities": {
     "title": "Ability Scores",
-    "subtitle": "Click to edit score",
     "abbr": {
       "Strength": "STR",
       "Dexterity": "DEX",
@@ -112,7 +111,6 @@
   },
   "skills": {
     "title": "Skills",
-    "subtitle": "Click: — | Proficient | Expert",
     "profLabels": {
       "none": "—",
       "proficient": "P",

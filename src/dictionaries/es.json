@@ -61,11 +61,11 @@
     "signOut": "Cerrar sesión"
   },
   "hp": {
-    "title": "Puntos de Vida",
+    "title": "Vida",
     "longRest": "Descanso Largo",
     "tempHp": "PV Temp.",
     "clear": "Limpiar",
-    "bloodied": "Malherido"
+    "bloodied": "½ PV"
   },
   "deathSaves": {
     "title": "Tiradas de Muerte",
@@ -75,7 +75,6 @@
   },
   "abilities": {
     "title": "Características",
-    "subtitle": "Clic para editar puntuación",
     "abbr": {
       "Strength": "FUE",
       "Dexterity": "DES",
@@ -112,7 +111,6 @@
   },
   "skills": {
     "title": "Habilidades",
-    "subtitle": "Clic: — | Competente | Experto",
     "profLabels": {
       "none": "—",
       "proficient": "C",
