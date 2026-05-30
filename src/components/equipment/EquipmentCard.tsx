@@ -14,6 +14,7 @@ import { Modal, ModalField, ModalInput, ModalTextarea, ModalBtn } from "@/compon
 import { RowActions } from "@/components/ui/RowActions";
 import { useDict } from "@/lib/DictContext";
 import type { Dict } from "@/lib/DictContext";
+import { withDice } from "@/lib/text";
 import type { EquipmentItem } from "@/lib/types";
 
 type SlotKey = keyof Dict["equipment"]["slots"];
@@ -68,7 +69,7 @@ export function EquipmentCard({ equipment, onSave, onDelete }: EquipmentCardProp
         }
       />
       {equipment.length === 0 && (
-        <div className="text-center py-5 text-[13px] text-[var(--color-muted-soft)]">
+        <div className="text-center py-5 text-[14px] text-[var(--color-muted-soft)]">
           {dict.equipment.emptyStatePre}{" "}
           <strong className="text-[var(--color-ink)]">{dict.equipment.emptyStateHighlight}</strong>{" "}
           {dict.equipment.emptyStatePost}
@@ -88,13 +89,13 @@ export function EquipmentCard({ equipment, onSave, onDelete }: EquipmentCardProp
               </div>
               <div className="flex-1 min-w-0 pt-0.5">
                 {eq.slot && (
-                  <div className="text-[10px] font-bold tracking-[0.1em] uppercase text-[var(--color-muted)] mb-0.5 truncate">
+                  <div className="text-[12px] font-bold tracking-[0.1em] uppercase text-[var(--color-muted)] mb-0.5 truncate">
                     {(() => { const k = resolveSlotKey(eq.slot); return k ? dict.equipment.slots[k] : eq.slot; })()}
                   </div>
                 )}
-                <div className="font-bold text-[14px] leading-tight truncate">{eq.name}</div>
+                <div className="font-bold text-[15px] leading-tight truncate">{eq.name}</div>
                 {eq.mod && (
-                  <span className="inline-block mt-1 text-[11px] font-bold text-[var(--color-lavender-deep)]
+                  <span className="inline-block mt-1 text-[12px] font-bold text-[var(--color-lavender-deep)]
                     bg-[var(--color-lavender)] rounded-full px-[9px] py-[2px]">
                     {eq.mod}
                   </span>
@@ -108,7 +109,7 @@ export function EquipmentCard({ equipment, onSave, onDelete }: EquipmentCardProp
             </div>
 
             {eq.desc && (
-              <div className="text-[12.5px] text-[var(--color-muted)] leading-[1.4] line-clamp-2 break-words">{eq.desc}</div>
+              <div className="text-[13.5px] text-[var(--color-muted)] leading-[1.4] line-clamp-2 break-words">{withDice(eq.desc)}</div>
             )}
           </div>
         ))}
@@ -166,7 +167,7 @@ function EquipmentModal({
                 type="button"
                 onClick={() => setD({ ...d, slot: key })}
                 className={`flex flex-col items-center gap-1 py-2 px-1 rounded-[10px]
-                  text-[10px] font-semibold transition-all duration-150 cursor-pointer border
+                  text-[12px] font-semibold transition-all duration-150 cursor-pointer border
                   ${selected
                     ? "bg-[var(--color-blue)] text-[var(--color-blue-deep)] border-transparent shadow-[inset_0_0_0_1.5px_currentColor]"
                     : "bg-[var(--color-bg-warm)] text-[var(--color-muted)] border-[var(--color-line)] hover:bg-[var(--color-line)]"

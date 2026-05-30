@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { useDict } from "@/lib/DictContext";
+import { iconMatchesQuery, normalize } from "@/lib/icons";
 import { Search, X } from "lucide-react";
 import {
   Sword, Swords, Shield, Axe, Crosshair, Target, Bolt, Zap,
@@ -58,12 +59,26 @@ interface IconPickerProps {
 export function IconPicker({ value, onChange }: IconPickerProps) {
   const dict = useDict();
   const [query, setQuery] = useState("");
+  const gridRef = useRef<HTMLDivElement>(null);
+  const selectedRef = useRef<HTMLButtonElement>(null);
 
   const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
+    const q = normalize(query.trim());
     if (!q) return ALL_ICON_NAMES;
-    return ALL_ICON_NAMES.filter((n) => n.toLowerCase().includes(q));
+    return ALL_ICON_NAMES.filter((n) => iconMatchesQuery(n, q));
   }, [query]);
+
+  // Keep the selected icon in view (e.g. editing an item whose icon sits far down the grid).
+  // Scoped to the grid container and only when off-screen, so it never scrolls the modal or jumps mid-search.
+  useEffect(() => {
+    const c = gridRef.current, el = selectedRef.current;
+    if (!c || !el) return;
+    const cRect = c.getBoundingClientRect();
+    const eRect = el.getBoundingClientRect();
+    if (eRect.top < cRect.top || eRect.bottom > cRect.bottom) {
+      c.scrollTop += eRect.top - cRect.top - (c.clientHeight - el.clientHeight) / 2;
+    }
+  }, [value, filtered]);
 
   return (
     <div className="flex flex-col gap-2">
@@ -78,7 +93,7 @@ export function IconPicker({ value, onChange }: IconPickerProps) {
             text-[var(--color-muted)] pointer-events-none" />
           <input
             className="w-full border border-[var(--color-line)] rounded-[10px] bg-[var(--color-bg)]
-              pl-[30px] pr-[30px] py-[9px] text-[14px] text-[var(--color-ink)] font-[inherit] outline-none
+              pl-[30px] pr-[30px] py-[9px] text-[15px] text-[var(--color-ink)] font-[inherit] outline-none
               focus:border-[var(--color-coral)] focus:bg-white focus:shadow-[0_0_0_3px_rgba(244,123,95,0.15)]
               transition-all duration-150"
             value={query}
@@ -98,10 +113,10 @@ export function IconPicker({ value, onChange }: IconPickerProps) {
       </div>
 
       {/* Icon grid */}
-      <div className="border border-[var(--color-line)] rounded-[10px] bg-[var(--color-bg)]
+      <div ref={gridRef} className="border border-[var(--color-line)] rounded-[10px] bg-[var(--color-bg)]
         p-2 max-h-[168px] overflow-y-auto">
         {filtered.length === 0 ? (
-          <div className="text-[12px] text-[var(--color-muted)] text-center py-4">
+          <div className="text-[13px] text-[var(--color-muted)] text-center py-4">
             {dict.iconPicker.noMatch} &quot;{query}&quot;
           </div>
         ) : (
@@ -112,6 +127,7 @@ export function IconPicker({ value, onChange }: IconPickerProps) {
               return (
                 <button
                   key={name}
+                  ref={isSelected ? selectedRef : undefined}
                   title={humanize(name)}
                   onClick={() => onChange(name)}
                   className={`w-full aspect-square rounded-[8px] flex items-center justify-center

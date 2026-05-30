@@ -8,6 +8,7 @@ import { Btn } from "@/components/ui/Btn";
 import { Modal, ModalField, ModalInput, ModalBtn } from "@/components/ui/Modal";
 import { RowActions } from "@/components/ui/RowActions";
 import { useDict } from "@/lib/DictContext";
+import { withDice } from "@/lib/text";
 import type { Attack, AttackType, Combat } from "@/lib/types";
 
 interface CombatCardProps {
@@ -55,7 +56,7 @@ export function CombatCard({ combat, onSaveAttack, onDeleteAttack }: CombatCardP
       />
 
       {combat.attacks.length === 0 ? (
-        <div className="text-center py-5 text-[13px] text-[var(--color-muted-soft)]">
+        <div className="text-center py-5 text-[14px] text-[var(--color-muted-soft)]">
           {dict.combat.emptyStatePre}{" "}
           <strong className="text-[var(--color-ink)]">{dict.combat.emptyStateHighlight}</strong>{" "}
           {dict.combat.emptyStatePost}
@@ -70,18 +71,18 @@ export function CombatCard({ combat, onSaveAttack, onDeleteAttack }: CombatCardP
               {/* Row 1: type + name + desktop stats + desktop actions */}
               <div className="flex items-center gap-2.5">
                 {/* Type badge — initial on mobile, full label on desktop */}
-                <span className={`text-[9px] font-bold tracking-[0.08em] uppercase px-2 py-[3px]
+                <span className={`text-[11px] font-bold tracking-[0.08em] uppercase px-2 py-[3px]
                   rounded-full flex-shrink-0 ${TYPE_STYLES[a.type]}`}>
                   <span className="min-[1025px]:hidden">{dict.combat.types[a.type][0]}</span>
                   <span className="hidden min-[1025px]:inline">{dict.combat.types[a.type]}</span>
                 </span>
 
                 {/* Name */}
-                <span className="font-bold text-[14px] flex-1 min-w-0 truncate">{a.name}</span>
+                <span className="font-bold text-[15px] flex-1 min-w-0 truncate">{a.name}</span>
 
                 {/* Hit — desktop only */}
                 {a.hit && (
-                  <span className="hidden min-[1025px]:inline font-mono text-[11px] font-semibold text-[var(--color-muted)]
+                  <span className="hidden min-[1025px]:inline font-mono text-[12px] font-semibold text-[var(--color-muted)]
                     bg-[var(--color-bg-warm)] px-2 py-[3px] rounded-full flex-shrink-0">
                     {a.hit}
                   </span>
@@ -89,14 +90,14 @@ export function CombatCard({ combat, onSaveAttack, onDeleteAttack }: CombatCardP
 
                 {/* Note — desktop only */}
                 {a.note && (
-                  <span className="text-[12px] text-[var(--color-muted)] flex-shrink-0 hidden min-[1025px]:block">
-                    {a.note}
+                  <span className="text-[13px] text-[var(--color-muted)] flex-shrink-0 hidden min-[1025px]:block">
+                    {withDice(a.note)}
                   </span>
                 )}
 
                 {/* Dmg — desktop only */}
                 {a.dmg && (
-                  <span className={`hidden min-[1025px]:inline font-mono text-[12px] font-bold px-2.5 py-1 rounded-full flex-shrink-0 ${DMG_STYLES[a.type]}`}>
+                  <span className={`hidden min-[1025px]:inline font-mono text-[13px] font-bold px-2.5 py-1 rounded-full flex-shrink-0 ${DMG_STYLES[a.type]}`}>
                     {a.dmg}
                   </span>
                 )}
@@ -114,13 +115,13 @@ export function CombatCard({ combat, onSaveAttack, onDeleteAttack }: CombatCardP
               <div className="min-[1025px]:hidden mt-1 flex items-center gap-1.5">
                 <div className="flex items-center gap-1.5 flex-1 min-w-0">
                   {a.hit && (
-                    <div className="font-mono text-[11px] font-semibold text-[var(--color-muted)]
+                    <div className="font-mono text-[12px] font-semibold text-[var(--color-muted)]
                       bg-[var(--color-bg-warm)] px-2 py-[5px] rounded-lg text-center">
                       {a.hit}
                     </div>
                   )}
                   {a.dmg && (
-                    <div className={`font-mono text-[12px] font-bold px-2.5 py-[5px] rounded-lg text-center ${DMG_STYLES[a.type]}`}>
+                    <div className={`font-mono text-[13px] font-bold px-2.5 py-[5px] rounded-lg text-center ${DMG_STYLES[a.type]}`}>
                       {a.dmg}
                     </div>
                   )}
@@ -172,7 +173,7 @@ function AttackModal({
     >
       {/* Type selector */}
       <div>
-        <label className="block text-[11px] font-semibold text-[var(--color-muted)] tracking-[0.04em] mb-[8px]">
+        <label className="block text-[12px] font-semibold text-[var(--color-muted)] tracking-[0.04em] mb-[8px]">
           {dict.combat.modal.type}
         </label>
         <div className="flex gap-2">
@@ -180,7 +181,7 @@ function AttackModal({
             <button
               key={t}
               onClick={() => setD({ ...d, type: t })}
-              className={`flex-1 py-[7px] rounded-full text-[12px] font-bold border transition-all duration-150 cursor-pointer
+              className={`flex-1 py-[7px] rounded-full text-[13px] font-bold border transition-all duration-150 cursor-pointer
                 ${d.type === t
                   ? `${TYPE_STYLES[t]} border-transparent shadow-[inset_0_0_0_1.5px_currentColor]`
                   : "bg-[var(--color-bg-warm)] text-[var(--color-muted)] border-[var(--color-line)] hover:bg-[var(--color-line)]"

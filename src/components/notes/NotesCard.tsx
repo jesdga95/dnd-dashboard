@@ -33,7 +33,7 @@ export function NotesCard({ notes, onAdd, onUpdate, onDelete }: NotesCardProps) 
         }
       />
       {notes.length === 0 ? (
-        <div className="text-center py-5 px-2.5 text-[13px] text-[var(--color-muted-soft)]">
+        <div className="text-center py-5 px-2.5 text-[14px] text-[var(--color-muted-soft)]">
           {dict.notes.emptyStatePre}{" "}
           <strong className="text-[var(--color-ink)]">{dict.notes.emptyStateHighlight}</strong>{" "}
           {dict.notes.emptyStatePost}
@@ -72,7 +72,7 @@ function NoteRow({
       border border-transparent transition-all duration-150 relative group">
       <input
         className="w-full bg-transparent border-none outline-none font-[inherit]
-          text-[14px] font-bold text-[var(--color-ink)] p-0 mb-1
+          text-[15px] font-bold text-[var(--color-ink)] p-0 mb-1
           placeholder:text-[var(--color-muted-soft)] placeholder:font-semibold"
         value={note.title}
         placeholder={dict.notes.titlePlaceholder}
@@ -81,7 +81,7 @@ function NoteRow({
       />
       <textarea
         className="auto-grow w-full bg-transparent border-none outline-none font-[inherit]
-          text-[13.5px] text-[var(--color-ink-soft)] p-0 leading-[1.45]
+          text-[14.5px] text-[var(--color-ink-soft)] p-0 leading-[1.45]
           placeholder:text-[var(--color-muted-soft)]"
         value={note.body}
         placeholder={dict.notes.bodyPlaceholder}

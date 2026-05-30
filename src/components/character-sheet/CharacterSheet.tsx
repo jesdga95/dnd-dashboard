@@ -243,7 +243,7 @@ export function CharacterSheet() {
         <button
           onClick={() => setDmCombatDismissed(false)}
           className="fixed bottom-6 right-6 z-[190] flex items-center gap-2 px-4 py-3
-            rounded-[14px] text-[13px] font-bold cursor-pointer shadow-2xl transition-all duration-150"
+            rounded-[14px] text-[14px] font-bold cursor-pointer shadow-2xl transition-all duration-150"
           style={{
             background: "rgba(244,123,95,0.95)",
             color: "white",

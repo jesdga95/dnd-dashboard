@@ -99,7 +99,7 @@ export function SkillsCard({
                 onClick={() => cycle(skill.name)}
                 title={dict.skills.profTitles[prof]}
                 aria-label={`${dict.skills.names[skill.name as keyof typeof dict.skills.names] ?? skill.name}: ${dict.skills.profTitles[prof]}`}
-                className={`relative w-6 h-6 mt-0.5 rounded-full border text-[10px] font-bold flex-shrink-0
+                className={`relative w-6 h-6 mt-0.5 rounded-full border text-[12px] font-bold flex-shrink-0
                   flex items-center justify-center cursor-pointer transition-all duration-150 active:scale-90
                   [@media(hover:none)]:before:absolute [@media(hover:none)]:before:content-[''] [@media(hover:none)]:before:-inset-2
                   ${PROF_STYLES[prof]}`}
@@ -109,15 +109,15 @@ export function SkillsCard({
 
               {/* Name + modifier/ability row below */}
               <div className="flex-1 min-w-0">
-                <span className="text-[12px] font-semibold block truncate leading-tight">
+                <span className="text-[13px] font-semibold block truncate leading-tight">
                   {dict.skills.names[skill.name as keyof typeof dict.skills.names] ?? skill.name}
                 </span>
                 <div className="flex items-center gap-1 mt-[1px]">
-                  <span className="font-mono text-[11px] font-bold text-[var(--color-ink)]">
+                  <span className="font-mono text-[12px] font-bold text-[var(--color-ink)]">
                     {fmtMod(mod)}
                   </span>
-                  <span className="text-[10px] text-[var(--color-muted-soft)]">·</span>
-                  <span className="text-[11px] font-bold tracking-[0.08em] uppercase
+                  <span className="text-[12px] text-[var(--color-muted-soft)]">·</span>
+                  <span className="text-[12px] font-bold tracking-[0.08em] uppercase
                     text-[var(--color-muted-soft)]">
                     {dict.abilities.abbr[skill.ability]}
                   </span>

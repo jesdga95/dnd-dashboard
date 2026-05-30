@@ -97,4 +97,32 @@ input[type="number"]::-webkit-inner-spin-button {
   }
 }
 
+/* One-shot 'bloodied' flinch on the HP bar when current HP crosses half */
+@keyframes hpFlinch {
+  0% { transform: scaleX(1); }
+  35% { transform: scaleX(0.975); }
+  100% { transform: scaleX(1); }
+}
+.hp-flinch {
+  animation: hpFlinch 0.45s ease-out;
+  transform-origin: left center;
+}
+
+/* Continuous pulse on the red fill itself while bloodied — brightens + glows from the bar */
+@keyframes hpBloodiedFill {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 100% 0%; }
+}
+.hp-bloodied-fill {
+  background: repeating-linear-gradient(
+    -55deg,
+    var(--color-coral-deep) 0px,
+    var(--color-coral-deep) 12px,
+    var(--color-coral) 12px,
+    var(--color-coral) 24px
+  );
+  background-size: 34px 34px;
+  animation: hpBloodiedFill 3s linear infinite;
+}
+
 

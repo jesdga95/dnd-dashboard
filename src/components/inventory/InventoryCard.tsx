@@ -10,6 +10,8 @@ import { Modal, ModalField, ModalInput, ModalTextarea, ModalBtn } from "@/compon
 import { IconPicker, InventoryIcon } from "@/components/ui/IconPicker";
 import { SparkleBackground } from "@/components/ui/SparkleBackground";
 import { useDict } from "@/lib/DictContext";
+import { withDice } from "@/lib/text";
+import { suggestIcon } from "@/lib/icons";
 import type { InventoryItem, Character } from "@/lib/types";
 
 interface InventoryCardProps {
@@ -71,7 +73,7 @@ export function InventoryCard({ inventory, gold, silver, onSave, onDelete, onTog
           <SparkleBackground color="#c8a010" chars={["◉", "◎", "○"]} />
           <CoinGlyph color="#7a5010" />
           <div className="relative z-10 flex flex-col items-center">
-            <div className="self-start text-[9px] font-extrabold tracking-[0.18em] uppercase text-[#7a5010]/60 mb-0.5">
+            <div className="self-start text-[11px] font-extrabold tracking-[0.18em] uppercase text-[#7a5010]/60 mb-0.5">
               {dict.coins.gold}
             </div>
             <EditableNumber value={gold} onChange={(v) => onUpdate({ gold: v })} min={0}
@@ -88,7 +90,7 @@ export function InventoryCard({ inventory, gold, silver, onSave, onDelete, onTog
           <SparkleBackground color="#908880" chars={["◉", "◎", "○"]} />
           <CoinGlyph color="#5a5248" />
           <div className="relative z-10 flex flex-col items-center">
-            <div className="self-start text-[9px] font-extrabold tracking-[0.18em] uppercase text-[#5a5248]/60 mb-0.5">
+            <div className="self-start text-[11px] font-extrabold tracking-[0.18em] uppercase text-[#5a5248]/60 mb-0.5">
               {dict.coins.silver}
             </div>
             <EditableNumber value={silver} onChange={(v) => onUpdate({ silver: v })} min={0}
@@ -98,7 +100,7 @@ export function InventoryCard({ inventory, gold, silver, onSave, onDelete, onTog
       </div>
 
       {inventory.length === 0 && (
-        <div className="text-center py-5 text-[13px] text-[var(--color-muted-soft)]">
+        <div className="text-center py-5 text-[14px] text-[var(--color-muted-soft)]">
           {dict.inventory.emptyStatePre}{" "}
           <strong className="text-[var(--color-ink)]">{dict.inventory.emptyStateHighlight}</strong>{" "}
           {dict.inventory.emptyStatePost}
@@ -140,12 +142,12 @@ export function InventoryCard({ inventory, gold, silver, onSave, onDelete, onTog
                 <InventoryIcon name={item.icon} size={28} />
               </span>
               <div className="w-full text-center">
-                <div className="text-[12px] font-semibold text-[var(--color-ink)] truncate leading-tight">
-                  {item.name}
+                <div className="text-[14px] font-semibold text-[var(--color-ink)] truncate leading-tight">
+                  {withDice(item.name)}
                 </div>
                 {item.note && (
-                  <div className="text-[10px] text-[var(--color-muted)] truncate leading-tight mt-0.5">
-                    {item.note}
+                  <div className="text-[12px] text-[var(--color-muted)] truncate leading-tight mt-0.5">
+                    {withDice(item.note)}
                   </div>
                 )}
               </div>
@@ -163,7 +165,7 @@ export function InventoryCard({ inventory, gold, silver, onSave, onDelete, onTog
                     active:opacity-70 cursor-pointer transition-colors">
                   <Minus size={10} strokeWidth={2.5} />
                 </button>
-                <span className="w-[32px] text-center text-[12px] font-extrabold text-[var(--color-peach-deep)]">
+                <span className="w-[32px] text-center text-[14px] font-extrabold text-[var(--color-peach-deep)]">
                   {item.qty}
                 </span>
                 <button
@@ -202,6 +204,8 @@ function InventoryModal({
 }) {
   const dict = useDict();
   const [d, setD] = useState<InventoryItem>(item);
+  // Auto-suggest an icon while the user hasn't picked one (new items default to "Package").
+  const [autoIcon, setAutoIcon] = useState(!item.icon || item.icon === "Package");
   return (
     <Modal
       title={item.id ? dict.inventory.modal.editTitle : dict.inventory.modal.addTitle}
@@ -215,7 +219,13 @@ function InventoryModal({
     >
       <div className="grid grid-cols-2 gap-2.5">
         <ModalField label={dict.inventory.modal.name}>
-          <ModalInput value={d.name} onChange={(v) => setD({ ...d, name: v })} autoFocus maxLength={50} />
+          <ModalInput value={d.name} autoFocus maxLength={50}
+            onChange={(v) => setD((prev) => ({
+              ...prev,
+              name: v,
+              // Keep the last suggestion (or manual default) when the new text matches nothing — don't reset.
+              ...(autoIcon ? { icon: suggestIcon(v) ?? prev.icon } : {}),
+            }))} />
         </ModalField>
         <ModalField label={dict.inventory.modal.quantity}>
           <ModalInput
@@ -226,7 +236,7 @@ function InventoryModal({
         </ModalField>
       </div>
       <ModalField label={dict.inventory.modal.icon}>
-        <IconPicker value={d.icon || ""} onChange={(v) => setD({ ...d, icon: v })} />
+        <IconPicker value={d.icon || ""} onChange={(v) => { setAutoIcon(false); setD({ ...d, icon: v }); }} />
       </ModalField>
       <ModalField label={dict.inventory.modal.noteModifier}>
         <ModalTextarea value={d.note || ""} onChange={(v) => setD({ ...d, note: v })} maxLength={200} />

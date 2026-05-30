@@ -31,7 +31,7 @@ export function ResourcesCard({ resources, onAdd, onUpdate, onRemove }: Resource
       />
 
       {resources.length === 0 && (
-        <div className="text-center py-5 text-[13px] text-[var(--color-muted-soft)]">
+        <div className="text-center py-5 text-[14px] text-[var(--color-muted-soft)]">
           {dict.resources.emptyStatePre}{" "}
           <strong className="text-[var(--color-ink)]">{dict.resources.emptyStateHighlight}</strong>{" "}
           {dict.resources.emptyStatePost}
@@ -73,7 +73,7 @@ function ResourceEntry({
           onChange={(e) => onUpdate({ name: e.target.value })}
           placeholder={dict.resources.namePlaceholder}
           maxLength={30}
-          className="text-[11px] font-bold uppercase tracking-[0.08em] text-[var(--color-muted)]
+          className="text-[12px] font-bold uppercase tracking-[0.08em] text-[var(--color-muted)]
             bg-transparent border-none outline-none w-0 flex-1 min-w-0
             placeholder:text-[var(--color-muted-soft)] placeholder:normal-case placeholder:tracking-normal
             placeholder:font-normal focus:text-[var(--color-ink)]"
@@ -85,7 +85,7 @@ function ResourceEntry({
               key={r}
               onClick={() => onUpdate({ resetOn: r })}
               title={r === "short" ? dict.resources.resetShort : dict.resources.resetLong}
-              className={`relative text-[9px] font-bold w-5 h-5 rounded-full cursor-pointer
+              className={`relative text-[11px] font-bold w-5 h-5 rounded-full cursor-pointer
                 active:scale-90 transition-[background,color,transform] duration-150
                 [@media(hover:none)]:before:absolute [@media(hover:none)]:before:content-[''] [@media(hover:none)]:before:-inset-1
                 ${(resource.resetOn ?? "long") === r
@@ -118,7 +118,7 @@ function ResourceEntry({
           >
             <Minus size={9} />
           </button>
-          <span className="text-[11px] font-semibold w-4 text-center text-[var(--color-ink)]">
+          <span className="text-[12px] font-semibold w-4 text-center text-[var(--color-ink)]">
             {resource.max}
           </span>
           <button
@@ -155,7 +155,7 @@ function ResourceEntry({
             );
           })
         ) : (
-          <span className="text-[12px] text-[var(--color-muted-soft)]">—</span>
+          <span className="text-[13px] text-[var(--color-muted-soft)]">—</span>
         )}
       </div>
     </div>

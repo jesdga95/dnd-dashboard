@@ -38,7 +38,7 @@ export function AbilityScores({ abilities, proficiency, onUpdate, onToggleSave }
           return (
             <div key={key}
               className="text-center px-2 py-3 rounded-[12px] hover:bg-[var(--color-bg-warm)] transition-colors duration-150">
-              <div className="text-[10px] font-bold tracking-[0.1em] text-[var(--color-muted)] uppercase">
+              <div className="text-[12px] font-bold tracking-[0.1em] text-[var(--color-muted)] uppercase">
                 {dict.abilities.abbr[key]}
               </div>
               <div className="text-[28px] font-extrabold tracking-tight leading-none my-1.5 text-[var(--color-ink)] max-[460px]:text-[24px]">
@@ -48,7 +48,7 @@ export function AbilityScores({ abilities, proficiency, onUpdate, onToggleSave }
                   style={{ width: 52, textAlign: "center", fontWeight: 800 }}
                 />
               </div>
-              <span className="inline-block bg-[var(--color-bg-warm)] rounded-full px-2 py-0.5 text-[12px] font-bold text-[var(--color-ink)]">
+              <span className="inline-block bg-[var(--color-bg-warm)] rounded-full px-2 py-0.5 text-[13px] font-bold text-[var(--color-ink)]">
                 {modStr}
               </span>
               <button
@@ -58,7 +58,7 @@ export function AbilityScores({ abilities, proficiency, onUpdate, onToggleSave }
                   ${saveProficient ? "text-[var(--color-lavender-deep)]" : "text-[var(--color-line)]"}`}
               >
                 {saveProficient ? <ShieldCheck size={13} /> : <Shield size={13} />}
-                <span className={`text-[10px] font-bold font-mono ${saveProficient ? "text-[var(--color-lavender-deep)]" : "text-[var(--color-muted-soft)]"}`}>
+                <span className={`text-[12px] font-bold font-mono ${saveProficient ? "text-[var(--color-lavender-deep)]" : "text-[var(--color-muted-soft)]"}`}>
                   {saveBonusStr}
                 </span>
               </button>

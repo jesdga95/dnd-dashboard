@@ -34,7 +34,7 @@ const tintLabel: Record<Tint, string> = {
 function StatChip({ label, value, tint }: { label: string; value: string | number; tint: Tint }) {
   return (
     <div className={`${tintBg[tint]} rounded-[12px] px-2 py-2 border border-black/[0.02]`}>
-      <div className={`text-[8.5px] font-bold tracking-[0.1em] uppercase ${tintLabel[tint]} mb-1`}>{label}</div>
+      <div className={`text-[10.5px] font-bold tracking-[0.1em] uppercase ${tintLabel[tint]} mb-1`}>{label}</div>
       <div className={`text-[18px] font-extrabold tracking-tight leading-none ${tintText[tint]}`}>{value}</div>
     </div>
   );
@@ -64,13 +64,13 @@ function ErrorCard({ uid, message }: { uid: string; message: string }) {
     <div className="rounded-[22px] overflow-hidden shadow-[var(--shadow-md)] border border-black/[0.025]">
       <div className="h-[6px]" style={{ background: "rgba(244,123,95,0.3)" }} />
       <div className="bg-[var(--color-card)] px-5 py-6">
-        <p className="text-[13px] font-semibold text-[var(--color-coral)]">
+        <p className="text-[14px] font-semibold text-[var(--color-coral)]">
           {isNotShared ? dict.dm.notShared : "Character not found"}
         </p>
-        <p className="text-[11px] text-[var(--color-muted)] mt-1">
+        <p className="text-[12px] text-[var(--color-muted)] mt-1">
           {isNotShared ? dict.dm.notSharedHint : "Check the ID and try again."}
         </p>
-        <p className="text-[10px] text-[var(--color-muted)] mt-3 font-mono opacity-50 truncate">{uid}</p>
+        <p className="text-[12px] text-[var(--color-muted)] mt-3 font-mono opacity-50 truncate">{uid}</p>
       </div>
     </div>
   );
@@ -132,7 +132,7 @@ export function PartyCard({ member, onRemove }: PartyCardProps) {
               </div>
               {char.inCombat && (
                 <span
-                  className="flex items-center gap-1 px-1.5 py-0.5 rounded-[6px] shrink-0 text-[10px] font-bold"
+                  className="flex items-center gap-1 px-1.5 py-0.5 rounded-[6px] shrink-0 text-[12px] font-bold"
                   style={{ background: "rgba(244,123,95,0.18)", color: "var(--color-coral)", border: "1px solid rgba(244,123,95,0.3)" }}
                 >
                   <Swords size={9} />
@@ -140,7 +140,7 @@ export function PartyCard({ member, onRemove }: PartyCardProps) {
               )}
             </div>
             {identity && (
-              <div className="text-[11px] text-white/40 mt-0.5 truncate">{identity}</div>
+              <div className="text-[12px] text-white/40 mt-0.5 truncate">{identity}</div>
             )}
           </div>
           <div className="flex items-stretch gap-2 shrink-0">
@@ -148,7 +148,7 @@ export function PartyCard({ member, onRemove }: PartyCardProps) {
               className="rounded-[10px] border border-[rgba(180,80,45,0.45)]
                 bg-[rgba(255,255,255,0.03)] px-3 py-2 text-center w-[52px]"
             >
-              <div className="text-[7px] font-bold tracking-[0.2em] uppercase text-[rgba(200,100,60,0.7)]">
+              <div className="text-[11px] font-bold tracking-[0.2em] uppercase text-[rgba(200,100,60,0.7)]">
                 {dict.dm.lv}
               </div>
               <div className="text-[20px] font-extrabold text-white leading-none">{char.level ?? 1}</div>
@@ -171,9 +171,9 @@ export function PartyCard({ member, onRemove }: PartyCardProps) {
         <div className="flex items-baseline gap-1.5 mb-2">
           <span className="text-[28px] font-extrabold tracking-tight text-[var(--color-ink)]">{hp}</span>
           {tempHp > 0 && (
-            <span className="text-[13px] font-bold" style={{ color: "#818cf8" }}>(+{tempHp})</span>
+            <span className="text-[14px] font-bold" style={{ color: "#818cf8" }}>(+{tempHp})</span>
           )}
-          <span className="text-[14px] text-[var(--color-muted)]">/ {char.hpMax ?? "—"}</span>
+          <span className="text-[15px] text-[var(--color-muted)]">/ {char.hpMax ?? "—"}</span>
           {char.inspiration && <span className="ml-auto text-[16px]" style={{ color: "#c8a84b" }}>★</span>}
         </div>
 
@@ -197,7 +197,7 @@ export function PartyCard({ member, onRemove }: PartyCardProps) {
         {/* Death saves */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1.5">
-            <span className="text-[9px] font-bold tracking-[0.08em] uppercase" style={{ color: "var(--color-mint-deep)", opacity: 0.6 }}>S</span>
+            <span className="text-[11px] font-bold tracking-[0.08em] uppercase" style={{ color: "var(--color-mint-deep)", opacity: 0.6 }}>S</span>
             <div className="flex gap-1">
               {[0, 1, 2].map((i) => (
                 <span
@@ -228,7 +228,7 @@ export function PartyCard({ member, onRemove }: PartyCardProps) {
                 </span>
               ))}
             </div>
-            <span className="text-[9px] font-bold tracking-[0.08em] uppercase" style={{ color: "var(--color-coral)", opacity: 0.6 }}>F</span>
+            <span className="text-[11px] font-bold tracking-[0.08em] uppercase" style={{ color: "var(--color-coral)", opacity: 0.6 }}>F</span>
           </div>
         </div>
       </div>
@@ -251,11 +251,11 @@ export function PartyCard({ member, onRemove }: PartyCardProps) {
         <div className="px-5 pb-3 bg-[var(--color-card)]">
           <div className="border-t border-[var(--color-line-soft)] pt-3">
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-[10px] font-bold tracking-[0.1em] uppercase text-[var(--color-muted)] opacity-70">
+              <span className="text-[12px] font-bold tracking-[0.1em] uppercase text-[var(--color-muted)] opacity-70">
                 {dict.dm.slots}
               </span>
               {derivedSpellSaveDC !== null && (
-                <span className="ml-auto text-[10px] text-[var(--color-muted)]">
+                <span className="ml-auto text-[12px] text-[var(--color-muted)]">
                   {dict.dm.spellSaveDC} <span className="font-bold text-[var(--color-ink)]">{derivedSpellSaveDC}</span>
                 </span>
               )}
@@ -267,7 +267,7 @@ export function PartyCard({ member, onRemove }: PartyCardProps) {
                 return (
                   <div key={lvl} className="flex items-center gap-1">
                     <span
-                      className="text-[9px] font-bold w-[14px]"
+                      className="text-[11px] font-bold w-[14px]"
                       style={{ color: allUsed ? "var(--color-muted)" : "var(--color-ink)", opacity: allUsed ? 0.4 : 0.6 }}
                     >
                       {dict.spellcasting.ordinals[Number(lvl)]}
@@ -304,7 +304,7 @@ export function PartyCard({ member, onRemove }: PartyCardProps) {
                 return (
                   <div key={r.id} className="flex items-center gap-1">
                     <span
-                      className="text-[9px] font-bold uppercase tracking-[0.08em] max-w-[120px] truncate"
+                      className="text-[11px] font-bold uppercase tracking-[0.08em] max-w-[120px] truncate"
                       style={{ color: allUsed ? "var(--color-muted)" : "var(--color-ink)", opacity: allUsed ? 0.4 : 0.6 }}
                     >
                       {r.name || "—"}
@@ -337,7 +337,7 @@ export function PartyCard({ member, onRemove }: PartyCardProps) {
             {conditions.map((c, i) => (
               <span
                 key={i}
-                className="px-2.5 py-1 rounded-full text-[11px] font-semibold"
+                className="px-2.5 py-1 rounded-full text-[12px] font-semibold"
                 style={{
                   background: "rgba(244,123,95,0.12)",
                   color: "var(--color-coral)",

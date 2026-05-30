@@ -105,7 +105,7 @@ function PlayerCombatViewInner({
       >
         <button
           onClick={onDismiss}
-          className="flex items-center gap-2 text-[12.5px] font-semibold px-3 py-2 rounded-lg
+          className="flex items-center gap-2 text-[13.5px] font-semibold px-3 py-2 rounded-lg
             border-none bg-transparent cursor-pointer font-[inherit] transition-colors
             text-white/35 hover:text-white/65 hover:bg-white/[0.06]"
         >
@@ -114,7 +114,7 @@ function PlayerCombatViewInner({
         </button>
 
         <div className="flex flex-col items-center gap-0.5">
-          <div className="flex items-center gap-2 text-[11px] font-bold tracking-[0.22em] uppercase text-white/30">
+          <div className="flex items-center gap-2 text-[12px] font-bold tracking-[0.22em] uppercase text-white/30">
             <Swords size={14} style={{ color: "var(--color-coral)" }} />
             {dict.combat.title}
           </div>
@@ -142,7 +142,7 @@ function PlayerCombatViewInner({
             </span>
             {char.ac !== null && char.ac > 0 && (
               <span
-                className="flex items-center gap-1.5 text-[12px] font-bold shrink-0 ml-3 px-2.5 py-1 rounded-full"
+                className="flex items-center gap-1.5 text-[13px] font-bold shrink-0 ml-3 px-2.5 py-1 rounded-full"
                 style={{ color: "rgba(255,255,255,0.4)", background: "rgba(255,255,255,0.06)" }}
               >
                 <Shield size={12} />
@@ -225,7 +225,7 @@ function PlayerCombatViewInner({
                 <button
                   key={"d" + n}
                   onClick={() => onAdjustHp(-n)}
-                  className="px-3 py-[7px] text-[12px] border-none bg-transparent rounded-full
+                  className="px-3 py-[7px] text-[13px] border-none bg-transparent rounded-full
                     font-semibold font-[inherit] cursor-pointer transition-colors duration-150
                     text-white/45 hover:bg-[rgba(224,74,58,0.2)] hover:text-[var(--color-coral)]"
                 >
@@ -241,7 +241,7 @@ function PlayerCombatViewInner({
                 <button
                   key={"h" + n}
                   onClick={() => onAdjustHp(n)}
-                  className="px-3 py-[7px] text-[12px] border-none bg-transparent rounded-full
+                  className="px-3 py-[7px] text-[13px] border-none bg-transparent rounded-full
                     font-semibold font-[inherit] cursor-pointer transition-colors duration-150
                     text-white/45 hover:bg-[rgba(74,180,58,0.2)] hover:text-[#6aba4e]"
                 >
@@ -261,13 +261,13 @@ function PlayerCombatViewInner({
                 if (e.key === "Enter") handleCustomApply(-1);
               }}
               placeholder={dict.combatMode.amountPlaceholder}
-              className="w-[100px] px-3 py-[7px] rounded-full text-[12px] font-semibold
+              className="w-[100px] px-3 py-[7px] rounded-full text-[13px] font-semibold
                 font-[inherit] text-center text-white/60 border-none outline-none"
               style={{ background: "rgba(255,255,255,0.07)" }}
             />
             <button
               onClick={() => handleCustomApply(-1)}
-              className="px-4 py-[7px] rounded-full text-[12px] font-semibold font-[inherit]
+              className="px-4 py-[7px] rounded-full text-[13px] font-semibold font-[inherit]
                 border-none cursor-pointer transition-colors duration-150"
               style={{ background: "rgba(224,74,58,0.14)", color: "var(--color-coral)" }}
             >
@@ -275,7 +275,7 @@ function PlayerCombatViewInner({
             </button>
             <button
               onClick={() => handleCustomApply(1)}
-              className="px-4 py-[7px] rounded-full text-[12px] font-semibold font-[inherit]
+              className="px-4 py-[7px] rounded-full text-[13px] font-semibold font-[inherit]
                 border-none cursor-pointer transition-colors duration-150"
               style={{ background: "rgba(74,180,58,0.14)", color: "#6aba4e" }}
             >
@@ -289,7 +289,7 @@ function PlayerCombatViewInner({
             style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
           >
             <span
-              className="text-[12px] font-semibold flex items-center gap-1.5 shrink-0"
+              className="text-[13px] font-semibold flex items-center gap-1.5 shrink-0"
               style={{ color: "#818cf8" }}
             >
               <Shield size={12} />
@@ -315,7 +315,7 @@ function PlayerCombatViewInner({
                 <button
                   key={"t" + n}
                   onClick={() => onTempHpChange(tempHp + n)}
-                  className="px-2.5 py-[5px] text-[11px] border-none bg-transparent rounded-full
+                  className="px-2.5 py-[5px] text-[12px] border-none bg-transparent rounded-full
                     font-semibold font-[inherit] cursor-pointer transition-colors duration-150
                     text-white/40 hover:bg-[rgba(129,140,248,0.15)] hover:text-[#818cf8]"
                 >
@@ -345,13 +345,13 @@ function PlayerCombatViewInner({
           }}
         >
           <div className="flex items-center justify-between mb-3">
-            <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-white/25">
+            <span className="text-[12px] font-bold tracking-[0.2em] uppercase text-white/25">
               {dict.combatMode.statusConditions}
             </span>
             {!showStatusInput && (
               <button
                 onClick={handleShowStatusInput}
-                className="flex items-center gap-1.5 text-[11.5px] font-semibold px-3 py-1.5 rounded-full
+                className="flex items-center gap-1.5 text-[12.5px] font-semibold px-3 py-1.5 rounded-full
                   border-none cursor-pointer font-[inherit] transition-colors
                   text-white/35 hover:text-white/65 hover:bg-white/[0.07]"
               >
@@ -365,7 +365,7 @@ function PlayerCombatViewInner({
             {statuses.map((status, i) => (
               <span
                 key={i}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-semibold"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[13px] font-semibold"
                 style={{
                   background: "rgba(244,123,95,0.14)",
                   color: "var(--color-coral)",
@@ -400,7 +400,7 @@ function PlayerCombatViewInner({
                   }}
                   placeholder={dict.combatMode.statusPlaceholder}
                   maxLength={30}
-                  className="px-3 py-1.5 rounded-full text-[12px] font-semibold font-[inherit]
+                  className="px-3 py-1.5 rounded-full text-[13px] font-semibold font-[inherit]
                     text-white/65 border-none outline-none"
                   style={{ background: "rgba(255,255,255,0.09)", width: 140 }}
                 />
@@ -425,7 +425,7 @@ function PlayerCombatViewInner({
             )}
 
             {statuses.length === 0 && !showStatusInput && (
-              <span className="text-[12px] italic text-white/20">{dict.combatMode.noStatuses}</span>
+              <span className="text-[13px] italic text-white/20">{dict.combatMode.noStatuses}</span>
             )}
           </div>
         </div>
@@ -433,7 +433,7 @@ function PlayerCombatViewInner({
         {/* ── Turn Order ── */}
         <div>
           <div className="flex items-center gap-2 mb-3">
-            <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-white/25">
+            <span className="text-[12px] font-bold tracking-[0.2em] uppercase text-white/25">
               {dict.dmCombat.round} {combat.round}
             </span>
             </div>

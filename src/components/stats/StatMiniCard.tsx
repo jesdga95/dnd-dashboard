@@ -53,7 +53,7 @@ export function StatMiniCard({
   return (
     <div className={`${tintBg[tint]} rounded-[16px] px-4 py-[14px]
       shadow-[var(--shadow-sm)] border border-black/[0.02] relative overflow-hidden`}>
-      <div className={`text-[10px] font-bold tracking-[0.1em] uppercase ${tintLabel[tint]}`}>
+      <div className={`text-[12px] font-bold tracking-[0.1em] uppercase ${tintLabel[tint]}`}>
         {label}
       </div>
       <div className="flex items-baseline gap-[3px] mt-1 text-[26px] font-extrabold tracking-tight leading-none">
@@ -75,7 +75,7 @@ export function StatMiniCard({
           />
         )}
         {suffix && (
-          <small className="text-[12px] text-[var(--color-muted)] font-semibold">{suffix}</small>
+          <small className="text-[13px] text-[var(--color-muted)] font-semibold">{suffix}</small>
         )}
       </div>
     </div>

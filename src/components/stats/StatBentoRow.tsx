@@ -81,7 +81,7 @@ export function StatBentoRow({ char, abilities, skills, onUpdate, onToggleInspir
 
         {/* Passive Perception — read-only computed */}
         <div className="bg-[var(--color-peach)] rounded-[16px] px-4 py-[14px] shadow-[var(--shadow-sm)] border border-black/[0.02]">
-          <div className="text-[10px] font-bold tracking-[0.1em] uppercase text-[var(--color-peach-deep)]">
+          <div className="text-[12px] font-bold tracking-[0.1em] uppercase text-[var(--color-peach-deep)]">
             {dict.stats.passivePerc}
           </div>
           <div className="mt-1 text-[26px] font-extrabold tracking-tight leading-none text-[var(--color-ink)]">
@@ -104,7 +104,7 @@ export function StatBentoRow({ char, abilities, skills, onUpdate, onToggleInspir
             background: "linear-gradient(135deg, #f7e3a8 0%, #e8c878 100%)",
           } : {}}
         >
-          <div className={`text-[10px] font-bold tracking-[0.1em] uppercase
+          <div className={`text-[12px] font-bold tracking-[0.1em] uppercase
             ${inspired ? "text-[#8c6a1a]" : "text-[var(--color-sand-deep)]"}`}>
             {dict.stats.inspiration}
           </div>

@@ -73,11 +73,11 @@ function SetupPhase({
     <div className="px-5 py-6 max-w-[740px] mx-auto flex flex-col gap-5">
       {/* Player initiatives */}
       <div>
-        <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-white/25 block mb-3">
+        <span className="text-[12px] font-bold tracking-[0.2em] uppercase text-white/25 block mb-3">
           {dict.dmCombat.playerInitiatives}
         </span>
         {members.length === 0 ? (
-          <p className="text-[13px] text-white/30 italic">{dict.dmCombat.noParty}</p>
+          <p className="text-[14px] text-white/30 italic">{dict.dmCombat.noParty}</p>
         ) : (
           <div className="flex flex-col gap-2">
             {members.map((m) => (
@@ -89,7 +89,7 @@ function SetupPhase({
                   border: "1px solid rgba(255,255,255,0.07)",
                 }}
               >
-                <span className="text-[13px] font-semibold text-white flex-1 truncate min-w-0">
+                <span className="text-[14px] font-semibold text-white flex-1 truncate min-w-0">
                   {m.char.name || m.uid}
                 </span>
                 <input
@@ -97,7 +97,7 @@ function SetupPhase({
                   value={initiatives[m.uid] ?? ""}
                   onChange={(e) => setInitiatives((p) => ({ ...p, [m.uid]: e.target.value }))}
                   placeholder={dict.dmCombat.initiativePlaceholder}
-                  className="w-[90px] px-3 py-[7px] rounded-full text-[12px] font-semibold
+                  className="w-[90px] px-3 py-[7px] rounded-full text-[13px] font-semibold
                     text-center outline-none text-white/70 font-[inherit]"
                   style={{ background: "rgba(255,255,255,0.07)" }}
                 />
@@ -109,7 +109,7 @@ function SetupPhase({
 
       {/* Monsters */}
       <div>
-        <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-white/25 block mb-3">
+        <span className="text-[12px] font-bold tracking-[0.2em] uppercase text-white/25 block mb-3">
           {dict.dmCombat.monsters}
         </span>
 
@@ -124,15 +124,15 @@ function SetupPhase({
                   border: "1px solid rgba(255,255,255,0.07)",
                 }}
               >
-                <span className="text-[13px] font-semibold text-white flex-1 truncate">
+                <span className="text-[14px] font-semibold text-white flex-1 truncate">
                   {m.name}
                 </span>
-                <span className="text-[11px] text-white/40 shrink-0">{dict.dmCombat.hpLabel} {m.hpMax}</span>
+                <span className="text-[12px] text-white/40 shrink-0">{dict.dmCombat.hpLabel} {m.hpMax}</span>
                 {m.ac !== undefined && (
-                  <span className="text-[11px] text-white/40 shrink-0">{dict.dmCombat.acLabel} {m.ac}</span>
+                  <span className="text-[12px] text-white/40 shrink-0">{dict.dmCombat.acLabel} {m.ac}</span>
                 )}
                 <span
-                  className="text-[11px] font-bold shrink-0"
+                  className="text-[12px] font-bold shrink-0"
                   style={{ color: "var(--color-coral)" }}
                 >
                   {dict.dmCombat.initiativeAbbr}{m.initiativeRoll}
@@ -162,7 +162,7 @@ function SetupPhase({
             onChange={(e) => setMonsterName(e.target.value)}
             placeholder={dict.dmCombat.namePlaceholder}
             maxLength={50}
-            className="flex-1 min-w-[120px] px-3 py-[7px] rounded-full text-[12px] font-semibold
+            className="flex-1 min-w-[120px] px-3 py-[7px] rounded-full text-[13px] font-semibold
               font-[inherit] text-white/70 border-none outline-none"
             style={{ background: "rgba(255,255,255,0.07)" }}
           />
@@ -171,7 +171,7 @@ function SetupPhase({
             value={monsterHp}
             onChange={(e) => setMonsterHp(e.target.value)}
             placeholder={dict.dmCombat.hpPlaceholder}
-            className="w-[76px] px-3 py-[7px] rounded-full text-[12px] font-semibold text-center
+            className="w-[76px] px-3 py-[7px] rounded-full text-[13px] font-semibold text-center
               font-[inherit] text-white/70 border-none outline-none"
             style={{ background: "rgba(255,255,255,0.07)" }}
           />
@@ -180,7 +180,7 @@ function SetupPhase({
             value={monsterAc}
             onChange={(e) => setMonsterAc(e.target.value)}
             placeholder={dict.dmCombat.acPlaceholder}
-            className="w-[60px] px-3 py-[7px] rounded-full text-[12px] font-semibold text-center
+            className="w-[60px] px-3 py-[7px] rounded-full text-[13px] font-semibold text-center
               font-[inherit] text-white/70 border-none outline-none"
             style={{ background: "rgba(255,255,255,0.07)" }}
           />
@@ -189,14 +189,14 @@ function SetupPhase({
             value={monsterInit}
             onChange={(e) => setMonsterInit(e.target.value)}
             placeholder={dict.dmCombat.initiativePlaceholder}
-            className="w-[84px] px-3 py-[7px] rounded-full text-[12px] font-semibold text-center
+            className="w-[84px] px-3 py-[7px] rounded-full text-[13px] font-semibold text-center
               font-[inherit] text-white/70 border-none outline-none"
             style={{ background: "rgba(255,255,255,0.07)" }}
             onKeyDown={(e) => e.key === "Enter" && addMonster()}
           />
           <button
             onClick={addMonster}
-            className="flex items-center gap-1.5 px-4 py-[7px] rounded-full text-[12px]
+            className="flex items-center gap-1.5 px-4 py-[7px] rounded-full text-[13px]
               font-semibold font-[inherit] border-none cursor-pointer transition-colors"
             style={{ background: "rgba(244,123,95,0.16)", color: "var(--color-coral)" }}
           >
@@ -210,7 +210,7 @@ function SetupPhase({
         <button
           onClick={start}
           disabled={!canStart}
-          className="w-full py-3.5 rounded-full text-[14px] font-bold cursor-pointer
+          className="w-full py-3.5 rounded-full text-[15px] font-bold cursor-pointer
             transition-colors disabled:opacity-35 disabled:cursor-not-allowed"
           style={{
             background: "rgba(244,123,95,0.2)",
@@ -221,7 +221,7 @@ function SetupPhase({
           {dict.dmCombat.startCombat}
         </button>
         {!canStart && (
-          <p className="text-[11px] text-center italic text-white/25 mt-2">
+          <p className="text-[12px] text-center italic text-white/25 mt-2">
             {dict.dmCombat.startRequirements}
           </p>
         )}
@@ -263,7 +263,7 @@ function AddMonsterInline({ onAdd }: { onAdd: (m: MonsterCombatant) => void }) {
     return (
       <button
         onClick={() => setOpen(true)}
-        className="flex items-center gap-1.5 px-4 py-2 rounded-full text-[12px] font-semibold
+        className="flex items-center gap-1.5 px-4 py-2 rounded-full text-[13px] font-semibold
           cursor-pointer transition-colors"
         style={{
           background: "rgba(255,255,255,0.05)",
@@ -283,27 +283,27 @@ function AddMonsterInline({ onAdd }: { onAdd: (m: MonsterCombatant) => void }) {
     >
       <input autoFocus type="text" value={name} onChange={(e) => setName(e.target.value)}
         placeholder={dict.dmCombat.namePlaceholder} maxLength={50}
-        className="flex-1 min-w-[100px] px-3 py-[6px] rounded-full text-[12px] font-semibold
+        className="flex-1 min-w-[100px] px-3 py-[6px] rounded-full text-[13px] font-semibold
           font-[inherit] text-white/70 border-none outline-none"
         style={{ background: "rgba(255,255,255,0.07)" }} />
       <input type="number" value={hp} onChange={(e) => setHp(e.target.value)}
         placeholder={dict.dmCombat.hpPlaceholder}
-        className="w-[68px] px-3 py-[6px] rounded-full text-[12px] font-semibold text-center
+        className="w-[68px] px-3 py-[6px] rounded-full text-[13px] font-semibold text-center
           font-[inherit] text-white/70 border-none outline-none"
         style={{ background: "rgba(255,255,255,0.07)" }} />
       <input type="number" value={ac} onChange={(e) => setAc(e.target.value)}
         placeholder={dict.dmCombat.acPlaceholder}
-        className="w-[56px] px-3 py-[6px] rounded-full text-[12px] font-semibold text-center
+        className="w-[56px] px-3 py-[6px] rounded-full text-[13px] font-semibold text-center
           font-[inherit] text-white/70 border-none outline-none"
         style={{ background: "rgba(255,255,255,0.07)" }} />
       <input type="number" value={init} onChange={(e) => setInit(e.target.value)}
         placeholder={dict.dmCombat.initiativePlaceholder}
-        className="w-[80px] px-3 py-[6px] rounded-full text-[12px] font-semibold text-center
+        className="w-[80px] px-3 py-[6px] rounded-full text-[13px] font-semibold text-center
           font-[inherit] text-white/70 border-none outline-none"
         style={{ background: "rgba(255,255,255,0.07)" }}
         onKeyDown={(e) => e.key === "Enter" && add()} />
       <button onClick={add}
-        className="px-3 py-[6px] rounded-full text-[12px] font-bold cursor-pointer border-none transition-colors"
+        className="px-3 py-[6px] rounded-full text-[13px] font-bold cursor-pointer border-none transition-colors"
         style={{ background: "rgba(244,123,95,0.16)", color: "var(--color-coral)" }}>
         <Plus size={12} />
       </button>
@@ -391,7 +391,7 @@ export function DmCombatMode({ members, onClose }: DmCombatModeProps) {
         <div className="flex items-center gap-1.5">
           <button
             onClick={onClose}
-            className="flex items-center gap-2 text-[12.5px] font-semibold px-3 py-2 rounded-lg
+            className="flex items-center gap-2 text-[13.5px] font-semibold px-3 py-2 rounded-lg
               border-none bg-transparent cursor-pointer font-[inherit] transition-colors
               text-white/35 hover:text-white/65 hover:bg-white/[0.06]"
           >
@@ -401,7 +401,7 @@ export function DmCombatMode({ members, onClose }: DmCombatModeProps) {
           {combat && (
             <button
               onClick={endCombat}
-              className="flex items-center gap-1.5 text-[12px] font-semibold px-3 py-2 rounded-full
+              className="flex items-center gap-1.5 text-[13px] font-semibold px-3 py-2 rounded-full
                 border-none cursor-pointer font-[inherit] transition-colors
                 text-white/35 hover:text-white/60 hover:bg-white/[0.06] max-[460px]:hidden"
             >
@@ -411,7 +411,7 @@ export function DmCombatMode({ members, onClose }: DmCombatModeProps) {
         </div>
 
         <div className="flex-1 flex justify-center">
-          <div className="flex items-center gap-2 text-[11px] font-bold tracking-[0.22em] uppercase text-white/30">
+          <div className="flex items-center gap-2 text-[12px] font-bold tracking-[0.22em] uppercase text-white/30">
             <Swords size={14} style={{ color: "var(--color-coral)" }} />
             <span>{combat ? dict.dmCombat.title : dict.dmCombat.setupTitle}</span>
             {combat && (
@@ -423,7 +423,7 @@ export function DmCombatMode({ members, onClose }: DmCombatModeProps) {
         {combat ? (
           <button
             onClick={nextTurn}
-            className="flex items-center gap-1.5 text-[12px] font-semibold px-3 py-2 rounded-full
+            className="flex items-center gap-1.5 text-[13px] font-semibold px-3 py-2 rounded-full
               border-none cursor-pointer font-[inherit] transition-colors"
             style={{ background: "rgba(244,123,95,0.16)", color: "var(--color-coral)" }}
             onMouseEnter={(e) => {
@@ -472,7 +472,7 @@ export function DmCombatMode({ members, onClose }: DmCombatModeProps) {
         >
           <button
             onClick={endCombat}
-            className="w-full py-2.5 rounded-full text-[12px] font-semibold font-[inherit]
+            className="w-full py-2.5 rounded-full text-[13px] font-semibold font-[inherit]
               border-none cursor-pointer transition-colors text-white/40 hover:text-white/65
               hover:bg-white/[0.06]"
           >

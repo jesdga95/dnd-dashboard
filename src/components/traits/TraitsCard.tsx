@@ -7,6 +7,7 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Btn } from "@/components/ui/Btn";
 import { Modal, ModalField, ModalInput, ModalTextarea, ModalBtn } from "@/components/ui/Modal";
 import { useDict } from "@/lib/DictContext";
+import { withDice } from "@/lib/text";
 import type { Trait } from "@/lib/types";
 
 interface TraitsCardProps {
@@ -32,7 +33,7 @@ export function TraitsCard({ traits, onSave, onDelete }: TraitsCardProps) {
         }
       />
       {traits.length === 0 && (
-        <div className="text-center py-5 text-[13px] text-[var(--color-muted-soft)]">
+        <div className="text-center py-5 text-[14px] text-[var(--color-muted-soft)]">
           {dict.traits.emptyStatePre}{" "}
           <strong className="text-[var(--color-ink)]">{dict.traits.emptyStateHighlight}</strong>{" "}
           {dict.traits.emptyStatePost}
@@ -53,7 +54,7 @@ export function TraitsCard({ traits, onSave, onDelete }: TraitsCardProps) {
               }
             }}
           >
-            <span className="text-[12px] font-bold">{t.name}</span>
+            <span className="text-[13px] font-bold">{t.name}</span>
             {/* Delete — absolute, no layout impact on desktop */}
             <Btn variant="default" size="xs" iconOnly
               className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 [@media(hover:none)]:opacity-100
@@ -63,8 +64,8 @@ export function TraitsCard({ traits, onSave, onDelete }: TraitsCardProps) {
               <X size={10} />
             </Btn>
             {t.desc && (
-              <p className="text-[11px] font-medium text-[var(--color-lavender-deep)]/70 mt-0.5 leading-snug">
-                {t.desc}
+              <p className="text-[12px] font-medium text-[var(--color-lavender-deep)]/70 mt-0.5 leading-snug">
+                {withDice(t.desc)}
               </p>
             )}
           </div>

@@ -64,7 +64,8 @@
     "title": "Puntos de Vida",
     "longRest": "Descanso Largo",
     "tempHp": "PV Temp.",
-    "clear": "Limpiar"
+    "clear": "Limpiar",
+    "bloodied": "Malherido"
   },
   "deathSaves": {
     "title": "Tiradas de Muerte",

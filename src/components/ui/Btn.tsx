@@ -15,9 +15,9 @@ const variantClasses: Record<BtnVariant, string> = {
 };
 
 const sizeClasses: Record<BtnSize, string> = {
-  base: "px-3 py-[7px] text-[12px]",
-  sm: "px-2.5 py-[5px] text-[11px]",
-  xs: "px-2 py-[3px] text-[10px]",
+  base: "px-3 py-[7px] text-[13px]",
+  sm: "px-2.5 py-[5px] text-[12px]",
+  xs: "px-2 py-[3px] text-[12px]",
 };
 
 interface BtnProps extends ButtonHTMLAttributes<HTMLButtonElement> {

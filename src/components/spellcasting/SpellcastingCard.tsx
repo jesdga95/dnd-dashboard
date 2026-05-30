@@ -86,7 +86,7 @@ export function SpellcastingCard({
       {/* Meta: ability / save DC / attack bonus */}
       <div className="grid grid-cols-3 gap-2.5 mb-4">
         <div className="bg-[var(--color-lavender)] rounded-[14px] px-3.5 py-3">
-          <div className="text-[10px] font-bold tracking-[0.1em] uppercase
+          <div className="text-[12px] font-bold tracking-[0.1em] uppercase
             text-[var(--color-lavender-deep)] mb-2">
             {dict.spellcasting.meta.ability}
           </div>
@@ -95,7 +95,7 @@ export function SpellcastingCard({
               <button
                 key={a}
                 onClick={() => onUpdateMeta({ ability: a })}
-                className={`text-[11px] font-bold rounded-full px-2 py-[3px] cursor-pointer
+                className={`text-[12px] font-bold rounded-full px-2 py-[3px] cursor-pointer
                   transition-all duration-150 border-0
                   ${spellcasting.ability === a
                     ? "bg-[var(--color-lavender-deep)] text-white"
@@ -109,7 +109,7 @@ export function SpellcastingCard({
         </div>
 
         <div className="bg-[var(--color-blue)] rounded-[14px] px-3.5 py-3">
-          <div className="text-[10px] font-bold tracking-[0.1em] uppercase
+          <div className="text-[12px] font-bold tracking-[0.1em] uppercase
             text-[var(--color-blue-deep)] mb-1">
             {dict.spellcasting.meta.saveDC}
           </div>
@@ -120,7 +120,7 @@ export function SpellcastingCard({
         </div>
 
         <div className="bg-[var(--color-mint)] rounded-[14px] px-3.5 py-3">
-          <div className="text-[10px] font-bold tracking-[0.1em] uppercase
+          <div className="text-[12px] font-bold tracking-[0.1em] uppercase
             text-[var(--color-mint-deep)] mb-1">
             {dict.spellcasting.meta.atkBonus}
           </div>
@@ -133,7 +133,7 @@ export function SpellcastingCard({
 
       {/* Spell slots */}
       <div className="mb-4">
-        <div className="text-[11px] font-bold tracking-[0.06em] uppercase
+        <div className="text-[12px] font-bold tracking-[0.06em] uppercase
           text-[var(--color-muted)] mb-2">
           {dict.spellcasting.slots.title}
         </div>
@@ -161,14 +161,14 @@ export function SpellcastingCard({
               )}
               {untrackedLevels.length > 0 && (
                 <div className="flex flex-wrap gap-1.5 items-center">
-                  <span className="text-[10px] font-bold uppercase tracking-[0.08em] text-[var(--color-muted-soft)]">
+                  <span className="text-[12px] font-bold uppercase tracking-[0.08em] text-[var(--color-muted-soft)]">
                     {dict.spellcasting.slots.addLevel}
                   </span>
                   {untrackedLevels.map((level) => (
                     <button
                       key={level}
                       onClick={() => onAddSlotLevel(level)}
-                      className="text-[10px] font-bold rounded-full px-2 py-[3px] cursor-pointer
+                      className="text-[12px] font-bold rounded-full px-2 py-[3px] cursor-pointer
                         border border-dashed border-[var(--color-line)] text-[var(--color-muted-soft)]
                         hover:border-[var(--color-lavender-deep)] hover:text-[var(--color-lavender-deep)]
                         transition-all duration-150"
@@ -186,14 +186,14 @@ export function SpellcastingCard({
       {/* Spell list */}
       {spellLevels.length > 0 && (
         <div>
-          <div className="text-[11px] font-bold tracking-[0.06em] uppercase
+          <div className="text-[12px] font-bold tracking-[0.06em] uppercase
             text-[var(--color-muted)] mb-2">
             {dict.spellcasting.list.title}
           </div>
           <div className="grid gap-3">
             {spellLevels.map((level) => (
               <div key={level}>
-                <div className="text-[10px] font-bold uppercase tracking-[0.08em]
+                <div className="text-[12px] font-bold uppercase tracking-[0.08em]
                   text-[var(--color-muted-soft)] mb-0.5 px-1">
                   {level === 0
                     ? dict.spellcasting.list.cantrips
@@ -215,7 +215,7 @@ export function SpellcastingCard({
       )}
 
       {spellcasting.spells.length === 0 && (
-        <p className="text-center py-4 text-[13px] text-[var(--color-muted-soft)]">
+        <p className="text-center py-4 text-[14px] text-[var(--color-muted-soft)]">
           {dict.spellcasting.noSpellsPre}{" "}
           <strong>{dict.spellcasting.noSpellsHighlight}</strong>{" "}
           {dict.spellcasting.noSpellsPost}
@@ -251,7 +251,7 @@ function SlotLevel({
     <div className="bg-[var(--color-bg-warm)] rounded-[14px] px-3 py-2.5 group/slot">
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-1">
-          <span className="text-[10px] font-bold uppercase tracking-[0.08em] text-[var(--color-muted)]">
+          <span className="text-[12px] font-bold uppercase tracking-[0.08em] text-[var(--color-muted)]">
             {dict.spellcasting.ordinals[level]}
           </span>
           <button
@@ -276,7 +276,7 @@ function SlotLevel({
           >
             <Minus size={9} />
           </button>
-          <span className="text-[11px] font-semibold w-4 text-center text-[var(--color-ink)]">
+          <span className="text-[12px] font-semibold w-4 text-center text-[var(--color-ink)]">
             {slot.max}
           </span>
           <button
@@ -313,7 +313,7 @@ function SlotLevel({
             );
           })
         ) : (
-          <span className="text-[12px] text-[var(--color-muted-soft)]">—</span>
+          <span className="text-[13px] text-[var(--color-muted-soft)]">—</span>
         )}
       </div>
     </div>
@@ -354,22 +354,22 @@ function SpellRow({
       )}
 
       <span
-        className="flex-1 text-[13px] font-semibold text-[var(--color-ink)] cursor-pointer truncate min-w-0"
+        className="flex-1 text-[14px] font-semibold text-[var(--color-ink)] cursor-pointer truncate min-w-0"
         onClick={onEdit}
       >
         {spell.name || <em className="text-[var(--color-muted-soft)] font-normal not-italic">{dict.spellcasting.list.unnamed}</em>}
       </span>
 
       {spell.concentration && (
-        <span className="text-[9px] font-bold bg-[var(--color-blue)] text-[var(--color-blue-deep)]
+        <span className="text-[11px] font-bold bg-[var(--color-blue)] text-[var(--color-blue-deep)]
           rounded-full px-[7px] py-[2px] flex-shrink-0">C</span>
       )}
       {spell.ritual && (
-        <span className="text-[9px] font-bold bg-[var(--color-sand)] text-[var(--color-sand-deep)]
+        <span className="text-[11px] font-bold bg-[var(--color-sand)] text-[var(--color-sand-deep)]
           rounded-full px-[7px] py-[2px] flex-shrink-0">R</span>
       )}
       {spell.castTime && (
-        <span className="text-[10px] text-[var(--color-muted-soft)] flex-shrink-0 hidden min-[500px]:inline">
+        <span className="text-[12px] text-[var(--color-muted-soft)] flex-shrink-0 hidden min-[500px]:inline">
           {spell.castTime}
         </span>
       )}
@@ -425,7 +425,7 @@ function SpellModal({
             value={d.level}
             onChange={(e) => setD({ ...d, level: Number(e.target.value), prepared: Number(e.target.value) === 0 ? false : d.prepared })}
             className="w-full border border-[var(--color-line)] rounded-[10px] bg-[var(--color-bg)]
-              px-3 py-[9px] text-[14px] text-[var(--color-ink)] font-[inherit] outline-none
+              px-3 py-[9px] text-[15px] text-[var(--color-ink)] font-[inherit] outline-none
               focus:border-[var(--color-coral)] focus:shadow-[0_0_0_3px_rgba(244,123,95,0.15)]
               transition-all duration-150 cursor-pointer"
           >
@@ -455,7 +455,7 @@ function SpellModal({
             key={key}
             onClick={() => !disabled && toggle(key)}
             disabled={disabled}
-            className={`text-[11px] font-semibold rounded-full px-3 py-[5px] border cursor-pointer
+            className={`text-[12px] font-semibold rounded-full px-3 py-[5px] border cursor-pointer
               transition-all duration-150 font-[inherit] disabled:opacity-40 disabled:cursor-default
               ${d[key]
                 ? "bg-[var(--color-ink)] text-white border-[var(--color-ink)]"

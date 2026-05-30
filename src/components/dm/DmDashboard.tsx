@@ -70,7 +70,7 @@ function DmAvatarMenu({ onReset, onSignOut }: { onReset: () => void; onSignOut: 
         >
           <button
             onClick={handleReset}
-            className="w-full flex items-center gap-2.5 px-3.5 py-[9px] text-[12.5px] font-medium
+            className="w-full flex items-center gap-2.5 px-3.5 py-[9px] text-[13.5px] font-medium
               text-white/50 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer text-left"
           >
             <RotateCcw size={12} />
@@ -78,7 +78,7 @@ function DmAvatarMenu({ onReset, onSignOut }: { onReset: () => void; onSignOut: 
           </button>
           <button
             onClick={() => { onSignOut(); setOpen(false); }}
-            className="w-full flex items-center gap-2.5 px-3.5 py-[9px] text-[12.5px] font-medium
+            className="w-full flex items-center gap-2.5 px-3.5 py-[9px] text-[13.5px] font-medium
               text-white/50 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer text-left"
           >
             <LogOut size={12} />
@@ -131,14 +131,14 @@ export function DmDashboard() {
           />
           <div className="flex-1 min-w-0">
             <h1 className="text-[20px] font-extrabold text-white tracking-tight">{dict.dm.title}</h1>
-            <p className="text-[11px] text-white/35 mt-0.5">
+            <p className="text-[12px] text-white/35 mt-0.5">
               {(members.length === 1 ? dict.dm.playerCount : dict.dm.playersCount).replace("{count}", String(members.length))} · {dict.dm.liveUpdates}
             </p>
           </div>
           <button
             onClick={() => setCombatOpen(true)}
             disabled={!combat && members.length === 0}
-            className="flex items-center gap-2 px-3.5 py-2 rounded-[12px] text-[12px] font-semibold
+            className="flex items-center gap-2 px-3.5 py-2 rounded-[12px] text-[13px] font-semibold
               cursor-pointer transition-colors duration-150 shrink-0
               disabled:opacity-30 disabled:cursor-not-allowed"
             style={{
@@ -161,7 +161,7 @@ export function DmDashboard() {
             onKeyDown={(e) => e.key === "Enter" && handleAdd()}
             placeholder={dict.dm.addPlayerPlaceholder}
             maxLength={40}
-            className="flex-1 px-3 py-2 rounded-[10px] text-[13px] font-medium
+            className="flex-1 px-3 py-2 rounded-[10px] text-[14px] font-medium
               outline-none transition-colors duration-150 font-mono"
             style={{
               background: "rgba(255,255,255,0.06)",
@@ -172,7 +172,7 @@ export function DmDashboard() {
           <button
             onClick={handleAdd}
             disabled={adding || !inputValue.trim()}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-[10px] text-[12px] font-semibold
+            className="flex items-center gap-1.5 px-4 py-2 rounded-[10px] text-[13px] font-semibold
               transition-colors duration-150 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
             style={{
               background: "rgba(244,123,95,0.18)",
@@ -193,8 +193,8 @@ export function DmDashboard() {
             flex flex-col items-center justify-center text-center"
         >
           <Users size={36} strokeWidth={1.25} className="text-muted mb-4 opacity-40" />
-          <p className="text-[15px] font-semibold text-[var(--color-muted)]">{dict.dm.emptyTitle}</p>
-          <p className="text-[12px] text-[var(--color-muted)] mt-2 max-w-[280px] opacity-60 leading-relaxed">
+          <p className="text-[16px] font-semibold text-[var(--color-muted)]">{dict.dm.emptyTitle}</p>
+          <p className="text-[13px] text-[var(--color-muted)] mt-2 max-w-[280px] opacity-60 leading-relaxed">
             {dict.dm.emptyHint}
           </p>
         </div>

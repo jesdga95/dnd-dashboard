@@ -64,7 +64,8 @@
     "title": "Hit Points",
     "longRest": "Long Rest",
     "tempHp": "Temp HP",
-    "clear": "Clear"
+    "clear": "Clear",
+    "bloodied": "Bloodied"
   },
   "deathSaves": {
     "title": "Death Saves",

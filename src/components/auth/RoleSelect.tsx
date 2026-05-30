@@ -27,7 +27,7 @@ export function RoleSelect() {
       <div className="w-full max-w-[480px]">
         <div className="text-center mb-8">
           <h1 className="text-[22px] font-extrabold text-ink tracking-tight">{dict.roleSelect.title}</h1>
-          <p className="text-[13px] text-muted mt-1">{dict.roleSelect.subtitle}</p>
+          <p className="text-[14px] text-muted mt-1">{dict.roleSelect.subtitle}</p>
         </div>
 
         <div className="grid grid-cols-2 gap-3 max-[400px]:grid-cols-1">
@@ -49,7 +49,7 @@ export function RoleSelect() {
           />
         </div>
 
-        <p className="text-center text-[11px] text-muted mt-5 opacity-60">{dict.roleSelect.warning}</p>
+        <p className="text-center text-[12px] text-muted mt-5 opacity-60">{dict.roleSelect.warning}</p>
       </div>
     </div>
   );
@@ -85,8 +85,8 @@ function RoleCard({
         icon
       )}
       <div>
-        <div className="text-[15px] font-bold text-ink">{title}</div>
-        <div className="text-[12px] text-muted mt-1 leading-relaxed">{desc}</div>
+        <div className="text-[16px] font-bold text-ink">{title}</div>
+        <div className="text-[13px] text-muted mt-1 leading-relaxed">{desc}</div>
       </div>
     </button>
   );

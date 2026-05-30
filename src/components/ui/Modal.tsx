@@ -68,7 +68,7 @@ export function ModalField({
 }) {
   return (
     <div>
-      <label className="block text-[11px] font-semibold text-[var(--color-muted)] tracking-[0.04em] mb-[5px]">
+      <label className="block text-[12px] font-semibold text-[var(--color-muted)] tracking-[0.04em] mb-[5px]">
         {label}
       </label>
       {children}
@@ -93,7 +93,7 @@ export function ModalInput({
   return (
     <input
       className="w-full border border-[var(--color-line)] rounded-[10px] bg-[var(--color-bg)]
-        px-3 py-[9px] text-[14px] text-[var(--color-ink)] font-[inherit] outline-none
+        px-3 py-[9px] text-[15px] text-[var(--color-ink)] font-[inherit] outline-none
         focus:border-[var(--color-coral)] focus:bg-white focus:shadow-[0_0_0_3px_rgba(244,123,95,0.15)]
         transition-all duration-150"
       value={value}
@@ -119,7 +119,7 @@ export function ModalTextarea({
   return (
     <textarea
       className="w-full border border-[var(--color-line)] rounded-[10px] bg-[var(--color-bg)]
-        px-3 py-[9px] text-[14px] text-[var(--color-ink)] font-[inherit] outline-none
+        px-3 py-[9px] text-[15px] text-[var(--color-ink)] font-[inherit] outline-none
         resize-y min-h-[64px] leading-[1.4]
         focus:border-[var(--color-coral)] focus:bg-white focus:shadow-[0_0_0_3px_rgba(244,123,95,0.15)]
         transition-all duration-150"

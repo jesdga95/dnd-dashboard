@@ -149,7 +149,7 @@ function AvatarMenu({
           {/* Sharing */}
           <button
             onClick={() => { onToggleSharing(); }}
-            className="w-full flex items-center gap-2.5 px-3.5 py-[9px] text-[12.5px] font-medium
+            className="w-full flex items-center gap-2.5 px-3.5 py-[9px] text-[13.5px] font-medium
               transition-colors cursor-pointer text-left"
             style={isShared
               ? { color: "rgba(72,200,160,0.9)", background: "rgba(72,200,160,0.08)" }
@@ -163,7 +163,7 @@ function AvatarMenu({
           {isShared && userId && (
             <button
               onClick={handleCopy}
-              className="w-full flex items-center gap-2.5 px-3.5 py-[9px] text-[12.5px] font-medium
+              className="w-full flex items-center gap-2.5 px-3.5 py-[9px] text-[13.5px] font-medium
                 text-white/50 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer text-left"
             >
               {copied ? <Check size={12} /> : <Copy size={12} />}
@@ -175,7 +175,7 @@ function AvatarMenu({
 
           <button
             onClick={handleExport}
-            className="w-full flex items-center gap-2.5 px-3.5 py-[9px] text-[12.5px] font-medium
+            className="w-full flex items-center gap-2.5 px-3.5 py-[9px] text-[13.5px] font-medium
               text-white/50 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer text-left"
           >
             <Download size={12} />
@@ -184,7 +184,7 @@ function AvatarMenu({
 
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="w-full flex items-center gap-2.5 px-3.5 py-[9px] text-[12.5px] font-medium
+            className="w-full flex items-center gap-2.5 px-3.5 py-[9px] text-[13.5px] font-medium
               text-white/50 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer text-left"
           >
             <Upload size={12} />
@@ -203,7 +203,7 @@ function AvatarMenu({
 
           <button
             onClick={handleReset}
-            className="w-full flex items-center gap-2.5 px-3.5 py-[9px] text-[12.5px] font-medium
+            className="w-full flex items-center gap-2.5 px-3.5 py-[9px] text-[13.5px] font-medium
               text-white/50 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer text-left"
           >
             <RotateCcw size={12} />
@@ -213,7 +213,7 @@ function AvatarMenu({
           {user && (
             <button
               onClick={() => { onSignOut(); setOpen(false); }}
-              className="w-full flex items-center gap-2.5 px-3.5 py-[9px] text-[12.5px] font-medium
+              className="w-full flex items-center gap-2.5 px-3.5 py-[9px] text-[13.5px] font-medium
                 text-white/50 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer text-left"
             >
               <LogOut size={12} />
@@ -243,7 +243,7 @@ export function CharacterHeader({ char, onUpdate, onImport, onReset, onShortRest
     <div className={`flex gap-2 mt-3 pt-3 border-t border-white/[0.08] ${fullWidth ? "" : "justify-end"}`}>
       <button
         onClick={onShortRest}
-        className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-[8px] text-[11px] font-semibold
+        className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-[8px] text-[12px] font-semibold
           transition-colors duration-150 cursor-pointer ${fullWidth ? "flex-1" : ""}`}
         style={{ background: "rgba(99,149,225,0.18)", color: "#7aaee8", border: "1px solid rgba(99,149,225,0.3)" }}
       >
@@ -252,7 +252,7 @@ export function CharacterHeader({ char, onUpdate, onImport, onReset, onShortRest
       </button>
       <button
         onClick={onLongRest}
-        className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-[8px] text-[11px] font-semibold
+        className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-[8px] text-[12px] font-semibold
           transition-colors duration-150 cursor-pointer ${fullWidth ? "flex-1" : ""}`}
         style={{ background: "rgba(72,200,160,0.14)", color: "var(--color-mint-deep)", border: "1px solid rgba(72,200,160,0.25)" }}
       >
@@ -298,10 +298,10 @@ export function CharacterHeader({ char, onUpdate, onImport, onReset, onShortRest
             <div className="grid grid-cols-2 min-[1050px]:grid-cols-5 gap-x-8 gap-y-1.5 mt-[7px]">
               {META_FIELDS.map(({ label, key }) => (
                 <div key={key} className="flex items-center gap-[5px] min-w-0">
-                  <span className="text-[9.5px] font-bold tracking-[0.1em] uppercase text-white/35 leading-none shrink-0">
+                  <span className="text-[11.5px] font-bold tracking-[0.1em] uppercase text-white/35 leading-none shrink-0">
                     {label}
                   </span>
-                  <span className="text-white/75 font-semibold text-[12px] min-w-0">
+                  <span className="text-white/75 font-semibold text-[13px] min-w-0">
                     <EditableInput
                       value={char[key]}
                       onChange={(v) => onUpdate({ [key]: v })}
@@ -321,7 +321,7 @@ export function CharacterHeader({ char, onUpdate, onImport, onReset, onShortRest
                 rounded-[14px] border border-[rgba(180,80,45,0.45)]
                 bg-[rgba(255,255,255,0.03)] px-5 py-3"
             >
-              <span className="text-[9px] font-bold tracking-[0.2em] uppercase text-[rgba(200,100,60,0.7)] mb-1">
+              <span className="text-[11px] font-bold tracking-[0.2em] uppercase text-[rgba(200,100,60,0.7)] mb-1">
                 {dict.header.level}
               </span>
               <EditableNumber
@@ -379,10 +379,10 @@ export function CharacterHeader({ char, onUpdate, onImport, onReset, onShortRest
             <div className="grid grid-cols-3 gap-x-3 gap-y-2.5">
               {META_FIELDS.map(({ label, key }) => (
                 <div key={key} className="min-w-0">
-                  <div className="text-[9px] font-bold tracking-[0.1em] uppercase text-white/35 mb-0.5">
+                  <div className="text-[11px] font-bold tracking-[0.1em] uppercase text-white/35 mb-0.5">
                     {label}
                   </div>
-                  <div className="text-[13px] font-semibold text-white/80">
+                  <div className="text-[14px] font-semibold text-white/80">
                     <EditableInput
                       value={char[key]}
                       onChange={(v) => onUpdate({ [key]: v })}
@@ -403,7 +403,7 @@ export function CharacterHeader({ char, onUpdate, onImport, onReset, onShortRest
               rounded-[12px] border border-[rgba(180,80,45,0.45)]
               bg-[rgba(255,255,255,0.03)] px-4 py-3"
           >
-            <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[rgba(200,100,60,0.7)]">
+            <span className="text-[12px] font-bold tracking-[0.2em] uppercase text-[rgba(200,100,60,0.7)]">
               {dict.header.level}
             </span>
             <EditableNumber

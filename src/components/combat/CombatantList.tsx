@@ -86,7 +86,7 @@ function InlineEdit({
       placeholder={placeholder}
       className="text-center font-semibold font-[inherit] bg-transparent border-none outline-none
         rounded-[6px] px-1 transition-colors hover:bg-white/[0.06] focus:bg-white/[0.09]"
-      style={{ width: width ?? 40, fontSize: 11, color: "rgba(255,255,255,0.45)" }}
+      style={{ width: width ?? 40, fontSize: 13, color: "rgba(255,255,255,0.45)" }}
     />
   );
 }
@@ -173,7 +173,7 @@ function MonsterRow({
     <div className={rowBase(isCurrent, isDead)} style={rowStyle(isCurrent, isDead)}>
       {/* ── Header row ── */}
       <div className="flex items-center gap-2.5" style={{ marginBottom: isDm ? "12px" : "0" }}>
-        <span className="text-[11px] font-bold text-white/35 w-5 text-center shrink-0">
+        <span className="text-[12px] font-bold text-white/35 w-5 text-center shrink-0">
           {monster.initiativeRoll}
         </span>
 
@@ -194,7 +194,7 @@ function MonsterRow({
           </button>
         ) : (
           <span
-            className="text-[10px] px-2 py-0.5 rounded-full font-semibold shrink-0"
+            className="text-[12px] px-2 py-0.5 rounded-full font-semibold shrink-0"
             style={{ background: "rgba(244,123,95,0.12)", color: "var(--color-coral)" }}
           >
             {dict.combatMode.monsterBadge}
@@ -205,7 +205,7 @@ function MonsterRow({
           {/* Name + AC row */}
           <div className={`flex items-center gap-2 ${statsVisible ? "mb-1.5" : ""}`}>
             <span
-              className={`text-[13px] font-bold truncate ${
+              className={`text-[14px] font-bold truncate ${
                 !nameVisible
                   ? "text-white/25 tracking-[0.25em]"
                   : isDead
@@ -217,7 +217,7 @@ function MonsterRow({
             </span>
             {statsVisible && (
               isDm ? (
-                <span className="flex items-center gap-0.5 text-[10px] text-white/35 shrink-0">
+                <span className="flex items-center gap-0.5 text-[12px] text-white/35 shrink-0">
                   {dict.dmCombat.acLabel}
                   <InlineEdit
                     value={monster.ac !== undefined ? String(monster.ac) : ""}
@@ -228,13 +228,13 @@ function MonsterRow({
                 </span>
               ) : (
                 monster.ac !== undefined && (
-                  <span className="text-[10px] text-white/40 shrink-0">{dict.dmCombat.acLabel} {monster.ac}</span>
+                  <span className="text-[12px] text-white/40 shrink-0">{dict.dmCombat.acLabel} {monster.ac}</span>
                 )
               )
             )}
             {isDm && vis === 1 && (
               <span
-                className="text-[9px] px-1.5 py-0.5 rounded-full font-semibold shrink-0"
+                className="text-[11px] px-1.5 py-0.5 rounded-full font-semibold shrink-0"
                 style={{ background: "rgba(251,191,36,0.15)", color: "#fbbf24" }}
               >
                 {dict.dmCombat.visName}
@@ -242,7 +242,7 @@ function MonsterRow({
             )}
             {isDm && vis === 2 && (
               <span
-                className="text-[9px] px-1.5 py-0.5 rounded-full font-semibold shrink-0"
+                className="text-[11px] px-1.5 py-0.5 rounded-full font-semibold shrink-0"
                 style={{ background: "rgba(72,200,160,0.15)", color: "var(--color-mint-deep)" }}
               >
                 {dict.dmCombat.visStats}
@@ -254,7 +254,7 @@ function MonsterRow({
           {statsVisible && (
             <div className="flex items-center gap-2">
               <HpBar hp={monster.hp} hpMax={monster.hpMax} />
-              <span className="text-[11px] font-semibold text-white/55 shrink-0 flex items-center gap-0.5">
+              <span className="text-[12px] font-semibold text-white/55 shrink-0 flex items-center gap-0.5">
                 {monster.hp}
                 <span className="text-white/30">/</span>
                 {isDm ? (
@@ -276,7 +276,7 @@ function MonsterRow({
               {monster.conditions.map((cond) => (
                 <span
                   key={cond}
-                  className="text-[9px] px-2 py-0.5 rounded-full font-medium"
+                  className="text-[11px] px-2 py-0.5 rounded-full font-medium"
                   style={{ background: "rgba(255,255,255,0.07)", color: "rgba(255,255,255,0.55)" }}
                 >
                   {cond}
@@ -306,7 +306,7 @@ function MonsterRow({
                 <button
                   key={"d" + n}
                   onClick={() => controls.onAdjustHp(monster.id, -n)}
-                  className="px-2.5 py-[5px] text-[11px] border-none bg-transparent rounded-full
+                  className="px-2.5 py-[5px] text-[12px] border-none bg-transparent rounded-full
                     font-semibold font-[inherit] cursor-pointer transition-colors duration-150
                     text-white/45 hover:bg-[rgba(224,74,58,0.2)] hover:text-[var(--color-coral)]"
                 >
@@ -319,7 +319,7 @@ function MonsterRow({
                 <button
                   key={"h" + n}
                   onClick={() => controls.onAdjustHp(monster.id, n)}
-                  className="px-2.5 py-[5px] text-[11px] border-none bg-transparent rounded-full
+                  className="px-2.5 py-[5px] text-[12px] border-none bg-transparent rounded-full
                     font-semibold font-[inherit] cursor-pointer transition-colors duration-150
                     text-white/45 hover:bg-[rgba(74,180,58,0.2)] hover:text-[#6aba4e]"
                 >
@@ -335,14 +335,14 @@ function MonsterRow({
               value={customDelta}
               onChange={(e) => setCustomDelta(e.target.value)}
               placeholder={dict.combatMode.amountPlaceholder}
-              className="w-[88px] px-3 py-[5px] rounded-full text-[11px] font-semibold font-[inherit]
+              className="w-[88px] px-3 py-[5px] rounded-full text-[12px] font-semibold font-[inherit]
                 text-center text-white/60 border-none outline-none"
               style={{ background: "rgba(255,255,255,0.07)" }}
               onKeyDown={(e) => { if (e.key === "Enter") handleCustom(-1); }}
             />
             <button
               onClick={() => handleCustom(-1)}
-              className="px-3 py-[5px] rounded-full text-[11px] font-semibold font-[inherit]
+              className="px-3 py-[5px] rounded-full text-[12px] font-semibold font-[inherit]
                 border-none cursor-pointer transition-colors duration-150"
               style={{ background: "rgba(224,74,58,0.14)", color: "var(--color-coral)" }}
             >
@@ -350,7 +350,7 @@ function MonsterRow({
             </button>
             <button
               onClick={() => handleCustom(1)}
-              className="px-3 py-[5px] rounded-full text-[11px] font-semibold font-[inherit]
+              className="px-3 py-[5px] rounded-full text-[12px] font-semibold font-[inherit]
                 border-none cursor-pointer transition-colors duration-150"
               style={{ background: "rgba(74,180,58,0.14)", color: "#6aba4e" }}
             >
@@ -364,7 +364,7 @@ function MonsterRow({
                 <button
                   key={c}
                   onClick={() => controls.onRemoveCondition(monster.id, c)}
-                  className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-medium
+                  className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[12px] font-medium
                     cursor-pointer transition-colors duration-150"
                   style={{
                     background: "rgba(244,123,95,0.12)",
@@ -387,7 +387,7 @@ function MonsterRow({
                   value={condInput}
                   onChange={(e) => setCondInput(e.target.value)}
                   placeholder={dict.combatMode.statusPlaceholder}
-                  className="flex-1 text-[11px] px-3 py-1.5 rounded-full outline-none"
+                  className="flex-1 text-[12px] px-3 py-1.5 rounded-full outline-none"
                   style={{ background: "rgba(255,255,255,0.07)", color: "rgba(255,255,255,0.7)" }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && condInput.trim()) {
@@ -419,7 +419,7 @@ function MonsterRow({
             ) : (
               <button
                 onClick={() => setShowCondInput(true)}
-                className="flex items-center gap-1.5 text-[10px] font-semibold cursor-pointer
+                className="flex items-center gap-1.5 text-[12px] font-semibold cursor-pointer
                   transition-colors text-white/30 hover:text-white/60"
               >
                 <Plus size={9} /> {dict.combatMode.addStatus}
@@ -467,28 +467,28 @@ function PlayerRow({
   return (
     <div className={rowBase(isCurrent, isDead)} style={rowStyle(isCurrent, isDead)}>
       <div className="flex items-center gap-2.5">
-        <span className="text-[11px] font-bold text-white/35 w-5 text-center shrink-0">
+        <span className="text-[12px] font-bold text-white/35 w-5 text-center shrink-0">
           {combatant.initiativeRoll}
         </span>
         <span
-          className="text-[10px] px-2 py-0.5 rounded-full font-semibold shrink-0"
+          className="text-[12px] px-2 py-0.5 rounded-full font-semibold shrink-0"
           style={{ background: "rgba(99,149,225,0.15)", color: "#7aaee8" }}
         >
           {dict.combatMode.playerBadge}
         </span>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1.5">
-            <span className={`text-[13px] font-bold truncate ${isDead ? "text-white/30 line-through" : "text-white"}`}>
+            <span className={`text-[14px] font-bold truncate ${isDead ? "text-white/30 line-through" : "text-white"}`}>
               {combatant.name || combatant.uid}
             </span>
             {ac !== null && (
-              <span className="text-[10px] text-white/40 shrink-0">{dict.dmCombat.acLabel} {ac}</span>
+              <span className="text-[12px] text-white/40 shrink-0">{dict.dmCombat.acLabel} {ac}</span>
             )}
           </div>
           {hp !== null && hpMax !== null && hpMax > 0 && (
             <div className="flex items-center gap-2">
               <HpBar hp={hp} hpMax={hpMax} tempHp={tempHp ?? 0} />
-              <span className="text-[11px] font-semibold text-white/55 shrink-0">
+              <span className="text-[12px] font-semibold text-white/55 shrink-0">
                 {hp}/{hpMax}
               </span>
             </div>
@@ -498,7 +498,7 @@ function PlayerRow({
               {conditions.map((c) => (
                 <span
                   key={c}
-                  className="px-2 py-0.5 rounded-full text-[9px] font-semibold"
+                  className="px-2 py-0.5 rounded-full text-[11px] font-semibold"
                   style={{
                     background: "rgba(244,123,95,0.12)",
                     color: "var(--color-coral)",
