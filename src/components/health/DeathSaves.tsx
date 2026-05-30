@@ -43,9 +43,10 @@ export function DeathSaves({ successes, failures, onToggleSuccess, onToggleFailu
               <button
                 key={"s" + i}
                 onClick={() => onToggleSuccess(i)}
-                className={`w-[32px] h-[32px] rounded-full cursor-pointer
+                className={`relative w-[32px] h-[32px] rounded-full cursor-pointer
                   transition-all duration-150 inline-flex items-center justify-center
-                  text-[14px] font-extrabold p-0 border-2
+                  text-[14px] font-extrabold p-0 border-2 active:scale-95
+                  [@media(hover:none)]:before:absolute [@media(hover:none)]:before:content-[''] [@media(hover:none)]:before:-inset-1
                   ${i < successes
                     ? "border-[var(--color-mint-deep)] text-[var(--color-mint-deep)]"
                     : "border-white/50 text-transparent"
@@ -67,9 +68,10 @@ export function DeathSaves({ successes, failures, onToggleSuccess, onToggleFailu
               <button
                 key={"f" + i}
                 onClick={() => onToggleFailure(i)}
-                className={`w-[32px] h-[32px] rounded-full cursor-pointer
+                className={`relative w-[32px] h-[32px] rounded-full cursor-pointer
                   transition-all duration-150 inline-flex items-center justify-center
-                  text-[14px] font-extrabold p-0 border-2
+                  text-[14px] font-extrabold p-0 border-2 active:scale-95
+                  [@media(hover:none)]:before:absolute [@media(hover:none)]:before:content-[''] [@media(hover:none)]:before:-inset-1
                   ${i < failures
                     ? "border-[var(--color-coral-deep)] text-[var(--color-coral-deep)]"
                     : "border-white/50 text-transparent"

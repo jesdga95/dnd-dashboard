@@ -80,7 +80,8 @@ export function HpCard({ hp, hpMax, tempHp, onAdjust, onUpdate, onTempHpChange }
             <button key={"d" + n}
               className="px-2.5 py-[5px] text-[11px] border-none bg-transparent rounded-full
                 font-semibold font-[inherit] cursor-pointer text-[var(--color-ink-soft)]
-                hover:bg-[rgba(224,74,58,0.12)] hover:text-[var(--color-coral-deep)] transition-colors duration-150"
+                hover:bg-[rgba(224,74,58,0.12)] hover:text-[var(--color-coral-deep)]
+                active:scale-95 transition-[background,color,transform] duration-150"
               onClick={() => onAdjust(-n)}
             >
               −{n}
@@ -92,7 +93,8 @@ export function HpCard({ hp, hpMax, tempHp, onAdjust, onUpdate, onTempHpChange }
             <button key={"h" + n}
               className="px-2.5 py-[5px] text-[11px] border-none bg-transparent rounded-full
                 font-semibold font-[inherit] cursor-pointer text-[var(--color-ink-soft)]
-                hover:bg-[rgba(74,122,58,0.12)] hover:text-[var(--color-mint-deep)] transition-colors duration-150"
+                hover:bg-[rgba(74,122,58,0.12)] hover:text-[var(--color-mint-deep)]
+                active:scale-95 transition-[background,color,transform] duration-150"
               onClick={() => onAdjust(n)}
             >
               +{n}
@@ -118,9 +120,9 @@ export function HpCard({ hp, hpMax, tempHp, onAdjust, onUpdate, onTempHpChange }
             <button key={"t" + n}
               className="px-2.5 py-[5px] text-[11px] border-none bg-transparent rounded-full
                 font-semibold font-[inherit] cursor-pointer text-[var(--color-ink-soft)]
-                hover:bg-[rgba(129,140,248,0.15)] hover:text-[#818cf8] transition-colors duration-150"
+                hover:bg-[rgba(129,140,248,0.15)] hover:text-[#818cf8]
+                active:scale-95 transition-[background,color,transform] duration-150"
               onClick={() => onTempHpChange(tempHp + n)}
-
             >
               +{n}
             </button>
@@ -132,7 +134,7 @@ export function HpCard({ hp, hpMax, tempHp, onAdjust, onUpdate, onTempHpChange }
               className="border-none bg-transparent rounded-full px-2 py-[5px]
                 font-[inherit] cursor-pointer text-[var(--color-ink-soft)]
                 hover:bg-[rgba(224,74,58,0.12)] hover:text-[var(--color-coral-deep)]
-                transition-colors duration-150 inline-flex items-center"
+                active:scale-95 transition-[background,color,transform] duration-150 inline-flex items-center"
             >
               <RotateCcw size={10} />
             </button>

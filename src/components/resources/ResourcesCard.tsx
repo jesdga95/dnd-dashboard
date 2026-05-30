@@ -85,7 +85,9 @@ function ResourceEntry({
               key={r}
               onClick={() => onUpdate({ resetOn: r })}
               title={r === "short" ? dict.resources.resetShort : dict.resources.resetLong}
-              className={`text-[9px] font-bold w-5 h-5 rounded-full cursor-pointer transition-colors duration-150
+              className={`relative text-[9px] font-bold w-5 h-5 rounded-full cursor-pointer
+                active:scale-90 transition-[background,color,transform] duration-150
+                [@media(hover:none)]:before:absolute [@media(hover:none)]:before:content-[''] [@media(hover:none)]:before:-inset-1
                 ${(resource.resetOn ?? "long") === r
                   ? "bg-[var(--color-sand-deep)] text-white"
                   : "bg-transparent text-[var(--color-muted-soft)] hover:text-[var(--color-muted)]"
@@ -108,9 +110,11 @@ function ResourceEntry({
           <button
             onClick={() => onUpdate({ max: resource.max - 1 })}
             disabled={resource.max === 0}
-            className="w-5 h-5 rounded-full flex items-center justify-center cursor-pointer
-              text-[var(--color-muted)] hover:bg-[var(--color-line)] hover:text-[var(--color-ink)]
-              transition-colors duration-100 disabled:opacity-30 disabled:cursor-default"
+            className="relative w-5 h-5 rounded-full flex items-center justify-center cursor-pointer
+              text-[var(--color-muted)] hover:bg-[var(--color-peach)] hover:text-[var(--color-coral-deep)]
+              active:scale-90 transition-[background,color,transform] duration-150
+              disabled:opacity-30 disabled:cursor-default
+              [@media(hover:none)]:before:absolute [@media(hover:none)]:before:content-[''] [@media(hover:none)]:before:-inset-2"
           >
             <Minus size={9} />
           </button>
@@ -119,9 +123,10 @@ function ResourceEntry({
           </span>
           <button
             onClick={() => onUpdate({ max: resource.max + 1 })}
-            className="w-5 h-5 rounded-full flex items-center justify-center cursor-pointer
-              text-[var(--color-muted)] hover:bg-[var(--color-line)] hover:text-[var(--color-ink)]
-              transition-colors duration-100"
+            className="relative w-5 h-5 rounded-full flex items-center justify-center cursor-pointer
+              text-[var(--color-muted)] hover:bg-[var(--color-mint)] hover:text-[var(--color-mint-deep)]
+              active:scale-90 transition-[background,color,transform] duration-150
+              [@media(hover:none)]:before:absolute [@media(hover:none)]:before:content-[''] [@media(hover:none)]:before:-inset-2"
           >
             <Plus size={9} />
           </button>
@@ -139,8 +144,9 @@ function ResourceEntry({
                 onClick={() =>
                   onUpdate({ used: isAvailable ? resource.used + 1 : resource.used - 1 })
                 }
-                className={`w-5 h-5 rounded-full border-2 cursor-pointer flex-shrink-0
-                  transition-all duration-150
+                className={`relative w-5 h-5 rounded-full border-2 cursor-pointer flex-shrink-0
+                  transition-all duration-150 active:scale-90
+                  [@media(hover:none)]:before:absolute [@media(hover:none)]:before:content-[''] [@media(hover:none)]:before:-inset-1
                   ${isAvailable
                     ? "bg-[var(--color-sand-deep)] border-[var(--color-sand-deep)] hover:opacity-70"
                     : "bg-transparent border-[var(--color-sand-deep)] opacity-30 hover:opacity-60"

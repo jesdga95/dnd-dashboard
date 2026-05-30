@@ -335,6 +335,8 @@
   },
   "common": {
     "cancel": "Cancelar",
-    "save": "Guardar"
+    "save": "Guardar",
+    "edit": "Editar",
+    "delete": "Eliminar"
   }
 }

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
+import { Btn } from "./Btn";
 
 interface ModalProps {
   title: string;
@@ -140,17 +141,8 @@ export function ModalBtn({
   children: React.ReactNode;
 }) {
   return (
-    <button
-      onClick={onClick}
-      className={`font-[inherit] font-semibold text-[12px] px-3 py-[7px] rounded-full
-        border cursor-pointer transition-all duration-150 leading-none inline-flex items-center gap-1.5
-        ${
-          variant === "dark"
-            ? "bg-[var(--color-ink)] text-white border-[var(--color-ink)] hover:bg-[#2a2520]"
-            : "bg-[var(--color-card)] text-[var(--color-ink-soft)] border-[var(--color-line)] hover:bg-[var(--color-bg-warm)]"
-        }`}
-    >
+    <Btn variant={variant} size="base" onClick={onClick}>
       {children}
-    </button>
+    </Btn>
   );
 }

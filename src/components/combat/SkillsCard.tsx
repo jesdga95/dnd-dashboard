@@ -98,8 +98,10 @@ export function SkillsCard({
               <button
                 onClick={() => cycle(skill.name)}
                 title={dict.skills.profTitles[prof]}
-                className={`w-6 h-6 mt-0.5 rounded-full border text-[10px] font-bold flex-shrink-0
-                  flex items-center justify-center cursor-pointer transition-all duration-150
+                aria-label={`${dict.skills.names[skill.name as keyof typeof dict.skills.names] ?? skill.name}: ${dict.skills.profTitles[prof]}`}
+                className={`relative w-6 h-6 mt-0.5 rounded-full border text-[10px] font-bold flex-shrink-0
+                  flex items-center justify-center cursor-pointer transition-all duration-150 active:scale-90
+                  [@media(hover:none)]:before:absolute [@media(hover:none)]:before:content-[''] [@media(hover:none)]:before:-inset-2
                   ${PROF_STYLES[prof]}`}
               >
                 {dict.skills.profLabels[prof]}

@@ -119,7 +119,7 @@ export function InventoryCard({ inventory, gold, silver, onSave, onDelete, onTog
             <div className="flex flex-col items-center justify-center flex-1 pt-2.5 px-2 pb-2 gap-1.5 relative z-10">
               {/* Actions — always visible, top-right */}
               <div className="absolute top-1.5 right-1.5 z-20 flex gap-1">
-                <button onClick={() => setEditing(item)}
+                <button onClick={() => setEditing(item)} aria-label={dict.common.edit}
                   className="w-[26px] h-[26px] flex items-center justify-center rounded-full
                     bg-white/80 text-[var(--color-muted)]
                     shadow-[0_1px_2px_rgba(120,90,50,0.10)] ring-1 ring-black/[0.04]
@@ -127,7 +127,7 @@ export function InventoryCard({ inventory, gold, silver, onSave, onDelete, onTog
                     cursor-pointer active:opacity-60 transition-colors">
                   <Pencil size={11} />
                 </button>
-                <button onClick={() => onDelete(item.id)}
+                <button onClick={() => onDelete(item.id)} aria-label={dict.common.delete}
                   className="w-[26px] h-[26px] flex items-center justify-center rounded-full
                     bg-white/80 text-[var(--color-muted)]
                     shadow-[0_1px_2px_rgba(120,90,50,0.10)] ring-1 ring-black/[0.04]

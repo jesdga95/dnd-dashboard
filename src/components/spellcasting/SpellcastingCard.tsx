@@ -268,9 +268,11 @@ function SlotLevel({
           <button
             onClick={() => onUpdateSlot(level, "max", slot.max - 1)}
             disabled={slot.max === 0}
-            className="w-5 h-5 rounded-full flex items-center justify-center cursor-pointer
-              text-[var(--color-muted)] hover:bg-[var(--color-line)] hover:text-[var(--color-ink)]
-              transition-colors duration-100 disabled:opacity-30 disabled:cursor-default"
+            className="relative w-5 h-5 rounded-full flex items-center justify-center cursor-pointer
+              text-[var(--color-muted)] hover:bg-[var(--color-peach)] hover:text-[var(--color-coral-deep)]
+              active:scale-90 transition-[background,color,transform] duration-150
+              disabled:opacity-30 disabled:cursor-default
+              [@media(hover:none)]:before:absolute [@media(hover:none)]:before:content-[''] [@media(hover:none)]:before:-inset-2"
           >
             <Minus size={9} />
           </button>
@@ -279,9 +281,10 @@ function SlotLevel({
           </span>
           <button
             onClick={() => onUpdateSlot(level, "max", slot.max + 1)}
-            className="w-5 h-5 rounded-full flex items-center justify-center cursor-pointer
-              text-[var(--color-muted)] hover:bg-[var(--color-line)] hover:text-[var(--color-ink)]
-              transition-colors duration-100"
+            className="relative w-5 h-5 rounded-full flex items-center justify-center cursor-pointer
+              text-[var(--color-muted)] hover:bg-[var(--color-mint)] hover:text-[var(--color-mint-deep)]
+              active:scale-90 transition-[background,color,transform] duration-150
+              [@media(hover:none)]:before:absolute [@media(hover:none)]:before:content-[''] [@media(hover:none)]:before:-inset-2"
           >
             <Plus size={9} />
           </button>
@@ -299,8 +302,9 @@ function SlotLevel({
                 onClick={() =>
                   onUpdateSlot(level, "used", isAvailable ? slot.used + 1 : slot.used - 1)
                 }
-                className={`w-5 h-5 rounded-full border-2 cursor-pointer flex-shrink-0
-                  transition-all duration-150
+                className={`relative w-5 h-5 rounded-full border-2 cursor-pointer flex-shrink-0
+                  transition-all duration-150 active:scale-90
+                  [@media(hover:none)]:before:absolute [@media(hover:none)]:before:content-[''] [@media(hover:none)]:before:-inset-1
                   ${isAvailable
                     ? "bg-[var(--color-lavender-deep)] border-[var(--color-lavender-deep)] hover:opacity-70"
                     : "bg-transparent border-[var(--color-lavender-deep)] opacity-30 hover:opacity-60"
@@ -337,8 +341,9 @@ function SpellRow({
         <button
           onClick={onTogglePrepared}
           title={spell.prepared ? dict.spellcasting.list.prepared : dict.spellcasting.list.unprepared}
-          className={`w-[15px] h-[15px] rounded-full border-2 flex-shrink-0 cursor-pointer
-            transition-all duration-150
+          className={`relative w-[15px] h-[15px] rounded-full border-2 flex-shrink-0 cursor-pointer
+            transition-all duration-150 active:scale-90
+            [@media(hover:none)]:before:absolute [@media(hover:none)]:before:content-[''] [@media(hover:none)]:before:-inset-2
             ${spell.prepared
               ? "bg-[var(--color-mint-deep)] border-[var(--color-mint-deep)]"
               : "border-[var(--color-line)] bg-transparent hover:border-[var(--color-mint-deep)]"

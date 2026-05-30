@@ -40,7 +40,8 @@ export function Btn({
       className={`
         font-[inherit] font-semibold rounded-full border cursor-pointer
         transition-all duration-150 leading-none inline-flex items-center justify-center gap-1.5
-        active:translate-y-px
+        active:translate-y-px active:scale-[0.97]
+        disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none disabled:active:translate-y-0
         ${variantClasses[variant]}
         ${iconOnly ? "w-7 h-7 p-0 rounded-full" : sizeClasses[size]}
         ${className}

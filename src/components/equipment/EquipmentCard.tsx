@@ -108,7 +108,7 @@ export function EquipmentCard({ equipment, onSave, onDelete }: EquipmentCardProp
             </div>
 
             {eq.desc && (
-              <div className="text-[12.5px] text-[var(--color-muted)] leading-[1.4] line-clamp-2 break-all">{eq.desc}</div>
+              <div className="text-[12.5px] text-[var(--color-muted)] leading-[1.4] line-clamp-2 break-words">{eq.desc}</div>
             )}
           </div>
         ))}

@@ -56,9 +56,12 @@ export function EditableNumber({
   const isNull = value === null;
   const showOutline = (!focused && isNull) || empty;
 
+  // Editability hint that reads on any surface: light tiles/coins get a faint dark wash, the dark header a light one.
+  const affordance = asDiv ? "cursor-text hover:bg-white/[0.10]" : "cursor-text hover:bg-black/[0.05]";
+
   const sharedCls = `bg-transparent border-none text-center
     font-[inherit] text-[inherit] leading-[inherit] tracking-[inherit]
-    hover:bg-white/[0.06] focus:shadow-[0_0_0_2px_var(--color-coral)]
+    ${affordance} focus:shadow-[0_0_0_2px_var(--color-coral)]
     transition-[background,box-shadow] duration-[0.12s] rounded px-0.5
     ${showOutline ? "[outline:1.5px_dashed_rgba(128,128,128,0.4)]" : "outline-none"}
     ${className}`;

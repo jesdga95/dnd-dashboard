@@ -41,10 +41,17 @@ export function TraitsCard({ traits, onSave, onDelete }: TraitsCardProps) {
       <div className="flex flex-col gap-2">
         {traits.map((t) => (
           <div key={t.id}
+            role="button" tabIndex={0} aria-label={t.name}
             className="group relative bg-[var(--color-lavender)] text-[var(--color-lavender-deep)]
               rounded-[12px] px-3 py-2 cursor-pointer
               hover:bg-[#e1d4ef] transition-colors duration-150"
             onClick={() => setEditing(t)}
+            onKeyDown={(e) => {
+              if ((e.key === "Enter" || e.key === " ") && e.target === e.currentTarget) {
+                e.preventDefault();
+                setEditing(t);
+              }
+            }}
           >
             <span className="text-[12px] font-bold">{t.name}</span>
             {/* Delete — absolute, no layout impact on desktop */}
