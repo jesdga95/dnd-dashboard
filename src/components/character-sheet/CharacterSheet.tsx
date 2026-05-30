@@ -72,9 +72,6 @@ export function CharacterSheet() {
     addCustomResource,
     updateCustomResource,
     removeCustomResource,
-    addNote,
-    updateNote,
-    deleteNote,
     importChar,
   } = useCharacter();
 
@@ -218,12 +215,7 @@ export function CharacterSheet() {
       <div className="h-3" />
 
       {/* Notes */}
-      <NotesCard
-        notes={char.notes || []}
-        onAdd={addNote}
-        onUpdate={updateNote}
-        onDelete={deleteNote}
-      />
+      <NotesCard characterName={char.name} />
 
       {dmCombat && user?.uid && !dmCombatDismissed && (
         <PlayerCombatView

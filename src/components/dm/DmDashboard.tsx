@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Plus, Users, RotateCcw, LogOut, Swords } from "lucide-react";
+import { Plus, RotateCcw, LogOut, Swords, Users } from "lucide-react";
 import { useDmParty } from "@/hooks/useDmParty";
 import { useDmCombat } from "@/hooks/useDmCombat";
 import { useProfile } from "@/hooks/useProfile";
@@ -9,6 +9,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useDict } from "@/lib/DictContext";
 import { PartyCard } from "./PartyCard";
 import { DmCombatMode } from "./DmCombatMode";
+import { NotesCard } from "@/components/notes/NotesCard";
 
 function DmAvatarMenu({ onReset, onSignOut }: { onReset: () => void; onSignOut: () => void }) {
   const dict = useDict();
@@ -183,27 +184,27 @@ export function DmDashboard() {
             {dict.dm.add}
           </button>
         </div>
+        {members.length === 0 && (
+          <div className="flex items-center gap-2 mt-3">
+            <Users size={18} className="shrink-0" style={{ color: "rgba(255,255,255,0.25)" }} />
+            <p className="text-[14px] leading-relaxed" style={{ color: "rgba(255,255,255,0.35)" }}>
+              {dict.dm.emptyHint}
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Party grid */}
-      {members.length === 0 ? (
-        <div
-          className="rounded-[22px] border border-dashed border-[var(--color-line)] px-8 py-16
-            flex flex-col items-center justify-center text-center"
-        >
-          <Users size={36} strokeWidth={1.25} className="text-muted mb-4 opacity-40" />
-          <p className="text-[16px] font-semibold text-[var(--color-muted)]">{dict.dm.emptyTitle}</p>
-          <p className="text-[13px] text-[var(--color-muted)] mt-2 max-w-[280px] opacity-60 leading-relaxed">
-            {dict.dm.emptyHint}
-          </p>
-        </div>
-      ) : (
+      {members.length > 0 && (
         <div className="grid gap-4 [grid-template-columns:repeat(auto-fill,minmax(320px,1fr))]">
           {members.map((m) => (
             <PartyCard key={m.uid} member={m} onRemove={removePlayer} />
           ))}
         </div>
       )}
+
+      <div className="h-4" />
+      <NotesCard partyMemberIds={members.map((m) => m.uid)} />
 
       {combatOpen && (
         <DmCombatMode members={members} onClose={() => setCombatOpen(false)} />

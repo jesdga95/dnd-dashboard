@@ -82,7 +82,7 @@ export function StatBentoRow({ char, abilities, skills, onUpdate, onToggleInspir
         {/* Passive Perception — read-only computed */}
         <div className="bg-[var(--color-peach)] rounded-[16px] px-4 py-[14px] shadow-[var(--shadow-sm)] border border-black/[0.02]">
           <div className="text-[12px] font-bold tracking-[0.1em] uppercase text-[var(--color-peach-deep)]">
-            {dict.stats.passivePerc}
+            {dict.stats.passivePerception}
           </div>
           <div className="mt-1 text-[26px] font-extrabold tracking-tight leading-none text-[var(--color-ink)]">
             {passivePerc}

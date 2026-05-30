@@ -12,7 +12,6 @@ import type {
   EquipmentItem,
   InventoryItem,
   Trait,
-  Note,
   Attack,
   SkillProficiency,
   Spellcasting,
@@ -235,22 +234,6 @@ export function useCharacter() {
       skills: { ...(c.skills ?? {}), [skill]: proficiency },
     }));
 
-  // Notes CRUD
-  const addNote = () =>
-    setChar((c) => ({
-      ...c,
-      notes: [{ id: generateId(), title: "", body: "" }, ...(c.notes || [])],
-    }));
-
-  const updateNote = (id: number, patch: Partial<Note>) =>
-    setChar((c) => ({
-      ...c,
-      notes: (c.notes || []).map((n) => (n.id === id ? { ...n, ...patch } : n)),
-    }));
-
-  const deleteNote = (id: number) =>
-    setChar((c) => ({ ...c, notes: (c.notes || []).filter((n) => n.id !== id) }));
-
   const toggleInspiration = () =>
     setChar((c) => ({ ...c, inspiration: !c.inspiration }));
 
@@ -397,9 +380,6 @@ export function useCharacter() {
     deleteTrait,
     saveAttack,
     deleteAttack,
-    addNote,
-    updateNote,
-    deleteNote,
     updateSkillProficiency,
     toggleInspiration,
     addCondition,

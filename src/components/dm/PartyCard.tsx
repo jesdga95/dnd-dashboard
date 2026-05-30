@@ -242,7 +242,7 @@ export function PartyCard({ member, onRemove }: PartyCardProps) {
         <div className="grid grid-cols-3 gap-1.5">
           <StatChip label={dict.stats.initiative} value={initDisplay} tint="blue" />
           <StatChip label={dict.stats.proficiency} value={`+${char.proficiency ?? 0}`} tint="lavender" />
-          <StatChip label={dict.dm.passivePerception} value={passivePerception} tint="sand" />
+          <StatChip label={dict.stats.passivePerception} value={passivePerception} tint="sand" />
         </div>
       </div>
 

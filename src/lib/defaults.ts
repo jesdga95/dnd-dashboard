@@ -46,7 +46,6 @@ export const DEFAULT_CHAR: Character = {
     attacks: [],
   },
   inventory: [],
-  notes: [],
   skills: {},
   spellcasting: DEFAULT_SPELLCASTING,
 };

@@ -58,10 +58,15 @@ export interface Trait {
   desc: string;
 }
 
-export interface Note {
-  id: number;
+export interface PartyNote {
+  id: string;
+  ownerId: string;
+  partyId: string;
+  authorName: string;
   title: string;
   body: string;
+  shared: boolean;
+  createdAt: number;
 }
 
 export type SkillProficiency = "none" | "proficient" | "expert";
@@ -129,7 +134,6 @@ export interface Character {
   equipment: EquipmentItem[];
   combat: Combat;
   inventory: InventoryItem[];
-  notes: Note[];
   skills: Record<string, SkillProficiency>;
   spellcasting?: Spellcasting;
   customResources?: CustomResource[];

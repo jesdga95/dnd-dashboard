@@ -106,7 +106,7 @@ export function InventoryCard({ inventory, gold, silver, onSave, onDelete, onTog
           {dict.inventory.emptyStatePost}
         </div>
       )}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+      <div className="grid grid-cols-3 max-[1024px]:grid-cols-2 max-[640px]:grid-cols-1 gap-2">
         {inventory.map((item) => (
           <div key={item.id}
             className="flex flex-col rounded-[14px] overflow-hidden relative
