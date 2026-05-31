@@ -39,7 +39,9 @@
     "noConditions": "Sin condiciones",
     "lv": "Nv",
     "playerCount": "{count} jugador",
-    "playersCount": "{count} jugadores"
+    "playersCount": "{count} jugadores",
+    "gold": "Oro",
+    "silver": "Plata"
   },
   "header": {
     "race": "Raza",

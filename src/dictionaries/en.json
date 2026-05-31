@@ -39,7 +39,9 @@
     "noConditions": "No conditions",
     "lv": "Lv",
     "playerCount": "{count} player",
-    "playersCount": "{count} players"
+    "playersCount": "{count} players",
+    "gold": "Gold",
+    "silver": "Silver"
   },
   "header": {
     "race": "Race",
