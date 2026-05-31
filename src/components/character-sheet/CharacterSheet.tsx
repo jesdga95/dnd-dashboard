@@ -101,7 +101,7 @@ export function CharacterSheet() {
       <div className="h-3" />
 
       {/* HP + Death Saves */}
-      <div className="grid gap-3 [grid-template-columns:1fr_auto] max-[1024px]:grid-cols-1">
+      <div className={`grid gap-3 max-[1024px]:grid-cols-1${char.hp === 0 ? " [grid-template-columns:1fr_auto]" : ""}`}>
         <HpCard
           hp={char.hp}
           hpMax={char.hpMax}
@@ -110,13 +110,15 @@ export function CharacterSheet() {
           onUpdate={update}
           onTempHpChange={setTempHp}
         />
-        <DeathSaves
-          successes={char.deathSaves}
-          failures={char.deathFails}
-          onToggleSuccess={toggleDeathSave}
-          onToggleFailure={toggleDeathFail}
-          onClear={() => update({ deathSaves: 0, deathFails: 0 })}
-        />
+        {char.hp === 0 && (
+          <DeathSaves
+            successes={char.deathSaves}
+            failures={char.deathFails}
+            onToggleSuccess={toggleDeathSave}
+            onToggleFailure={toggleDeathFail}
+            onClear={() => update({ deathSaves: 0, deathFails: 0 })}
+          />
+        )}
       </div>
 
       <div className="h-3" />

@@ -36,28 +36,32 @@ export function AbilityScores({ abilities, proficiency, onUpdate, onToggleSave }
           const saveBonusStr = saveBonus >= 0 ? `+${saveBonus}` : String(saveBonus);
           return (
             <div key={key}
-              className="text-center px-2 py-3 rounded-[12px] hover:bg-[var(--color-bg-warm)] transition-colors duration-150">
-              <div className="text-[12px] font-bold tracking-[0.1em] text-[var(--color-muted)] uppercase">
+              className="flex flex-col items-center px-2 py-3 rounded-[12px] hover:bg-[var(--color-bg-warm)] transition-colors duration-150">
+              <div className="text-[11px] font-bold tracking-[0.1em] text-[var(--color-muted)] uppercase mb-2">
                 {dict.abilities.abbr[key]}
               </div>
-              <div className="text-[28px] font-extrabold tracking-tight leading-none my-1.5 text-[var(--color-ink)] max-[460px]:text-[24px]">
+              {/* Modifier square */}
+              <div className="w-[64px] h-[64px] rounded-[10px] border-2 border-[var(--color-line)] flex items-center justify-center bg-[var(--color-bg-warm)]">
+                <span className="text-[28px] font-extrabold tracking-tight text-[var(--color-ink)]">
+                  {modStr}
+                </span>
+              </div>
+              {/* Score circle — overlaps bottom of square */}
+              <div className="-mt-3 w-[36px] h-[36px] rounded-full border-2 border-[var(--color-line)] bg-[var(--color-card)] flex items-center justify-center z-10">
                 <EditableNumber
                   value={score}
                   onChange={(v) => onUpdate(key, v)}
-                  style={{ width: 52, textAlign: "center", fontWeight: 800 }}
+                  style={{ width: 28, textAlign: "center", fontWeight: 700, fontSize: 13, color: "var(--color-ink)" }}
                 />
               </div>
-              <span className="inline-block bg-[var(--color-bg-warm)] rounded-full px-2 py-0.5 text-[13px] font-bold text-[var(--color-ink)]">
-                {modStr}
-              </span>
               <button
                 onClick={() => onToggleSave(key)}
                 title={saveBonusStr}
                 className={`flex items-center justify-center gap-1 mt-2 mx-auto cursor-pointer transition-colors duration-150
                   ${saveProficient ? "text-[var(--color-lavender-deep)]" : "text-[var(--color-line)]"}`}
               >
-                {saveProficient ? <ShieldCheck size={13} /> : <Shield size={13} />}
-                <span className={`text-[12px] font-bold font-mono ${saveProficient ? "text-[var(--color-lavender-deep)]" : "text-[var(--color-muted-soft)]"}`}>
+                {saveProficient ? <ShieldCheck size={17} /> : <Shield size={17} />}
+                <span className={`text-[13px] font-bold font-mono ${saveProficient ? "text-[var(--color-lavender-deep)]" : "text-[var(--color-muted-soft)]"}`}>
                   {saveBonusStr}
                 </span>
               </button>

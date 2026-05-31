@@ -25,7 +25,7 @@ export function DeathSaves({ successes, failures, onToggleSuccess, onToggleFailu
         <button
           onClick={onClear}
           className="font-[inherit] font-semibold text-[12px] px-2 py-[3px] rounded-full
-            border-transparent bg-transparent text-[var(--color-muted)]
+            border border-[var(--color-line-soft)] bg-transparent text-[var(--color-muted)]
             cursor-pointer hover:bg-[var(--color-bg-warm)] hover:text-[var(--color-ink)] transition-colors duration-150"
         >
           {dict.deathSaves.clear}
