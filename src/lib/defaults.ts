@@ -24,6 +24,7 @@ export const DEFAULT_CHAR: Character = {
   hp: null,
   hpMax: null,
   tempHp: 0,
+  tempAc: 0,
   deathSaves: 0,
   deathFails: 0,
   gold: null,

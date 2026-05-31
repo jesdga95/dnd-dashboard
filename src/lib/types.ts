@@ -121,6 +121,8 @@ export interface Character {
   hp: number | null;
   hpMax: number | null;
   tempHp: number;
+  /** Temporary AC modifier (buff/debuff) applied during combat; cleared on a long rest. */
+  tempAc?: number;
   deathSaves: number;
   deathFails: number;
   gold: number | null;
@@ -168,6 +170,8 @@ export interface OfflinePlayerCombatant {
   hp: number;
   hpMax: number;
   ac?: number;
+  /** Temporary AC modifier (buff/debuff) set by the DM; lives only for this combat. */
+  tempAc?: number;
   initiativeRoll: number;
   conditions: string[];
 }
@@ -179,6 +183,8 @@ export interface MonsterCombatant {
   hp: number;
   hpMax: number;
   ac?: number;
+  /** Temporary AC modifier (buff/debuff) set by the DM; lives only for this combat. */
+  tempAc?: number;
   initiativeRoll: number;
   conditions: string[];
   visibility: 0 | 1 | 2; // 0=hidden, 1=name only, 2=name+stats

@@ -48,6 +48,7 @@ export function CharacterSheet() {
     toggleSaveProficiency,
     adjustHp,
     setTempHp,
+    setTempAc,
     shortRest,
     longRest,
     toggleDeathSave,
@@ -112,7 +113,6 @@ export function CharacterSheet() {
           tempHp={char.tempHp ?? 0}
           onAdjust={adjustHp}
           onUpdate={update}
-          onTempHpChange={setTempHp}
         />
         {char.hp === 0 && (
           <DeathSaves
@@ -231,6 +231,7 @@ export function CharacterSheet() {
           onAdjustHp={adjustHp}
           onUpdateHp={update}
           onTempHpChange={setTempHp}
+          onTempAcChange={setTempAc}
           onAddStatus={addCondition}
           onRemoveStatus={removeCondition}
           onDismiss={() => setDmCombatDismissed(true)}

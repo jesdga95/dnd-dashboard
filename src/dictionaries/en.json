@@ -307,7 +307,10 @@
     "amountPlaceholder": "Amount…",
     "heal": "Heal",
     "playerBadge": "P",
-    "monsterBadge": "M"
+    "monsterBadge": "M",
+    "tempAc": "Temp AC",
+    "tempAcTitle": "Temporary AC",
+    "clearTempAc": "Clear temporary AC"
   },
   "dmCombat": {
     "title": "DM Combat",
@@ -342,7 +345,10 @@
     "offlinePlayersHint": "Players at the table without the app — you track their HP.",
     "addOfflinePlayer": "Add Offline Player",
     "offlineNamePlaceholder": "Player name…",
-    "offlineTag": "offline"
+    "offlineTag": "offline",
+    "moveUp": "Move up in initiative",
+    "moveDown": "Move down in initiative",
+    "setInitiative": "Set initiative"
   },
   "iconPicker": {
     "searchPlaceholder": "Search icons…",

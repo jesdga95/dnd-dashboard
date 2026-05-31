@@ -290,7 +290,7 @@
     "speed": "Velocidad",
     "speedSuffix": "ft · {squares} cas.",
     "initiative": "Iniciativa",
-    "proficiency": "Competencia",
+    "proficiency": "Compet.",
     "hitDice": "Dados de Golpe",
     "passivePerception": "Percepción",
     "inspiration": "Inspiración",
@@ -307,7 +307,10 @@
     "amountPlaceholder": "Cantidad…",
     "heal": "Curar",
     "playerBadge": "J",
-    "monsterBadge": "M"
+    "monsterBadge": "M",
+    "tempAc": "CA Temp.",
+    "tempAcTitle": "CA temporal",
+    "clearTempAc": "Quitar CA temporal"
   },
   "dmCombat": {
     "title": "Combate DM",
@@ -342,7 +345,10 @@
     "offlinePlayersHint": "Jugadores en la mesa sin la app — tú llevas sus PV.",
     "addOfflinePlayer": "Agregar Jugador Offline",
     "offlineNamePlaceholder": "Nombre del jugador…",
-    "offlineTag": "offline"
+    "offlineTag": "offline",
+    "moveUp": "Subir en la iniciativa",
+    "moveDown": "Bajar en la iniciativa",
+    "setInitiative": "Editar iniciativa"
   },
   "iconPicker": {
     "searchPlaceholder": "Buscar íconos…",

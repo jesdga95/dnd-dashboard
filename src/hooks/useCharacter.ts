@@ -122,6 +122,10 @@ export function useCharacter() {
   const setTempHp = (val: number) =>
     setChar((c) => ({ ...c, tempHp: Math.max(0, val) }));
 
+  // Temporary AC buff/debuff (combat). Signed: positive = buff, negative = penalty.
+  const setTempAc = (val: number) =>
+    setChar((c) => ({ ...c, tempAc: val }));
+
   const shortRest = () =>
     setChar((c) => ({
       ...c,
@@ -137,6 +141,7 @@ export function useCharacter() {
         ...c,
         hp: c.hpMax,
         tempHp: 0,
+        tempAc: 0,
         deathSaves: 0,
         deathFails: 0,
         spellcasting: {
@@ -367,6 +372,7 @@ export function useCharacter() {
     updateAbility,
     adjustHp,
     setTempHp,
+    setTempAc,
     shortRest,
     longRest,
     toggleDeathSave,

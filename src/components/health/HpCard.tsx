@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { Heart, RotateCcw, Shield } from "lucide-react";
+import { Heart } from "lucide-react";
 import { IconPill } from "@/components/ui/IconPill";
 import { EditableNumber } from "@/components/ui/EditableNumber";
 import { useDict } from "@/lib/DictContext";
@@ -12,10 +12,9 @@ interface HpCardProps {
   tempHp: number;
   onAdjust: (delta: number) => void;
   onUpdate: (patch: { hp?: number | null; hpMax?: number | null }) => void;
-  onTempHpChange: (val: number) => void;
 }
 
-export function HpCard({ hp, hpMax, tempHp, onAdjust, onUpdate, onTempHpChange }: HpCardProps) {
+export function HpCard({ hp, hpMax, tempHp, onAdjust, onUpdate }: HpCardProps) {
   const dict = useDict();
   const hpVal = hp ?? 0;
   const hpMaxVal = hpMax ?? 0;
@@ -122,45 +121,6 @@ export function HpCard({ hp, hpMax, tempHp, onAdjust, onUpdate, onTempHpChange }
               +{n}
             </button>
           ))}
-        </div>
-      </div>
-
-      {/* Temp HP */}
-      <div className="mt-3 pt-3 border-t border-black/[0.06] flex items-center gap-2 flex-wrap">
-        <span className="text-[13px] font-semibold text-[#818cf8] flex items-center gap-1 shrink-0">
-          <Shield size={12} />
-          {dict.hp.tempHp}
-        </span>
-        <EditableNumber
-          value={tempHp}
-          onChange={(v) => onTempHpChange(v ?? 0)}
-          min={0}
-          style={{ width: 40, textAlign: "center", fontSize: 16, fontWeight: 700, color: "#818cf8" }}
-        />
-        <div className="flex gap-1 bg-[var(--color-bg-warm)] rounded-full p-[3px]">
-          {[1, 5, 10].map((n) => (
-            <button key={"t" + n}
-              className="px-2.5 py-[5px] text-[12px] border-none bg-transparent rounded-full
-                font-semibold font-[inherit] cursor-pointer text-[var(--color-ink-soft)]
-                hover:bg-[rgba(129,140,248,0.15)] hover:text-[#818cf8]
-                active:scale-95 transition-[background,color,transform] duration-150"
-              onClick={() => onTempHpChange(tempHp + n)}
-            >
-              +{n}
-            </button>
-          ))}
-          {tempHp > 0 && (
-            <button
-              onClick={() => onTempHpChange(0)}
-              title={dict.hp.clear}
-              className="border-none bg-transparent rounded-full px-2 py-[5px]
-                font-[inherit] cursor-pointer text-[var(--color-ink-soft)]
-                hover:bg-[rgba(224,74,58,0.12)] hover:text-[var(--color-coral-deep)]
-                active:scale-95 transition-[background,color,transform] duration-150 inline-flex items-center"
-            >
-              <RotateCcw size={10} />
-            </button>
-          )}
         </div>
       </div>
     </div>

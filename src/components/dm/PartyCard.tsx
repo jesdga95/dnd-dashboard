@@ -121,7 +121,7 @@ export function PartyCard({ member, onRemove }: PartyCardProps) {
   const initDisplay = (char.initiative ?? 0) >= 0 ? `+${char.initiative ?? 0}` : `${char.initiative ?? 0}`;
 
   return (
-    <div className="rounded-[22px] overflow-hidden shadow-[var(--shadow-md)] border border-black/[0.025]">
+    <div className="rounded-[22px] overflow-hidden shadow-[var(--shadow-md)] border border-black/[0.025] bg-[var(--color-card)]">
       {/* Identity strip */}
       <div className="bg-[var(--color-ink)] px-5 py-4">
         <div className="flex items-start justify-between gap-3">
@@ -287,7 +287,7 @@ export function PartyCard({ member, onRemove }: PartyCardProps) {
                 return (
                   <div key={lvl} className="flex items-center gap-1">
                     <span
-                      className="text-[11px] font-bold w-[14px]"
+                      className="text-[11px] font-bold w-[18px] flex-shrink-0 whitespace-nowrap"
                       style={{ color: allUsed ? "var(--color-muted)" : "var(--color-ink)", opacity: allUsed ? 0.4 : 0.6 }}
                     >
                       {dict.spellcasting.ordinals[Number(lvl)]}

@@ -6,22 +6,27 @@ import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useDict } from "@/lib/DictContext";
 import { usePartyId } from "@/hooks/usePartyId";
 import { usePlayerParty } from "@/hooks/usePlayerParty";
-import { Swords, X, Shield, Plus, Check, Maximize2, Minimize2 } from "lucide-react";
+import { Swords, X, Shield, ShieldPlus, HeartPlus, Plus, Check, Maximize2, Minimize2 } from "lucide-react";
 import { EditableNumber } from "@/components/ui/EditableNumber";
 import { CombatantList, type MemberLiveData } from "@/components/combat/CombatantList";
 import type { DmCombat, Character } from "@/lib/types";
 
 export interface PlayerCombatViewProps {
   uid: string;
-  char: Pick<Character, "name" | "hp" | "hpMax" | "tempHp" | "ac">;
+  char: Pick<Character, "name" | "hp" | "hpMax" | "tempHp" | "ac" | "tempAc">;
   statuses: string[];
   onAdjustHp: (delta: number) => void;
   onUpdateHp: (patch: { hp?: number | null; hpMax?: number | null }) => void;
   onTempHpChange: (val: number) => void;
+  onTempAcChange: (val: number) => void;
   onAddStatus: (status: string) => void;
   onRemoveStatus: (index: number) => void;
   onDismiss: () => void;
 }
+
+// Temporary AC accent — sky, distinct from the indigo used for temp HP.
+const TEMP_AC_COLOR = "#7dd3fc";
+const TEMP_AC_BG = "rgba(125,211,252,0.16)";
 
 function PlayerCombatViewInner({
   uid,
@@ -31,6 +36,7 @@ function PlayerCombatViewInner({
   onAdjustHp,
   onUpdateHp,
   onTempHpChange,
+  onTempAcChange,
   onAddStatus,
   onRemoveStatus,
   onDismiss,
@@ -54,12 +60,16 @@ function PlayerCombatViewInner({
   const { partyId } = usePartyId();
   const { members: partyMembers } = usePlayerParty(partyId ?? null);
   const memberData: Record<string, MemberLiveData> = Object.fromEntries(
-    partyMembers.map((m) => [m.uid, { hp: m.char.hp, hpMax: m.char.hpMax, tempHp: m.char.tempHp, ac: m.char.ac }])
+    partyMembers.map((m) => [m.uid, { hp: m.char.hp, hpMax: m.char.hpMax, tempHp: m.char.tempHp, ac: m.char.ac, tempAc: m.char.tempAc ?? 0 }])
   );
 
   const hp = char.hp ?? 0;
   const hpMax = char.hpMax ?? 0;
   const tempHp = char.tempHp ?? 0;
+  const tempAc = char.tempAc ?? 0;
+  const baseAc = char.ac;
+  const effAc = (baseAc ?? 0) + tempAc;
+  const showAc = (baseAc !== null && baseAc > 0) || tempAc !== 0;
   const total = Math.max(1, hpMax + tempHp);
   const hpPct = (hp / total) * 100;
   const tempPct = (tempHp / total) * 100;
@@ -172,13 +182,22 @@ function PlayerCombatViewInner({
             <span className="text-[17px] font-extrabold text-white/75 tracking-tight truncate">
               {char.name || dict.combatMode.unnamed}
             </span>
-            {char.ac !== null && char.ac > 0 && (
+            {showAc && (
               <span
                 className="flex items-center gap-1.5 text-[13px] font-bold shrink-0 ml-3 px-2.5 py-1 rounded-full"
-                style={{ color: "rgba(255,255,255,0.4)", background: "rgba(255,255,255,0.06)" }}
+                style={
+                  tempAc !== 0
+                    ? { color: TEMP_AC_COLOR, background: TEMP_AC_BG }
+                    : { color: "rgba(255,255,255,0.4)", background: "rgba(255,255,255,0.06)" }
+                }
               >
-                <Shield size={12} />
-                {dict.dmCombat.acLabel} {char.ac}
+                {tempAc !== 0 ? <ShieldPlus size={12} /> : <Shield size={12} />}
+                {dict.dmCombat.acLabel} {effAc}
+                {tempAc !== 0 && (
+                  <span className="text-[11px] font-semibold opacity-80">
+                    ({tempAc > 0 ? `+${tempAc}` : tempAc})
+                  </span>
+                )}
               </span>
             )}
           </div>
@@ -324,7 +343,7 @@ function PlayerCombatViewInner({
               className="text-[13px] font-semibold flex items-center gap-1.5 shrink-0"
               style={{ color: "#818cf8" }}
             >
-              <Shield size={12} />
+              <HeartPlus size={12} />
               {dict.hp.tempHp}
             </span>
             <EditableNumber
@@ -357,6 +376,47 @@ function PlayerCombatViewInner({
               {tempHp > 0 && (
                 <button
                   onClick={() => onTempHpChange(0)}
+                  className="px-2 py-[5px] border-none bg-transparent rounded-full font-[inherit]
+                    cursor-pointer flex items-center transition-colors duration-150
+                    text-white/35 hover:bg-[rgba(224,74,58,0.15)] hover:text-[var(--color-coral)]"
+                >
+                  <X size={10} />
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Temp AC row — players buff/debuff their own AC during combat */}
+          <div className="mt-3 flex items-center gap-2 flex-wrap">
+            <span
+              className="text-[13px] font-semibold flex items-center gap-1.5 shrink-0"
+              style={{ color: TEMP_AC_COLOR }}
+            >
+              <ShieldPlus size={12} />
+              {dict.combatMode.tempAc}
+            </span>
+            <EditableNumber
+              value={tempAc}
+              onChange={(v) => onTempAcChange(v ?? 0)}
+              signed
+              style={{ width: 44, textAlign: "center", fontSize: 16, fontWeight: 700, color: TEMP_AC_COLOR }}
+            />
+            <div className="flex gap-0.5 rounded-full p-[3px]" style={{ background: "rgba(255,255,255,0.06)" }}>
+              {[1, 2, 5].map((n) => (
+                <button
+                  key={"ta" + n}
+                  onClick={() => onTempAcChange(tempAc + n)}
+                  className="px-2.5 py-[5px] text-[12px] border-none bg-transparent rounded-full
+                    font-semibold font-[inherit] cursor-pointer transition-colors duration-150
+                    text-white/40 hover:bg-[rgba(125,211,252,0.15)] hover:text-[#7dd3fc]"
+                >
+                  +{n}
+                </button>
+              ))}
+              {tempAc !== 0 && (
+                <button
+                  onClick={() => onTempAcChange(0)}
+                  title={dict.combatMode.clearTempAc}
                   className="px-2 py-[5px] border-none bg-transparent rounded-full font-[inherit]
                     cursor-pointer flex items-center transition-colors duration-150
                     text-white/35 hover:bg-[rgba(224,74,58,0.15)] hover:text-[var(--color-coral)]"
@@ -477,6 +537,7 @@ function PlayerCombatViewInner({
             myHpMax={char.hpMax}
             myTempHp={char.tempHp}
             myAc={char.ac}
+            myTempAc={tempAc}
             memberData={memberData}
           />
 

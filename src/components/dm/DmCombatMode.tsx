@@ -437,6 +437,8 @@ export function DmCombatMode({ members, onClose }: DmCombatModeProps) {
     startCombat,
     endCombat,
     nextTurn,
+    moveCombatant,
+    setInitiative,
     addMonsters,
     addOfflinePlayer,
     removeMonster,
@@ -489,6 +491,7 @@ export function DmCombatMode({ members, onClose }: DmCombatModeProps) {
         hpMax: m.char.hpMax,
         tempHp: m.char.tempHp,
         ac: m.char.ac,
+        tempAc: m.char.tempAc ?? 0,
         conditions: m.char.conditions,
       },
     ])
@@ -592,9 +595,11 @@ export function DmCombatMode({ members, onClose }: DmCombatModeProps) {
             combat={combat}
             memberData={memberData}
             monsterControls={monsterControls}
+            reorder={moveCombatant}
+            onSetInitiative={setInitiative}
           />
 
-          <div className="mt-1 flex flex-col gap-2">
+          <div className="mt-1 flex flex-wrap justify-end gap-2">
             <InlineAdd
               accent="coral"
               openLabel={dict.dmCombat.addMonster}

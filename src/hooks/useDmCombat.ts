@@ -83,9 +83,42 @@ export function useDmCombat() {
     });
   };
 
+  // Swap a combatant with its neighbour to reorder the initiative list mid-combat.
+  // The active-turn highlight follows the moved combatant so no turn is skipped/repeated.
+  const moveCombatant = async (index: number, dir: -1 | 1) => {
+    const c = combatRef.current;
+    if (!c) return;
+    const target = index + dir;
+    if (target < 0 || target >= c.combatants.length) return;
+    const combatants = [...c.combatants];
+    [combatants[index], combatants[target]] = [combatants[target], combatants[index]];
+    let currentTurnIndex = c.currentTurnIndex;
+    if (currentTurnIndex === index) currentTurnIndex = target;
+    else if (currentTurnIndex === target) currentTurnIndex = index;
+    await write({ ...c, combatants, currentTurnIndex });
+  };
+
+  // Set a combatant's initiative value and re-sort (highest first), keeping the
+  // active-turn highlight on the same combatant. For exact counts (Alert feat,
+  // lair actions, readied/held actions); the arrows handle ties and manual nudges.
+  const setInitiative = async (index: number, value: number) => {
+    const c = combatRef.current;
+    if (!c || index < 0 || index >= c.combatants.length) return;
+    const keyOf = (cm: Combatant) => (cm.type === "player" ? cm.uid : cm.id);
+    const current = c.combatants[c.currentTurnIndex];
+    const currentKey = current ? keyOf(current) : null;
+    const combatants = c.combatants.map((cm, i) =>
+      i === index ? { ...cm, initiativeRoll: value } : cm
+    );
+    combatants.sort((a, b) => b.initiativeRoll - a.initiativeRoll);
+    const found = currentKey === null ? -1 : combatants.findIndex((cm) => keyOf(cm) === currentKey);
+    const currentTurnIndex = found >= 0 ? found : Math.min(c.currentTurnIndex, combatants.length - 1);
+    await write({ ...c, combatants, currentTurnIndex });
+  };
+
   // The id-based mutators below target any DM-managed combatant — monsters and
   // offline players alike (both carry an `id`; only synced players use `uid`).
-  const updateMonster = async (id: string, patch: { ac?: number; hpMax?: number }) => {
+  const updateMonster = async (id: string, patch: { ac?: number; hpMax?: number; tempAc?: number }) => {
     const c = combatRef.current;
     if (!c) return;
     await write({
@@ -173,6 +206,8 @@ export function useDmCombat() {
     startCombat,
     endCombat,
     nextTurn,
+    moveCombatant,
+    setInitiative,
     addMonsters,
     addOfflinePlayer,
     removeMonster,
