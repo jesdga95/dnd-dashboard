@@ -144,6 +144,16 @@ export function CharacterSheet() {
 
       <div className="h-3" />
 
+      {/* Skills */}
+      <SkillsCard
+        skills={char.skills ?? {}}
+        abilities={char.abilities}
+        proficiency={char.proficiency}
+        onUpdate={updateSkillProficiency}
+      />
+
+      <div className="h-3" />
+
       {/* Combat + Equipment */}
       <div className="grid gap-3 [grid-template-columns:1.4fr_1fr] max-[1024px]:grid-cols-1">
         <CombatCard
@@ -157,16 +167,6 @@ export function CharacterSheet() {
           onDelete={deleteEquipment}
         />
       </div>
-
-      <div className="h-3" />
-
-      {/* Skills */}
-      <SkillsCard
-        skills={char.skills ?? {}}
-        abilities={char.abilities}
-        proficiency={char.proficiency}
-        onUpdate={updateSkillProficiency}
-      />
 
       <div className="h-3" />
 
