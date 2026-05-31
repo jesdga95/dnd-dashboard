@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Wand2, Plus, Minus, X, Pencil } from "lucide-react";
+import { Wand2, Plus, Minus, X } from "lucide-react";
 import { IconPill } from "@/components/ui/IconPill";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Btn } from "@/components/ui/Btn";
+import { RowActions } from "@/components/ui/RowActions";
 import { EditableNumber } from "@/components/ui/EditableNumber";
 import { Modal, ModalField, ModalInput, ModalTextarea, ModalBtn } from "@/components/ui/Modal";
 import { useDict } from "@/lib/DictContext";
@@ -333,9 +334,8 @@ function SpellRow({
 }) {
   const dict = useDict();
   return (
-    <div className="relative flex items-center gap-2.5 px-2.5 py-2 rounded-[10px]
-      hover:bg-[var(--color-bg-warm)] transition-colors duration-150 group
-      [@media(hover:none)]:pr-[70px]">
+    <div className="flex items-center gap-2.5 px-2.5 py-2 rounded-[10px]
+      hover:bg-[var(--color-bg-warm)] transition-colors duration-150">
 
       {spell.level > 0 ? (
         <button
@@ -353,12 +353,16 @@ function SpellRow({
         <div className="w-[15px] h-[15px] rounded-full bg-[var(--color-lavender)] flex-shrink-0" />
       )}
 
-      <span
-        className="flex-1 text-[14px] font-semibold text-[var(--color-ink)] cursor-pointer truncate min-w-0"
-        onClick={onEdit}
-      >
-        {spell.name || <em className="text-[var(--color-muted-soft)] font-normal not-italic">{dict.spellcasting.list.unnamed}</em>}
-      </span>
+      <div className="flex-1 min-w-0 cursor-pointer" onClick={onEdit}>
+        <div className="text-[14px] font-semibold text-[var(--color-ink)] truncate">
+          {spell.name || <em className="text-[var(--color-muted-soft)] font-normal not-italic">{dict.spellcasting.list.unnamed}</em>}
+        </div>
+        {spell.desc && (
+          <div className="text-[12px] text-[var(--color-muted-soft)] line-clamp-2 leading-[1.4]">
+            {spell.desc}
+          </div>
+        )}
+      </div>
 
       {spell.concentration && (
         <span className="text-[11px] font-bold bg-[var(--color-blue)] text-[var(--color-blue-deep)]
@@ -374,17 +378,7 @@ function SpellRow({
         </span>
       )}
 
-      {/* Actions — absolute, no layout impact on desktop */}
-      <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-0.5 opacity-0 group-hover:opacity-100 [@media(hover:none)]:opacity-100 transition-opacity duration-150">
-        <Btn variant="default" size="xs" iconOnly onClick={onEdit} title="Edit">
-          <Pencil size={11} />
-        </Btn>
-        <Btn variant="default" size="xs" iconOnly
-          className="hover:bg-[var(--color-peach)] hover:text-[var(--color-coral-deep)] hover:border-transparent"
-          onClick={onDelete} title="Delete">
-          <X size={12} />
-        </Btn>
-      </div>
+      <RowActions onEdit={onEdit} onDelete={onDelete} />
     </div>
   );
 }
