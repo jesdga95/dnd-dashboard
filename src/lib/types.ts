@@ -156,6 +156,22 @@ export interface PlayerCombatant {
   initiativeRoll: number;
 }
 
+/**
+ * A player who is at the table but not using the app (offline). The DM tracks
+ * their HP/AC/conditions manually, like a monster, but they're an ally so they
+ * render as a player and are always visible to the online party.
+ */
+export interface OfflinePlayerCombatant {
+  type: "offline";
+  id: string;
+  name: string;
+  hp: number;
+  hpMax: number;
+  ac?: number;
+  initiativeRoll: number;
+  conditions: string[];
+}
+
 export interface MonsterCombatant {
   type: "monster";
   id: string;
@@ -168,7 +184,7 @@ export interface MonsterCombatant {
   visibility: 0 | 1 | 2; // 0=hidden, 1=name only, 2=name+stats
 }
 
-export type Combatant = PlayerCombatant | MonsterCombatant;
+export type Combatant = PlayerCombatant | MonsterCombatant | OfflinePlayerCombatant;
 
 export interface DmCombat {
   round: number;

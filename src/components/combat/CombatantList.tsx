@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Eye, EyeOff, Trash2, Plus, Check, X } from "lucide-react";
 import { useDict } from "@/lib/DictContext";
-import type { DmCombat, MonsterCombatant } from "@/lib/types";
+import type { DmCombat, MonsterCombatant, OfflinePlayerCombatant } from "@/lib/types";
 
 // ── Shared helpers ─────────────────────────────────────────────────────────
 
@@ -75,7 +75,13 @@ function InlineEdit({
   width?: number;
 }) {
   const [local, setLocal] = useState(value);
-  useEffect(() => setLocal(value), [value]);
+  // Resync local edit state when the committed value changes externally
+  // (adjust-state-during-render — preferred over a setState-in-effect).
+  const [prevValue, setPrevValue] = useState(value);
+  if (value !== prevValue) {
+    setPrevValue(value);
+    setLocal(value);
+  }
   return (
     <input
       type="number"
@@ -129,14 +135,16 @@ export interface CombatantListProps {
   monsterControls?: MonsterControls;
 }
 
-// ── Monster row ─────────────────────────────────────────────────────────────
+// ── Monster / offline-player row ─────────────────────────────────────────────
+// Both are DM-managed (manual HP/AC/conditions). Monsters can be hidden from
+// players; offline players are allies, so they're always fully visible.
 
-function MonsterRow({
-  monster,
+function ManualCombatantRow({
+  combatant,
   isCurrent,
   controls,
 }: {
-  monster: MonsterCombatant;
+  combatant: MonsterCombatant | OfflinePlayerCombatant;
   isCurrent: boolean;
   controls?: MonsterControls;
 }) {
@@ -145,28 +153,29 @@ function MonsterRow({
   const [showCondInput, setShowCondInput] = useState(false);
   const [customDelta, setCustomDelta] = useState("");
 
-  const isDead = monster.hp <= 0;
+  const isOffline = combatant.type === "offline";
+  const isDead = combatant.hp <= 0;
   const isDm = !!controls;
-  const vis = monster.visibility ?? 0;
+  const vis = isOffline ? 2 : (combatant.visibility ?? 0);
   const nameVisible = isDm || vis >= 1;
   const statsVisible = isDm || vis >= 2;
 
   const handleCustom = (sign: 1 | -1) => {
     const n = parseInt(customDelta, 10);
     if (!isNaN(n) && n > 0 && controls) {
-      controls.onAdjustHp(monster.id, sign * n);
+      controls.onAdjustHp(combatant.id, sign * n);
       setCustomDelta("");
     }
   };
 
   const commitAc = (v: string) => {
     const n = parseInt(v, 10);
-    if (!isNaN(n) && n >= 0 && controls) controls.onUpdateMonster(monster.id, { ac: n });
+    if (!isNaN(n) && n >= 0 && controls) controls.onUpdateMonster(combatant.id, { ac: n });
   };
 
   const commitHpMax = (v: string) => {
     const n = parseInt(v, 10);
-    if (!isNaN(n) && n > 0 && controls) controls.onUpdateMonster(monster.id, { hpMax: n });
+    if (!isNaN(n) && n > 0 && controls) controls.onUpdateMonster(combatant.id, { hpMax: n });
   };
 
   return (
@@ -174,12 +183,12 @@ function MonsterRow({
       {/* ── Header row ── */}
       <div className="flex items-center gap-2.5" style={{ marginBottom: isDm ? "12px" : "0" }}>
         <span className="text-[12px] font-bold text-white/35 w-5 text-center shrink-0">
-          {monster.initiativeRoll}
+          {combatant.initiativeRoll}
         </span>
 
-        {isDm ? (
+        {isDm && !isOffline ? (
           <button
-            onClick={() => controls.onToggleReveal(monster.id)}
+            onClick={() => controls.onToggleReveal(combatant.id)}
             title={vis === 0 ? dict.dmCombat.revealName : vis === 1 ? dict.dmCombat.revealStats : dict.dmCombat.hide}
             className="w-6 h-6 rounded-full flex items-center justify-center cursor-pointer shrink-0 transition-colors duration-150"
             style={
@@ -195,9 +204,13 @@ function MonsterRow({
         ) : (
           <span
             className="text-[12px] px-2 py-0.5 rounded-full font-semibold shrink-0"
-            style={{ background: "rgba(244,123,95,0.12)", color: "var(--color-coral)" }}
+            style={
+              isOffline
+                ? { background: "rgba(99,149,225,0.15)", color: "#7aaee8" }
+                : { background: "rgba(244,123,95,0.12)", color: "var(--color-coral)" }
+            }
           >
-            {dict.combatMode.monsterBadge}
+            {isOffline ? dict.combatMode.playerBadge : dict.combatMode.monsterBadge}
           </span>
         )}
 
@@ -213,26 +226,34 @@ function MonsterRow({
                   : "text-white"
               }`}
             >
-              {!nameVisible ? dict.dmCombat.unknown : monster.name}
+              {!nameVisible ? dict.dmCombat.unknown : combatant.name}
             </span>
+            {isOffline && (
+              <span
+                className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold shrink-0 uppercase tracking-[0.08em]"
+                style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.4)" }}
+              >
+                {dict.dmCombat.offlineTag}
+              </span>
+            )}
             {statsVisible && (
               isDm ? (
                 <span className="flex items-center gap-0.5 text-[12px] text-white/35 shrink-0">
                   {dict.dmCombat.acLabel}
                   <InlineEdit
-                    value={monster.ac !== undefined ? String(monster.ac) : ""}
+                    value={combatant.ac !== undefined ? String(combatant.ac) : ""}
                     onCommit={commitAc}
                     placeholder="—"
                     width={32}
                   />
                 </span>
               ) : (
-                monster.ac !== undefined && (
-                  <span className="text-[12px] text-white/40 shrink-0">{dict.dmCombat.acLabel} {monster.ac}</span>
+                combatant.ac !== undefined && (
+                  <span className="text-[12px] text-white/40 shrink-0">{dict.dmCombat.acLabel} {combatant.ac}</span>
                 )
               )
             )}
-            {isDm && vis === 1 && (
+            {isDm && !isOffline && vis === 1 && (
               <span
                 className="text-[11px] px-1.5 py-0.5 rounded-full font-semibold shrink-0"
                 style={{ background: "rgba(251,191,36,0.15)", color: "#fbbf24" }}
@@ -240,7 +261,7 @@ function MonsterRow({
                 {dict.dmCombat.visName}
               </span>
             )}
-            {isDm && vis === 2 && (
+            {isDm && !isOffline && vis === 2 && (
               <span
                 className="text-[11px] px-1.5 py-0.5 rounded-full font-semibold shrink-0"
                 style={{ background: "rgba(72,200,160,0.15)", color: "var(--color-mint-deep)" }}
@@ -253,27 +274,27 @@ function MonsterRow({
           {/* HP bar + numbers */}
           {statsVisible && (
             <div className="flex items-center gap-2">
-              <HpBar hp={monster.hp} hpMax={monster.hpMax} />
+              <HpBar hp={combatant.hp} hpMax={combatant.hpMax} />
               <span className="text-[12px] font-semibold text-white/55 shrink-0 flex items-center gap-0.5">
-                {monster.hp}
+                {combatant.hp}
                 <span className="text-white/30">/</span>
                 {isDm ? (
                   <InlineEdit
-                    value={String(monster.hpMax)}
+                    value={String(combatant.hpMax)}
                     onCommit={commitHpMax}
                     width={44}
                   />
                 ) : (
-                  <span>{monster.hpMax}</span>
+                  <span>{combatant.hpMax}</span>
                 )}
               </span>
             </div>
           )}
 
           {/* Conditions — read-only (player view) */}
-          {!isDm && vis >= 2 && monster.conditions.length > 0 && (
+          {!isDm && vis >= 2 && combatant.conditions.length > 0 && (
             <div className="flex flex-wrap gap-1 mt-1.5">
-              {monster.conditions.map((cond) => (
+              {combatant.conditions.map((cond) => (
                 <span
                   key={cond}
                   className="text-[11px] px-2 py-0.5 rounded-full font-medium"
@@ -288,7 +309,7 @@ function MonsterRow({
 
         {isDm && (
           <button
-            onClick={() => controls.onRemove(monster.id)}
+            onClick={() => controls.onRemove(combatant.id)}
             className="w-7 h-7 flex items-center justify-center rounded-full cursor-pointer shrink-0
               text-white/20 hover:text-[var(--color-coral)] hover:bg-white/[0.05] transition-colors duration-150"
           >
@@ -305,7 +326,7 @@ function MonsterRow({
               {[10, 5, 1].map((n) => (
                 <button
                   key={"d" + n}
-                  onClick={() => controls.onAdjustHp(monster.id, -n)}
+                  onClick={() => controls.onAdjustHp(combatant.id, -n)}
                   className="px-2.5 py-[5px] text-[12px] border-none bg-transparent rounded-full
                     font-semibold font-[inherit] cursor-pointer transition-colors duration-150
                     text-white/45 hover:bg-[rgba(224,74,58,0.2)] hover:text-[var(--color-coral)]"
@@ -318,7 +339,7 @@ function MonsterRow({
               {[1, 5, 10].map((n) => (
                 <button
                   key={"h" + n}
-                  onClick={() => controls.onAdjustHp(monster.id, n)}
+                  onClick={() => controls.onAdjustHp(combatant.id, n)}
                   className="px-2.5 py-[5px] text-[12px] border-none bg-transparent rounded-full
                     font-semibold font-[inherit] cursor-pointer transition-colors duration-150
                     text-white/45 hover:bg-[rgba(74,180,58,0.2)] hover:text-[#6aba4e]"
@@ -358,12 +379,12 @@ function MonsterRow({
             </button>
           </div>
 
-          {monster.conditions.length > 0 && (
+          {combatant.conditions.length > 0 && (
             <div className="flex flex-wrap gap-1 ml-[52px] mt-1 mb-1">
-              {monster.conditions.map((c) => (
+              {combatant.conditions.map((c) => (
                 <button
                   key={c}
-                  onClick={() => controls.onRemoveCondition(monster.id, c)}
+                  onClick={() => controls.onRemoveCondition(combatant.id, c)}
                   className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[12px] font-medium
                     cursor-pointer transition-colors duration-150"
                   style={{
@@ -391,7 +412,7 @@ function MonsterRow({
                   style={{ background: "rgba(255,255,255,0.07)", color: "rgba(255,255,255,0.7)" }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && condInput.trim()) {
-                      controls.onAddCondition(monster.id, condInput.trim());
+                      controls.onAddCondition(combatant.id, condInput.trim());
                       setCondInput("");
                       setShowCondInput(false);
                     }
@@ -400,7 +421,7 @@ function MonsterRow({
                 />
                 <button
                   onClick={() => {
-                    if (condInput.trim()) controls.onAddCondition(monster.id, condInput.trim());
+                    if (condInput.trim()) controls.onAddCondition(combatant.id, condInput.trim());
                     setCondInput(""); setShowCondInput(false);
                   }}
                   className="p-1.5 rounded-full border-none cursor-pointer flex items-center
@@ -457,10 +478,10 @@ function PlayerRow({
   const isMe = myUid !== undefined && combatant.uid === myUid;
   const isDmMode = myUid === undefined;
 
-  const hp = isDmMode ? (liveData?.hp ?? null) : isMe ? (myHp ?? null) : null;
-  const hpMax = isDmMode ? (liveData?.hpMax ?? null) : isMe ? (myHpMax ?? null) : null;
-  const tempHp = isDmMode ? (liveData?.tempHp ?? 0) : isMe ? (myTempHp ?? 0) : 0;
-  const ac = isDmMode ? (liveData?.ac ?? null) : isMe ? (myAc ?? null) : null;
+  const hp = isMe ? (myHp ?? null) : (liveData?.hp ?? null);
+  const hpMax = isMe ? (myHpMax ?? null) : (liveData?.hpMax ?? null);
+  const tempHp = isMe ? (myTempHp ?? 0) : (liveData?.tempHp ?? 0);
+  const ac = isMe ? (myAc ?? null) : (liveData?.ac ?? null);
   const conditions = isDmMode ? (liveData?.conditions ?? []) : [];
   const isDead = hp !== null && hp <= 0;
 
@@ -548,9 +569,9 @@ export function CombatantList({
           );
         }
         return (
-          <MonsterRow
+          <ManualCombatantRow
             key={c.id}
-            monster={c}
+            combatant={c}
             isCurrent={isCurrent}
             controls={monsterControls}
           />

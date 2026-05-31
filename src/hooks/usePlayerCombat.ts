@@ -15,6 +15,7 @@ export function usePlayerCombat() {
   // Step 1: find this player's DM via player_dm_links
   useEffect(() => {
     if (!user) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- clear subscription state on sign-out
       setDmUid(null);
       setLoading(false);
       return;
@@ -35,6 +36,7 @@ export function usePlayerCombat() {
   // Step 2: subscribe to that DM's active combat
   useEffect(() => {
     if (!dmUid) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- clear subscription state when DM link is absent
       setCombat(null);
       setLoading(false);
       return;

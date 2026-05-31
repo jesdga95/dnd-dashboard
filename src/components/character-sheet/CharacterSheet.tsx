@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useCharacter } from "@/hooks/useCharacter";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
@@ -28,10 +28,14 @@ export function CharacterSheet() {
   const { combat: dmCombat } = usePlayerCombat();
   const [dmCombatDismissed, setDmCombatDismissed] = useState(false);
 
-  // Auto-show overlay when a new combat begins (null → non-null transition only)
-  useEffect(() => {
-    if (dmCombat) setDmCombatDismissed(false);
-  }, [!!dmCombat]); // eslint-disable-line react-hooks/exhaustive-deps
+  // Auto-show overlay when a new combat begins (null → non-null transition only).
+  // Adjust-state-during-render, keyed on the transition — preferred over an effect.
+  const hasCombat = !!dmCombat;
+  const [prevHasCombat, setPrevHasCombat] = useState(hasCombat);
+  if (hasCombat !== prevHasCombat) {
+    setPrevHasCombat(hasCombat);
+    if (hasCombat) setDmCombatDismissed(false);
+  }
 
   const { user } = useAuth();
   const { role, resetProfile } = useProfile();

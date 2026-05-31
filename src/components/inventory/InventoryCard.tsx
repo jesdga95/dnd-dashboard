@@ -38,7 +38,7 @@ function CoinGlyph({ color }: { color: string }) {
   );
 }
 
-export function InventoryCard({ inventory, gold, silver, onSave, onDelete, onToggle, onUpdate }: InventoryCardProps) {
+export function InventoryCard({ inventory, gold, silver, onSave, onDelete, onUpdate }: InventoryCardProps) {
   const dict = useDict();
   const [editing, setEditing] = useState<InventoryItem | null>(null);
 

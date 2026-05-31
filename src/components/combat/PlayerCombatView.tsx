@@ -4,9 +4,11 @@ import { useState, useRef, useEffect } from "react";
 import { usePlayerCombat } from "@/hooks/usePlayerCombat";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useDict } from "@/lib/DictContext";
+import { usePartyId } from "@/hooks/usePartyId";
+import { usePlayerParty } from "@/hooks/usePlayerParty";
 import { Swords, X, Shield, Plus, Check, Maximize2, Minimize2 } from "lucide-react";
 import { EditableNumber } from "@/components/ui/EditableNumber";
-import { CombatantList } from "@/components/combat/CombatantList";
+import { CombatantList, type MemberLiveData } from "@/components/combat/CombatantList";
 import type { DmCombat, Character } from "@/lib/types";
 
 export interface PlayerCombatViewProps {
@@ -43,9 +45,17 @@ function PlayerCombatViewInner({
   const [showStatusInput, setShowStatusInput] = useState(false);
 
   const statusInputRef = useRef<HTMLInputElement>(null);
+  // keep a fresh ref to onDismiss without adding it to the keydown effect's deps
   const onDismissRef = useRef(onDismiss);
-  // keep ref fresh without adding to effect deps
-  onDismissRef.current = onDismiss;
+  useEffect(() => {
+    onDismissRef.current = onDismiss;
+  });
+
+  const { partyId } = usePartyId();
+  const { members: partyMembers } = usePlayerParty(partyId ?? null);
+  const memberData: Record<string, MemberLiveData> = Object.fromEntries(
+    partyMembers.map((m) => [m.uid, { hp: m.char.hp, hpMax: m.char.hpMax, tempHp: m.char.tempHp, ac: m.char.ac }])
+  );
 
   const hp = char.hp ?? 0;
   const hpMax = char.hpMax ?? 0;
@@ -467,6 +477,7 @@ function PlayerCombatViewInner({
             myHpMax={char.hpMax}
             myTempHp={char.tempHp}
             myAc={char.ac}
+            memberData={memberData}
           />
 
         </div>

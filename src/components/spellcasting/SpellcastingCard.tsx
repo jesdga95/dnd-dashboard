@@ -6,7 +6,6 @@ import { IconPill } from "@/components/ui/IconPill";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Btn } from "@/components/ui/Btn";
 import { RowActions } from "@/components/ui/RowActions";
-import { EditableNumber } from "@/components/ui/EditableNumber";
 import { Modal, ModalField, ModalInput, ModalTextarea, ModalBtn } from "@/components/ui/Modal";
 import { useDict } from "@/lib/DictContext";
 import { abilityMod } from "@/lib/utils";

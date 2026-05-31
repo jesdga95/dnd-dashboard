@@ -1,12 +1,30 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { RotateCcw, LogOut, Share2, Copy, Check, Moon, Coffee, Download, Upload } from "lucide-react";
+import { RotateCcw, LogOut, Share2, Copy, Check, Moon, Coffee, Download, Upload, Crown } from "lucide-react";
 import { EditableInput } from "@/components/ui/EditableInput";
 import { EditableNumber } from "@/components/ui/EditableNumber";
 import { useAuth } from "@/hooks/useAuth";
 import { useDict } from "@/lib/DictContext";
+import { usePartyId } from "@/hooks/usePartyId";
+import { usePlayerParty } from "@/hooks/usePlayerParty";
 import type { Character } from "@/lib/types";
+
+// Deterministic avatar gradient per uid so each member keeps a consistent color.
+const AVATAR_COLORS = [
+  "linear-gradient(145deg, #4a90d9, #2d6ab5)",
+  "linear-gradient(145deg, #48c8a0, #2f9b78)",
+  "linear-gradient(145deg, #8b7cc8, #6a5bb0)",
+  "linear-gradient(145deg, #e08a5a, #c46a3a)",
+  "linear-gradient(145deg, #d9a94a, #b5872d)",
+  "linear-gradient(145deg, #5ab0c8, #3a8ba3)",
+];
+
+function avatarBg(uid: string): string {
+  let h = 0;
+  for (let i = 0; i < uid.length; i++) h = (h * 31 + uid.charCodeAt(i)) | 0;
+  return AVATAR_COLORS[Math.abs(h) % AVATAR_COLORS.length];
+}
 
 interface CharacterHeaderProps {
   char: Character;
@@ -226,10 +244,14 @@ function AvatarMenu({
   );
 }
 
+
 export function CharacterHeader({ char, onUpdate, onImport, onReset, onShortRest, onLongRest, onToggleSharing, isShared, userId }: CharacterHeaderProps) {
   const dict = useDict();
   const { user, signOut } = useAuth();
   const initial = char.name?.[0]?.toUpperCase() ?? "?";
+
+  const { partyId } = usePartyId();
+  const { members: partyMembers, loading: partyLoading } = usePlayerParty(partyId ?? null);
 
   const META_FIELDS: { label: string; key: keyof Pick<Character, "race" | "className" | "subclass" | "background" | "alignment"> }[] = [
     { label: dict.header.race, key: "race" },
@@ -238,6 +260,55 @@ export function CharacterHeader({ char, onUpdate, onImport, onReset, onShortRest
     { label: dict.header.bg, key: "background" },
     { label: dict.header.align, key: "alignment" },
   ];
+
+  // Party strip — bordered row inside the card, sibling to the rest buttons.
+  // Null for solo players (no DM linked) so no empty divider shows.
+  const partyStrip = () => {
+    if (!partyId || partyLoading) return null;
+    const others = partyMembers.filter((m) => m.uid !== user?.uid);
+    return (
+      <div className="flex flex-wrap items-center gap-1.5 mt-3 pt-3 border-t border-white/[0.08]">
+        <span className="text-[11px] font-bold tracking-[0.1em] uppercase text-white/35 mr-0.5">
+          {dict.party.title}
+        </span>
+
+        {/* DM */}
+        <span
+          className="inline-flex items-center gap-1.5 pl-[3px] pr-2.5 py-[3px] rounded-full text-[11px] font-bold flex-shrink-0"
+          style={{ background: "rgba(251,191,36,0.1)", color: "rgba(251,191,36,0.7)" }}
+        >
+          <span
+            className="w-[18px] h-[18px] rounded-full inline-flex items-center justify-center text-white"
+            style={{ background: "linear-gradient(145deg, #e0b44a, #c2922d)" }}
+          >
+            <Crown size={9} />
+          </span>
+          DM
+        </span>
+
+        {/* Members */}
+        {others.map((m) => {
+          const name = m.loading ? "…" : (m.char.name || "—");
+          const initial = m.loading ? "" : (m.char.name?.[0]?.toUpperCase() ?? "?");
+          return (
+            <span
+              key={m.uid}
+              className="inline-flex items-center gap-1.5 pl-[3px] pr-2.5 py-[3px] rounded-full text-[11px] font-semibold max-w-[150px]"
+              style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.55)" }}
+            >
+              <span
+                className="w-[18px] h-[18px] rounded-full inline-flex items-center justify-center text-[10px] font-bold text-white uppercase select-none flex-shrink-0"
+                style={{ background: avatarBg(m.uid) }}
+              >
+                {initial}
+              </span>
+              <span className="truncate">{name}</span>
+            </span>
+          );
+        })}
+      </div>
+    );
+  };
 
   const restButtons = (fullWidth: boolean) => (
     <div className={`flex gap-2 mt-3 pt-3 border-t border-white/[0.08] ${fullWidth ? "" : "justify-end"}`}>
@@ -345,6 +416,7 @@ export function CharacterHeader({ char, onUpdate, onImport, onReset, onShortRest
           </div>
         </div>
 
+        {partyStrip()}
         {restButtons(false)}
       </div>
 
@@ -424,6 +496,7 @@ export function CharacterHeader({ char, onUpdate, onImport, onReset, onShortRest
           </div>
         </div>
 
+        {partyStrip()}
         {restButtons(true)}
       </div>
     </div>

@@ -37,6 +37,7 @@ export function useNotes(opts?: { characterName?: string }) {
   // Subscribe to MY notes (owner can read all — shared and private)
   useEffect(() => {
     if (!user) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- clear subscription state on sign-out
       setMyNotes([]);
       setLoading(false);
       return;
@@ -63,6 +64,7 @@ export function useNotes(opts?: { characterName?: string }) {
   // Subscribe to party shared notes
   useEffect(() => {
     if (!partyId) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- clear shared notes when party is absent
       setSharedNotes([]);
       return;
     }

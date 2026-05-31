@@ -327,6 +327,7 @@
     "hpLabel": "HP",
     "acPlaceholder": "AC",
     "acLabel": "AC",
+    "countTitle": "Quantity — spawns this many identical copies",
     "startCombat": "Start Combat",
     "startRequirements": "Requires ≥1 player, ≥1 monster, and all initiatives set",
     "noParty": "Add players to your party first.",
@@ -336,7 +337,12 @@
     "hide": "Hide from players",
     "visName": "Name",
     "visStats": "Stats",
-    "unknown": "????"
+    "unknown": "????",
+    "offlinePlayers": "Offline Players",
+    "offlinePlayersHint": "Players at the table without the app — you track their HP.",
+    "addOfflinePlayer": "Add Offline Player",
+    "offlineNamePlaceholder": "Player name…",
+    "offlineTag": "offline"
   },
   "iconPicker": {
     "searchPlaceholder": "Search icons…",
@@ -347,5 +353,11 @@
     "save": "Save",
     "edit": "Edit",
     "delete": "Delete"
+  },
+  "party": {
+    "title": "Party",
+    "dungeonMaster": "Dungeon Master",
+    "you": "you",
+    "noParty": "You're not in a party yet"
   }
 }

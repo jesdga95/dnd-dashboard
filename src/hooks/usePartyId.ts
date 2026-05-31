@@ -15,6 +15,7 @@ export function usePartyId() {
 
   useEffect(() => {
     if (!user || role == null) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- reset while auth/role is still resolving
       setPartyId(null);
       return;
     }

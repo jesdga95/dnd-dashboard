@@ -7,11 +7,269 @@ import { useDmCombat } from "@/hooks/useDmCombat";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { CombatantList, type MonsterControls, type MemberLiveData } from "@/components/combat/CombatantList";
 import type { PartyMember } from "@/hooks/useDmParty";
-import type { Combatant, MonsterCombatant } from "@/lib/types";
+import type { Combatant, MonsterCombatant, OfflinePlayerCombatant } from "@/lib/types";
 
 interface DmCombatModeProps {
   members: PartyMember[];
   onClose: () => void;
+}
+
+// ── Shared combatant builders ─────────────────────────────────────────────────
+
+interface StatDraft {
+  name: string;
+  hp: number;
+  ac?: number;
+  init: number;
+  /** Monsters only — number of identical copies to spawn (defaults to 1). */
+  count?: number;
+}
+
+const MAX_MONSTER_COUNT = 30;
+
+const buildMonster = (d: StatDraft): MonsterCombatant => ({
+  type: "monster",
+  id: crypto.randomUUID(),
+  name: d.name,
+  hp: d.hp,
+  hpMax: d.hp,
+  ac: d.ac,
+  initiativeRoll: d.init,
+  conditions: [],
+  visibility: 0,
+});
+
+/**
+ * Expands a draft into `count` identical monsters sharing stats and initiative
+ * (a monster group rolls one initiative). With count > 1 each copy is
+ * name-suffixed ("Spider 1", "Spider 2", …) so it stays individually trackable.
+ */
+const buildMonsters = (d: StatDraft): MonsterCombatant[] => {
+  const n = Math.min(MAX_MONSTER_COUNT, Math.max(1, Math.floor(d.count ?? 1)));
+  return Array.from({ length: n }, (_, i) => ({
+    ...buildMonster(d),
+    name: n > 1 ? `${d.name} ${i + 1}` : d.name,
+  }));
+};
+
+const buildOffline = (d: StatDraft): OfflinePlayerCombatant => ({
+  type: "offline",
+  id: crypto.randomUUID(),
+  name: d.name,
+  hp: d.hp,
+  hpMax: d.hp,
+  ac: d.ac,
+  initiativeRoll: d.init,
+  conditions: [],
+});
+
+// ── Reusable stat-block form (name / HP / AC / initiative) ────────────────────
+// Used for both monsters and offline players. Pass onCancel to render the
+// collapsible "X" (mid-combat); omit it for the always-open setup form.
+
+function StatBlockForm({
+  accent,
+  addLabel,
+  namePlaceholder,
+  withCount,
+  onAdd,
+  onCancel,
+}: {
+  accent: "coral" | "blue";
+  addLabel: string;
+  namePlaceholder: string;
+  /** Show a quantity field that spawns N identical copies (monsters only). */
+  withCount?: boolean;
+  onAdd: (d: StatDraft) => void;
+  onCancel?: () => void;
+}) {
+  const dict = useDict();
+  const [name, setName] = useState("");
+  const [hp, setHp] = useState("");
+  const [ac, setAc] = useState("");
+  const [init, setInit] = useState("");
+  const [count, setCount] = useState("");
+
+  const accentBg = accent === "coral" ? "rgba(244,123,95,0.16)" : "rgba(99,149,225,0.18)";
+  const accentColor = accent === "coral" ? "var(--color-coral)" : "#7aaee8";
+
+  const submit = () => {
+    const hpVal = parseInt(hp, 10);
+    if (!name.trim() || isNaN(hpVal) || hpVal <= 0 || !init.trim()) return;
+    onAdd({
+      name: name.trim(),
+      hp: hpVal,
+      ac: ac ? parseInt(ac, 10) : undefined,
+      init: parseInt(init, 10) || 0,
+      ...(withCount && { count: parseInt(count, 10) || 1 }),
+    });
+    setName(""); setHp(""); setAc(""); setInit(""); setCount("");
+  };
+
+  return (
+    <div
+      className="w-full flex items-center gap-2 flex-wrap rounded-[16px] px-4 py-3"
+      style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}
+    >
+      <input
+        autoFocus={!!onCancel}
+        type="text"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        placeholder={namePlaceholder}
+        maxLength={50}
+        className="flex-1 min-w-[120px] px-3 py-[7px] rounded-full text-[13px] font-semibold
+          font-[inherit] text-white/70 border-none outline-none"
+        style={{ background: "rgba(255,255,255,0.07)" }}
+      />
+      <input
+        type="number"
+        value={hp}
+        onChange={(e) => setHp(e.target.value)}
+        placeholder={dict.dmCombat.hpPlaceholder}
+        className="w-[76px] px-3 py-[7px] rounded-full text-[13px] font-semibold text-center
+          font-[inherit] text-white/70 border-none outline-none"
+        style={{ background: "rgba(255,255,255,0.07)" }}
+      />
+      <input
+        type="number"
+        value={ac}
+        onChange={(e) => setAc(e.target.value)}
+        placeholder={dict.dmCombat.acPlaceholder}
+        className="w-[60px] px-3 py-[7px] rounded-full text-[13px] font-semibold text-center
+          font-[inherit] text-white/70 border-none outline-none"
+        style={{ background: "rgba(255,255,255,0.07)" }}
+      />
+      <input
+        type="number"
+        value={init}
+        onChange={(e) => setInit(e.target.value)}
+        placeholder={dict.dmCombat.initiativePlaceholder}
+        className="w-[84px] px-3 py-[7px] rounded-full text-[13px] font-semibold text-center
+          font-[inherit] text-white/70 border-none outline-none"
+        style={{ background: "rgba(255,255,255,0.07)" }}
+        onKeyDown={(e) => e.key === "Enter" && submit()}
+      />
+      {withCount && (
+        <div
+          className="flex items-center rounded-full pl-3 pr-1"
+          style={{ background: "rgba(255,255,255,0.07)" }}
+          title={dict.dmCombat.countTitle}
+        >
+          <span className="text-[13px] font-bold text-white/30 select-none">×</span>
+          <input
+            type="number"
+            min={1}
+            value={count}
+            onChange={(e) => setCount(e.target.value)}
+            placeholder="1"
+            className="w-[44px] px-1 py-[7px] bg-transparent text-[13px] font-semibold text-center
+              font-[inherit] text-white/70 border-none outline-none"
+            onKeyDown={(e) => e.key === "Enter" && submit()}
+          />
+        </div>
+      )}
+      <button
+        onClick={submit}
+        className="flex items-center gap-1.5 px-4 py-[7px] rounded-full text-[13px]
+          font-semibold font-[inherit] border-none cursor-pointer transition-colors"
+        style={{ background: accentBg, color: accentColor }}
+      >
+        <Plus size={12} /> {addLabel}
+      </button>
+      {onCancel && (
+        <button
+          onClick={onCancel}
+          className="px-3 py-[7px] rounded-full cursor-pointer border-none text-white/30 hover:text-white/60 transition-colors"
+        >
+          <X size={12} />
+        </button>
+      )}
+    </div>
+  );
+}
+
+// Listed row for a combatant queued during setup.
+function DraftRow({
+  c,
+  accent,
+  onRemove,
+}: {
+  c: MonsterCombatant | OfflinePlayerCombatant;
+  accent: "coral" | "blue";
+  onRemove: () => void;
+}) {
+  const dict = useDict();
+  const initColor = accent === "coral" ? "var(--color-coral)" : "#7aaee8";
+  return (
+    <div
+      className="flex items-center gap-2 rounded-[14px] px-4 py-2.5"
+      style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}
+    >
+      <span className="text-[14px] font-semibold text-white flex-1 truncate">{c.name}</span>
+      <span className="text-[12px] text-white/40 shrink-0">{dict.dmCombat.hpLabel} {c.hpMax}</span>
+      {c.ac !== undefined && (
+        <span className="text-[12px] text-white/40 shrink-0">{dict.dmCombat.acLabel} {c.ac}</span>
+      )}
+      <span className="text-[12px] font-bold shrink-0" style={{ color: initColor }}>
+        {dict.dmCombat.initiativeAbbr}{c.initiativeRoll}
+      </span>
+      <button
+        onClick={onRemove}
+        className="w-5 h-5 flex items-center justify-center rounded-full cursor-pointer
+          text-white/25 hover:text-[var(--color-coral)] transition-colors shrink-0"
+      >
+        <X size={10} />
+      </button>
+    </div>
+  );
+}
+
+// Collapsible add button → stat-block form, for mid-combat additions.
+function InlineAdd({
+  accent,
+  openLabel,
+  addLabel,
+  namePlaceholder,
+  withCount,
+  onAdd,
+}: {
+  accent: "coral" | "blue";
+  openLabel: string;
+  addLabel: string;
+  namePlaceholder: string;
+  withCount?: boolean;
+  onAdd: (d: StatDraft) => void;
+}) {
+  const [open, setOpen] = useState(false);
+
+  if (!open) {
+    return (
+      <button
+        onClick={() => setOpen(true)}
+        className="self-start flex items-center gap-1.5 px-4 py-2 rounded-full text-[13px] font-semibold
+          cursor-pointer transition-colors"
+        style={{
+          background: "rgba(255,255,255,0.05)",
+          color: "rgba(255,255,255,0.4)",
+          border: "1px solid rgba(255,255,255,0.08)",
+        }}
+      >
+        <Plus size={12} /> {openLabel}
+      </button>
+    );
+  }
+
+  return (
+    <StatBlockForm
+      accent={accent}
+      addLabel={addLabel}
+      namePlaceholder={namePlaceholder}
+      withCount={withCount}
+      onAdd={(d) => { onAdd(d); setOpen(false); }}
+      onCancel={() => setOpen(false)}
+    />
+  );
 }
 
 // ── Setup phase ──────────────────────────────────────────────────────────────
@@ -26,36 +284,13 @@ function SetupPhase({
   const dict = useDict();
   const [initiatives, setInitiatives] = useState<Record<string, string>>({});
   const [monsters, setMonsters] = useState<MonsterCombatant[]>([]);
-  const [monsterName, setMonsterName] = useState("");
-  const [monsterHp, setMonsterHp] = useState("");
-  const [monsterAc, setMonsterAc] = useState("");
-  const [monsterInit, setMonsterInit] = useState("");
-
-  const addMonster = () => {
-    const hpVal = parseInt(monsterHp, 10);
-    if (!monsterName.trim() || isNaN(hpVal) || hpVal <= 0 || !monsterInit.trim()) return;
-    setMonsters((prev) => [
-      ...prev,
-      {
-        type: "monster",
-        id: crypto.randomUUID(),
-        name: monsterName.trim(),
-        hp: hpVal,
-        hpMax: hpVal,
-        ac: monsterAc ? parseInt(monsterAc, 10) : undefined,
-        initiativeRoll: parseInt(monsterInit, 10) || 0,
-        conditions: [],
-        visibility: 0,
-      },
-    ]);
-    setMonsterName("");
-    setMonsterHp("");
-    setMonsterAc("");
-    setMonsterInit("");
-  };
+  const [offlinePlayers, setOfflinePlayers] = useState<OfflinePlayerCombatant[]>([]);
 
   const allPlayerInitsSet = members.every((m) => (initiatives[m.uid] ?? "").trim() !== "");
-  const canStart = members.length > 0 && monsters.length > 0 && allPlayerInitsSet;
+  const canStart =
+    (members.length > 0 || offlinePlayers.length > 0) &&
+    monsters.length > 0 &&
+    allPlayerInitsSet;
 
   const start = () => {
     if (!canStart) return;
@@ -66,7 +301,9 @@ function SetupPhase({
       initiativeRoll: parseInt(initiatives[m.uid] ?? "0", 10) || 0,
     }));
     onStart(
-      [...playerCombatants, ...monsters].sort((a, b) => b.initiativeRoll - a.initiativeRoll)
+      [...playerCombatants, ...offlinePlayers, ...monsters].sort(
+        (a, b) => b.initiativeRoll - a.initiativeRoll
+      )
     );
   };
 
@@ -108,6 +345,34 @@ function SetupPhase({
         )}
       </div>
 
+      {/* Offline players — at the table but not on the app; DM tracks their HP */}
+      <div>
+        <span className="text-[12px] font-bold tracking-[0.2em] uppercase text-white/25 block mb-1.5">
+          {dict.dmCombat.offlinePlayers}
+        </span>
+        <p className="text-[12px] text-white/25 italic mb-3">{dict.dmCombat.offlinePlayersHint}</p>
+
+        {offlinePlayers.length > 0 && (
+          <div className="flex flex-col gap-2 mb-3">
+            {offlinePlayers.map((p, i) => (
+              <DraftRow
+                key={p.id}
+                c={p}
+                accent="blue"
+                onRemove={() => setOfflinePlayers((prev) => prev.filter((_, j) => j !== i))}
+              />
+            ))}
+          </div>
+        )}
+
+        <StatBlockForm
+          accent="blue"
+          addLabel={dict.dmCombat.addOfflinePlayer}
+          namePlaceholder={dict.dmCombat.offlineNamePlaceholder}
+          onAdd={(d) => setOfflinePlayers((prev) => [...prev, buildOffline(d)])}
+        />
+      </div>
+
       {/* Monsters */}
       <div>
         <span className="text-[12px] font-bold tracking-[0.2em] uppercase text-white/25 block mb-3">
@@ -117,93 +382,23 @@ function SetupPhase({
         {monsters.length > 0 && (
           <div className="flex flex-col gap-2 mb-3">
             {monsters.map((m, i) => (
-              <div
+              <DraftRow
                 key={m.id}
-                className="flex items-center gap-2 rounded-[14px] px-4 py-2.5"
-                style={{
-                  background: "rgba(255,255,255,0.04)",
-                  border: "1px solid rgba(255,255,255,0.07)",
-                }}
-              >
-                <span className="text-[14px] font-semibold text-white flex-1 truncate">
-                  {m.name}
-                </span>
-                <span className="text-[12px] text-white/40 shrink-0">{dict.dmCombat.hpLabel} {m.hpMax}</span>
-                {m.ac !== undefined && (
-                  <span className="text-[12px] text-white/40 shrink-0">{dict.dmCombat.acLabel} {m.ac}</span>
-                )}
-                <span
-                  className="text-[12px] font-bold shrink-0"
-                  style={{ color: "var(--color-coral)" }}
-                >
-                  {dict.dmCombat.initiativeAbbr}{m.initiativeRoll}
-                </span>
-                <button
-                  onClick={() => setMonsters((prev) => prev.filter((_, j) => j !== i))}
-                  className="w-5 h-5 flex items-center justify-center rounded-full cursor-pointer
-                    text-white/25 hover:text-[var(--color-coral)] transition-colors shrink-0"
-                >
-                  <X size={10} />
-                </button>
-              </div>
+                c={m}
+                accent="coral"
+                onRemove={() => setMonsters((prev) => prev.filter((_, j) => j !== i))}
+              />
             ))}
           </div>
         )}
 
-        <div
-          className="flex items-center gap-2 flex-wrap rounded-[16px] px-4 py-3"
-          style={{
-            background: "rgba(255,255,255,0.04)",
-            border: "1px solid rgba(255,255,255,0.08)",
-          }}
-        >
-          <input
-            type="text"
-            value={monsterName}
-            onChange={(e) => setMonsterName(e.target.value)}
-            placeholder={dict.dmCombat.namePlaceholder}
-            maxLength={50}
-            className="flex-1 min-w-[120px] px-3 py-[7px] rounded-full text-[13px] font-semibold
-              font-[inherit] text-white/70 border-none outline-none"
-            style={{ background: "rgba(255,255,255,0.07)" }}
-          />
-          <input
-            type="number"
-            value={monsterHp}
-            onChange={(e) => setMonsterHp(e.target.value)}
-            placeholder={dict.dmCombat.hpPlaceholder}
-            className="w-[76px] px-3 py-[7px] rounded-full text-[13px] font-semibold text-center
-              font-[inherit] text-white/70 border-none outline-none"
-            style={{ background: "rgba(255,255,255,0.07)" }}
-          />
-          <input
-            type="number"
-            value={monsterAc}
-            onChange={(e) => setMonsterAc(e.target.value)}
-            placeholder={dict.dmCombat.acPlaceholder}
-            className="w-[60px] px-3 py-[7px] rounded-full text-[13px] font-semibold text-center
-              font-[inherit] text-white/70 border-none outline-none"
-            style={{ background: "rgba(255,255,255,0.07)" }}
-          />
-          <input
-            type="number"
-            value={monsterInit}
-            onChange={(e) => setMonsterInit(e.target.value)}
-            placeholder={dict.dmCombat.initiativePlaceholder}
-            className="w-[84px] px-3 py-[7px] rounded-full text-[13px] font-semibold text-center
-              font-[inherit] text-white/70 border-none outline-none"
-            style={{ background: "rgba(255,255,255,0.07)" }}
-            onKeyDown={(e) => e.key === "Enter" && addMonster()}
-          />
-          <button
-            onClick={addMonster}
-            className="flex items-center gap-1.5 px-4 py-[7px] rounded-full text-[13px]
-              font-semibold font-[inherit] border-none cursor-pointer transition-colors"
-            style={{ background: "rgba(244,123,95,0.16)", color: "var(--color-coral)" }}
-          >
-            <Plus size={12} /> {dict.dmCombat.addMonster}
-          </button>
-        </div>
+        <StatBlockForm
+          accent="coral"
+          addLabel={dict.dmCombat.addMonster}
+          namePlaceholder={dict.dmCombat.namePlaceholder}
+          withCount
+          onAdd={(d) => setMonsters((prev) => [...prev, ...buildMonsters(d)])}
+        />
       </div>
 
       {/* Start button */}
@@ -233,89 +428,6 @@ function SetupPhase({
   );
 }
 
-// ── Mid-combat "Add Monster" form ────────────────────────────────────────────
-
-function AddMonsterInline({ onAdd }: { onAdd: (m: MonsterCombatant) => void }) {
-  const dict = useDict();
-  const [name, setName] = useState("");
-  const [hp, setHp] = useState("");
-  const [ac, setAc] = useState("");
-  const [init, setInit] = useState("");
-  const [open, setOpen] = useState(false);
-
-  const add = () => {
-    const hpVal = parseInt(hp, 10);
-    if (!name.trim() || isNaN(hpVal) || hpVal <= 0 || !init.trim()) return;
-    onAdd({
-      type: "monster",
-      id: crypto.randomUUID(),
-      name: name.trim(),
-      hp: hpVal,
-      hpMax: hpVal,
-      ac: ac ? parseInt(ac, 10) : undefined,
-      initiativeRoll: parseInt(init, 10) || 0,
-      conditions: [],
-      visibility: 0,
-    });
-    setName(""); setHp(""); setAc(""); setInit(""); setOpen(false);
-  };
-
-  if (!open) {
-    return (
-      <button
-        onClick={() => setOpen(true)}
-        className="flex items-center gap-1.5 px-4 py-2 rounded-full text-[13px] font-semibold
-          cursor-pointer transition-colors"
-        style={{
-          background: "rgba(255,255,255,0.05)",
-          color: "rgba(255,255,255,0.4)",
-          border: "1px solid rgba(255,255,255,0.08)",
-        }}
-      >
-        <Plus size={12} /> {dict.dmCombat.addMonster}
-      </button>
-    );
-  }
-
-  return (
-    <div
-      className="flex flex-wrap gap-2 rounded-[16px] px-4 py-3"
-      style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}
-    >
-      <input autoFocus type="text" value={name} onChange={(e) => setName(e.target.value)}
-        placeholder={dict.dmCombat.namePlaceholder} maxLength={50}
-        className="flex-1 min-w-[100px] px-3 py-[6px] rounded-full text-[13px] font-semibold
-          font-[inherit] text-white/70 border-none outline-none"
-        style={{ background: "rgba(255,255,255,0.07)" }} />
-      <input type="number" value={hp} onChange={(e) => setHp(e.target.value)}
-        placeholder={dict.dmCombat.hpPlaceholder}
-        className="w-[68px] px-3 py-[6px] rounded-full text-[13px] font-semibold text-center
-          font-[inherit] text-white/70 border-none outline-none"
-        style={{ background: "rgba(255,255,255,0.07)" }} />
-      <input type="number" value={ac} onChange={(e) => setAc(e.target.value)}
-        placeholder={dict.dmCombat.acPlaceholder}
-        className="w-[56px] px-3 py-[6px] rounded-full text-[13px] font-semibold text-center
-          font-[inherit] text-white/70 border-none outline-none"
-        style={{ background: "rgba(255,255,255,0.07)" }} />
-      <input type="number" value={init} onChange={(e) => setInit(e.target.value)}
-        placeholder={dict.dmCombat.initiativePlaceholder}
-        className="w-[80px] px-3 py-[6px] rounded-full text-[13px] font-semibold text-center
-          font-[inherit] text-white/70 border-none outline-none"
-        style={{ background: "rgba(255,255,255,0.07)" }}
-        onKeyDown={(e) => e.key === "Enter" && add()} />
-      <button onClick={add}
-        className="px-3 py-[6px] rounded-full text-[13px] font-bold cursor-pointer border-none transition-colors"
-        style={{ background: "rgba(244,123,95,0.16)", color: "var(--color-coral)" }}>
-        <Plus size={12} />
-      </button>
-      <button onClick={() => setOpen(false)}
-        className="px-3 py-[6px] rounded-full cursor-pointer border-none text-white/30 hover:text-white/60 transition-colors">
-        <X size={12} />
-      </button>
-    </div>
-  );
-}
-
 // ── Main component ───────────────────────────────────────────────────────────
 
 export function DmCombatMode({ members, onClose }: DmCombatModeProps) {
@@ -325,7 +437,8 @@ export function DmCombatMode({ members, onClose }: DmCombatModeProps) {
     startCombat,
     endCombat,
     nextTurn,
-    addMonster,
+    addMonsters,
+    addOfflinePlayer,
     removeMonster,
     adjustMonsterHp,
     toggleMonsterReveal,
@@ -337,8 +450,11 @@ export function DmCombatMode({ members, onClose }: DmCombatModeProps) {
   const isDesktop = useMediaQuery("(min-width: 1280px)");
   const [isFullscreen, setIsFullscreen] = useState(false);
   const isSidebar = isDesktop && !isFullscreen;
+  // keep a fresh ref to onClose without adding it to the keydown effect's deps
   const onCloseRef = useRef(onClose);
-  onCloseRef.current = onClose;
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  });
 
   // Keyboard handler
   useEffect(() => {
@@ -478,8 +594,22 @@ export function DmCombatMode({ members, onClose }: DmCombatModeProps) {
             monsterControls={monsterControls}
           />
 
-          <div className="mt-1">
-            <AddMonsterInline onAdd={addMonster} />
+          <div className="mt-1 flex flex-col gap-2">
+            <InlineAdd
+              accent="coral"
+              openLabel={dict.dmCombat.addMonster}
+              addLabel={dict.dmCombat.addMonster}
+              namePlaceholder={dict.dmCombat.namePlaceholder}
+              withCount
+              onAdd={(d) => addMonsters(buildMonsters(d))}
+            />
+            <InlineAdd
+              accent="blue"
+              openLabel={dict.dmCombat.addOfflinePlayer}
+              addLabel={dict.dmCombat.addOfflinePlayer}
+              namePlaceholder={dict.dmCombat.offlineNamePlaceholder}
+              onAdd={(d) => addOfflinePlayer(buildOffline(d))}
+            />
           </div>
 
           <div className="h-10" />

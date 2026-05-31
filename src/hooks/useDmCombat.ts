@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { doc, onSnapshot, setDoc, deleteDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useAuth } from "./useAuth";
-import type { DmCombat, Combatant, MonsterCombatant } from "@/lib/types";
+import type { DmCombat, Combatant, MonsterCombatant, OfflinePlayerCombatant } from "@/lib/types";
 
 export function useDmCombat() {
   const { user } = useAuth();
@@ -14,6 +14,7 @@ export function useDmCombat() {
 
   useEffect(() => {
     if (!user) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- clear subscription state on sign-out
       setCombat(null);
       setLoading(false);
       return;
@@ -82,27 +83,35 @@ export function useDmCombat() {
     });
   };
 
-  const updateMonster = async (id: string, patch: Partial<MonsterCombatant>) => {
+  // The id-based mutators below target any DM-managed combatant — monsters and
+  // offline players alike (both carry an `id`; only synced players use `uid`).
+  const updateMonster = async (id: string, patch: { ac?: number; hpMax?: number }) => {
     const c = combatRef.current;
     if (!c) return;
     await write({
       ...c,
       combatants: c.combatants.map((cm) =>
-        cm.type === "monster" && cm.id === id ? { ...cm, ...patch } : cm
+        cm.type !== "player" && cm.id === id ? { ...cm, ...patch } : cm
       ),
     });
   };
 
-  const addMonster = async (monster: MonsterCombatant) => {
+  const addMonsters = async (monsters: MonsterCombatant[]) => {
+    const c = combatRef.current;
+    if (!c || monsters.length === 0) return;
+    await write({ ...c, combatants: [...c.combatants, ...monsters] });
+  };
+
+  const addOfflinePlayer = async (player: OfflinePlayerCombatant) => {
     const c = combatRef.current;
     if (!c) return;
-    await write({ ...c, combatants: [...c.combatants, monster] });
+    await write({ ...c, combatants: [...c.combatants, player] });
   };
 
   const removeMonster = async (id: string) => {
     const c = combatRef.current;
     if (!c) return;
-    const filtered = c.combatants.filter((cm) => !(cm.type === "monster" && cm.id === id));
+    const filtered = c.combatants.filter((cm) => !(cm.type !== "player" && cm.id === id));
     const cti = Math.min(c.currentTurnIndex, Math.max(0, filtered.length - 1));
     await write({ ...c, combatants: filtered, currentTurnIndex: cti });
   };
@@ -113,7 +122,7 @@ export function useDmCombat() {
     await write({
       ...c,
       combatants: c.combatants.map((cm) => {
-        if (cm.type !== "monster" || cm.id !== id) return cm;
+        if (cm.type === "player" || cm.id !== id) return cm;
         return { ...cm, hp: Math.max(0, Math.min(cm.hpMax, cm.hp + delta)) };
       }),
     });
@@ -138,7 +147,7 @@ export function useDmCombat() {
     await write({
       ...c,
       combatants: c.combatants.map((cm) =>
-        cm.type === "monster" && cm.id === id
+        cm.type !== "player" && cm.id === id
           ? { ...cm, conditions: [...cm.conditions, condition] }
           : cm
       ),
@@ -151,7 +160,7 @@ export function useDmCombat() {
     await write({
       ...c,
       combatants: c.combatants.map((cm) =>
-        cm.type === "monster" && cm.id === id
+        cm.type !== "player" && cm.id === id
           ? { ...cm, conditions: cm.conditions.filter((cd) => cd !== condition) }
           : cm
       ),
@@ -164,7 +173,8 @@ export function useDmCombat() {
     startCombat,
     endCombat,
     nextTurn,
-    addMonster,
+    addMonsters,
+    addOfflinePlayer,
     removeMonster,
     adjustMonsterHp,
     toggleMonsterReveal,

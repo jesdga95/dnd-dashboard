@@ -23,6 +23,7 @@ export function useDmParty() {
   // Subscribe to DM's party list
   useEffect(() => {
     if (!user) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- clear subscription state on sign-out
       setPlayerIds([]);
       setPartyLoading(false);
       return;
@@ -49,6 +50,7 @@ export function useDmParty() {
   // Subscribe to each player's character doc
   useEffect(() => {
     if (playerIds.length === 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- clear member subscriptions when party is empty
       setMembers([]);
       return;
     }

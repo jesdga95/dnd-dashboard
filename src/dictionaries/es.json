@@ -327,6 +327,7 @@
     "hpLabel": "PV",
     "acPlaceholder": "CA",
     "acLabel": "CA",
+    "countTitle": "Cantidad — genera esta cantidad de copias idénticas",
     "startCombat": "Iniciar Combate",
     "startRequirements": "Se requieren ≥1 jugador, ≥1 monstruo e iniciativas para todos",
     "noParty": "Agrega jugadores a tu grupo primero.",
@@ -336,7 +337,12 @@
     "hide": "Ocultar a jugadores",
     "visName": "Nombre",
     "visStats": "Estadísticas",
-    "unknown": "????"
+    "unknown": "????",
+    "offlinePlayers": "Jugadores Offline",
+    "offlinePlayersHint": "Jugadores en la mesa sin la app — tú llevas sus PV.",
+    "addOfflinePlayer": "Agregar Jugador Offline",
+    "offlineNamePlaceholder": "Nombre del jugador…",
+    "offlineTag": "offline"
   },
   "iconPicker": {
     "searchPlaceholder": "Buscar íconos…",
@@ -347,5 +353,11 @@
     "save": "Guardar",
     "edit": "Editar",
     "delete": "Eliminar"
+  },
+  "party": {
+    "title": "Grupo",
+    "dungeonMaster": "Dungeon Master",
+    "you": "tú",
+    "noParty": "Aún no estás en un grupo"
   }
 }

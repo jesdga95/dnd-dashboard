@@ -14,6 +14,7 @@ export function useProfile() {
 
   useEffect(() => {
     if (!user) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- clear subscription state on sign-out
       setRole(null);
       setLoading(false);
       return;

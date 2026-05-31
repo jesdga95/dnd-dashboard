@@ -51,6 +51,7 @@ export function useSpeechToText(): UseSpeechToText {
   useEffect(() => {
     const Ctor = window.SpeechRecognition ?? window.webkitSpeechRecognition;
     if (!Ctor) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- client-only feature detection on mount
     setSupported(true);
     return () => {
       try { recRef.current?.abort(); } catch {}
