@@ -246,6 +246,26 @@ export function PartyCard({ member, onRemove }: PartyCardProps) {
         </div>
       </div>
 
+      {/* Currency */}
+      {(char.gold != null || char.silver != null) && (
+        <div className="grid grid-cols-2 gap-1.5 px-5 pb-3 bg-[var(--color-card)]">
+          <div className="rounded-[12px] px-2 py-2 border border-black/[0.02]"
+            style={{ background: "rgba(196,144,16,0.10)" }}>
+            <div className="text-[10.5px] font-bold tracking-[0.1em] uppercase mb-1"
+              style={{ color: "rgba(138,110,32,0.6)" }}>Gold</div>
+            <div className="text-[18px] font-extrabold tracking-tight leading-none"
+              style={{ color: "#8a6e20" }}>{char.gold ?? 0}</div>
+          </div>
+          <div className="rounded-[12px] px-2 py-2 border border-black/[0.02]"
+            style={{ background: "rgba(146,136,128,0.10)" }}>
+            <div className="text-[10.5px] font-bold tracking-[0.1em] uppercase mb-1"
+              style={{ color: "rgba(110,100,95,0.6)" }}>Silver</div>
+            <div className="text-[18px] font-extrabold tracking-tight leading-none"
+              style={{ color: "#6e645f" }}>{char.silver ?? 0}</div>
+          </div>
+        </div>
+      )}
+
       {/* Spell slots — only if spellcasting with slots */}
       {spellcasting && slotLevels.length > 0 && (
         <div className="px-5 pb-3 bg-[var(--color-card)]">
