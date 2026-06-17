@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { doc, collection, onSnapshot, setDoc, deleteDoc, getDocs, writeBatch } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { db, doc, collection, onSnapshot, setDoc, deleteDoc, getDocs, writeBatch } from "@/lib/data";
 import { useAuth } from "./useAuth";
 import { combatantKey } from "@/lib/combatDamage";
 import type { DmCombat, Combatant, MonsterCombatant, OfflinePlayerCombatant } from "@/lib/types";

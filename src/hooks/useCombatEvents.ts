@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { collection, onSnapshot } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { db, collection, onSnapshot } from "@/lib/data";
 import type { DamageEvent } from "@/lib/types";
 
 /**

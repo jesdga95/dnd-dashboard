@@ -1,14 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { type User } from "firebase/auth";
 import {
+  auth,
   onAuthStateChanged,
   signInWithPopup,
   signOut as firebaseSignOut,
   GoogleAuthProvider,
-  type User,
-} from "firebase/auth";
-import { auth } from "@/lib/firebase";
+} from "@/lib/data";
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);

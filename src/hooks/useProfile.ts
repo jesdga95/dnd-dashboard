@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { doc, onSnapshot, setDoc, deleteDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { db, doc, onSnapshot, setDoc, deleteDoc } from "@/lib/data";
 import { useAuth } from "./useAuth";
 import type { UserRole } from "@/lib/types";
 

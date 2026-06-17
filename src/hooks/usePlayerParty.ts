@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { doc, onSnapshot } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { db, doc, onSnapshot } from "@/lib/data";
 import { DEFAULT_CHAR } from "@/lib/defaults";
 import type { Character } from "@/lib/types";
 

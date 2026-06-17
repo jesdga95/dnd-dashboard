@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import {
+  db,
   collection,
   query,
   where,
@@ -11,8 +12,7 @@ import {
   updateDoc,
   deleteDoc,
   writeBatch,
-} from "firebase/firestore";
-import { db } from "@/lib/firebase";
+} from "@/lib/data";
 import { useAuth } from "./useAuth";
 import { usePartyId } from "./usePartyId";
 import { useProfile } from "./useProfile";

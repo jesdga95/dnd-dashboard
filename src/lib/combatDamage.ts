@@ -1,5 +1,4 @@
-import { addDoc, collection } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { addDoc, collection, db } from "@/lib/data";
 import { UNATTRIBUTED_KEY } from "@/lib/types";
 import type { AttackerType, Combatant, DamageEvent, DmCombat } from "@/lib/types";
 
