@@ -205,19 +205,29 @@ function DraftRow({
   onRemove: () => void;
 }) {
   const dict = useDict();
+  // Color-coded stat readouts mirroring the live combat view: HP green, AC sky,
+  // initiative the row accent (coral monsters / blue players). Labels stay muted
+  // so the dash + value read clearly (e.g. "I - 12", never "112").
   const initColor = accent === "coral" ? "var(--color-coral)" : "#7aaee8";
   return (
     <div
-      className="flex items-center gap-2 rounded-[14px] px-4 py-2.5"
+      className="flex items-center gap-3 rounded-[14px] px-4 py-2.5"
       style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}
     >
       <span className="text-[14px] font-semibold text-white flex-1 truncate">{c.name}</span>
-      <span className="text-[12px] text-white/40 shrink-0">{dict.dmCombat.hpLabel} {c.hpMax}</span>
+      <span className="text-[12px] font-semibold shrink-0 flex items-baseline gap-1">
+        <span className="text-white/40 font-medium">{dict.dmCombat.hpLabel} -</span>
+        <span style={{ color: "#6ee7a0" }}>{c.hpMax}</span>
+      </span>
       {c.ac !== undefined && (
-        <span className="text-[12px] text-white/40 shrink-0">{dict.dmCombat.acLabel} {c.ac}</span>
+        <span className="text-[12px] font-semibold shrink-0 flex items-baseline gap-1">
+          <span className="text-white/40 font-medium">{dict.dmCombat.acLabel} -</span>
+          <span style={{ color: "#7dd3fc" }}>{c.ac}</span>
+        </span>
       )}
-      <span className="text-[12px] font-bold shrink-0" style={{ color: initColor }}>
-        {dict.dmCombat.initiativeAbbr}{c.initiativeRoll}
+      <span className="text-[12px] font-semibold shrink-0 flex items-baseline gap-1">
+        <span className="text-white/40 font-medium">{dict.dmCombat.initiativeAbbr} -</span>
+        <span style={{ color: initColor }}>{c.initiativeRoll}</span>
       </span>
       <button
         onClick={onRemove}
