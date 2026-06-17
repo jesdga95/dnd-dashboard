@@ -55,12 +55,12 @@ export function AttackerChip({
               ? dict.combatDamage.monsterWarn
               : dict.combatDamage.creditingTo
         }
-        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-[7px] text-[12px] font-semibold
-          cursor-pointer font-[inherit] transition-colors min-w-0 max-w-[200px]"
+        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-[8px] text-[12.5px] font-semibold
+          cursor-pointer font-[inherit] transition-colors w-full min-w-0"
         style={chipStyle}
       >
         {warn ? <AlertTriangle size={12} className="shrink-0" /> : <Crosshair size={12} className="shrink-0" />}
-        <span className="truncate">{name}</span>
+        <span className="truncate flex-1 text-left">{name}</span>
         <ChevronDown size={12} className="shrink-0 opacity-70" />
       </button>
 

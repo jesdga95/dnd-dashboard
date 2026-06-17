@@ -11,6 +11,9 @@ import { Swords, X, Shield, ShieldPlus, HeartPlus, Plus, Check, Maximize2, Minim
 import { EditableNumber } from "@/components/ui/EditableNumber";
 import { CombatantList, type MemberLiveData } from "@/components/combat/CombatantList";
 import { DamageLeaderboard } from "@/components/combat/DamageLeaderboard";
+import { CombatCommandBar } from "@/components/combat/CombatCommandBar";
+import { CombatOutcome } from "@/components/combat/CombatOutcome";
+import { aggregateLeaderboard } from "@/lib/combatDamage";
 import type { DmCombat, Character } from "@/lib/types";
 
 export interface PlayerCombatViewProps {
@@ -51,11 +54,20 @@ function PlayerCombatViewInner({
   const finished = combat.status === "finished";
   const events = useCombatEvents(dmUid, combat.combatId);
   const [tab, setTab] = useState<"combat" | "damage">("combat");
-  // Land on the results when the DM ends combat.
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- jump to the leaderboard on finish
-    if (finished) setTab("damage");
-  }, [finished]);
+  // Reset to the combat tab on a new combat; jump to results when one ends.
+  // Keyed on combatId+finished so manual tab switches are preserved.
+  const [tabKey, setTabKey] = useState<string>();
+  const curTabKey = `${combat.combatId ?? ""}:${finished}`;
+  if (curTabKey !== tabKey) {
+    setTabKey(curTabKey);
+    setTab(finished ? "damage" : "combat");
+  }
+  // Victory/Defeat flourish — driven by the doc's outcome, so it pops the instant
+  // the DM's client records it (no DM click needed). Shown once per combat.
+  const [outcomeAckKey, setOutcomeAckKey] = useState<string>();
+  const outcomeKey = combat.combatId ?? "fin";
+  const showOutcome = !!combat.outcome && outcomeAckKey !== outcomeKey;
+  const topName = aggregateLeaderboard(events, combat.combatants).find((r) => r.dealt > 0)?.name;
   const isSidebar = isDesktop && !isFullscreen;
 
   const [customAmount, setCustomAmount] = useState("");
@@ -135,8 +147,8 @@ function PlayerCombatViewInner({
   return (
     <div
       className={isSidebar
-        ? "fixed top-0 right-0 bottom-0 z-[200] overflow-y-auto w-[420px] border-l border-white/[0.08]"
-        : "fixed inset-0 z-[200] overflow-y-auto"
+        ? "fixed top-0 right-0 bottom-0 z-[200] flex flex-col w-[420px] border-l border-white/[0.08]"
+        : "fixed inset-0 z-[200] flex flex-col"
       }
       style={{
         background:
@@ -145,7 +157,7 @@ function PlayerCombatViewInner({
     >
       {/* ── Header ── */}
       <div
-        className="sticky top-0 z-10"
+        className="shrink-0 z-10"
         style={{
           background: "rgba(14,9,6,0.92)",
           backdropFilter: "blur(10px)",
@@ -178,7 +190,8 @@ function PlayerCombatViewInner({
           </button>
         </div>
 
-        {/* Combat / Damage tabs */}
+        {/* Combat / Damage tabs — hidden once combat is over (results only) */}
+        {!finished && (
         <div className="flex gap-1 px-3 pb-2">
           {([
             ["combat", dict.combatDamage.combatTab, Swords],
@@ -203,23 +216,37 @@ function PlayerCombatViewInner({
             );
           })}
         </div>
+        )}
       </div>
 
-      {/* ── Main content ── */}
+      {/* ── Scrollable main content ── */}
+      <div className="flex-1 min-h-0 overflow-y-auto">
       <div className="px-5 py-6 max-w-[740px] mx-auto">
 
-        {tab === "damage" ? (
+        {finished ? (
           <>
-            {finished && (
-              <p className="text-[12.5px] text-white/35 italic mb-3">{dict.combatDamage.resultsHint}</p>
-            )}
+            <p className="text-[12.5px] text-white/35 italic mb-3">{dict.combatDamage.resultsHint}</p>
             <DamageLeaderboard
               combatants={combat.combatants}
               events={events}
               viewerIsDm={false}
-              finished={finished}
+              finished
             />
+            <button
+              onClick={onDismiss}
+              className="mt-3 w-full py-3 rounded-full text-[14px] font-bold cursor-pointer font-[inherit] transition-colors"
+              style={{ background: "rgba(244,123,95,0.18)", color: "var(--color-coral)", border: "1px solid rgba(244,123,95,0.3)" }}
+            >
+              {dict.combatDamage.close}
+            </button>
           </>
+        ) : tab === "damage" ? (
+          <DamageLeaderboard
+            combatants={combat.combatants}
+            events={events}
+            viewerIsDm={false}
+            finished={false}
+          />
         ) : (
           <>
         {/* ── Character HP hero ── */}
@@ -599,8 +626,22 @@ function PlayerCombatViewInner({
           </>
         )}
 
-        <div className="h-10" />
       </div>
+      </div>
+
+      {/* Floating bar — shows who's currently acting (read-only for players) */}
+      {!finished && (
+        <CombatCommandBar combat={combat} finished={false} viewerIsDm={false} endLabel="" />
+      )}
+
+      {/* Outcome flourish — plays once when the DM ends combat, then results. */}
+      {showOutcome && combat.outcome && (
+        <CombatOutcome
+          variant={combat.outcome}
+          subtitle={topName ? `${dict.combatDamage.mvp}: ${topName}` : undefined}
+          onOk={() => setOutcomeAckKey(outcomeKey)}
+        />
+      )}
     </div>
   );
 }

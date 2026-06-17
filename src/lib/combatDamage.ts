@@ -38,6 +38,7 @@ export async function writeDamageEvent(
   combat: DmCombat,
   target: { key: string; name: string; type: "player" | "monster" | "offline" },
   amount: number,
+  kill = false,
 ): Promise<void> {
   if (amount <= 0 || !combat.combatId) return;
   const attacker = resolveAttacker(combat);
@@ -50,6 +51,7 @@ export async function writeDamageEvent(
     targetName: target.name,
     targetType: target.type,
     amount,
+    kill,
     round: combat.round,
     at: Date.now(),
   };
@@ -61,6 +63,8 @@ export interface LeaderboardTarget {
   name: string;
   type: AttackerType;
   amount: number;
+  /** This attacker landed the killing blow on this target. */
+  killed: boolean;
 }
 
 export interface LeaderboardRow {
@@ -69,6 +73,10 @@ export interface LeaderboardRow {
   type: AttackerType;
   dealt: number;
   taken: number;
+  /** Damage dealt to oneself (e.g. on your own turn). Excluded from dealt/MVP. */
+  selfInflicted: number;
+  /** Number of combatants this attacker downed. */
+  kills: number;
   byTarget: LeaderboardTarget[];
   /** Combatant is no longer in the encounter but still has logged damage. */
   orphan: boolean;
@@ -86,7 +94,7 @@ export function aggregateLeaderboard(events: DamageEvent[], combatants: Combatan
   const ensure = (key: string, name: string, type: AttackerType): LeaderboardRow => {
     let r = rows.get(key);
     if (!r) {
-      r = { key, name, type, dealt: 0, taken: 0, byTarget: [], orphan: false };
+      r = { key, name, type, dealt: 0, taken: 0, selfInflicted: 0, kills: 0, byTarget: [], orphan: false };
       rows.set(key, r);
     } else if (!currentKeys.has(key)) {
       // Keep orphan labels fresh from the latest event we've seen.
@@ -100,13 +108,23 @@ export function aggregateLeaderboard(events: DamageEvent[], combatants: Combatan
 
   for (const e of events) {
     const atk = ensure(e.attackerKey, e.attackerName, e.attackerType);
+    // Self-inflicted (attacker === target, e.g. damage taken on your own turn)
+    // is kept separate and never counts toward dealt / kills / byTarget / MVP.
+    if (e.attackerKey === e.targetKey) {
+      atk.selfInflicted += e.amount;
+      continue;
+    }
     atk.dealt += e.amount;
     let bt = atk.byTarget.find((t) => t.key === e.targetKey);
     if (!bt) {
-      bt = { key: e.targetKey, name: e.targetName, type: e.targetType, amount: 0 };
+      bt = { key: e.targetKey, name: e.targetName, type: e.targetType, amount: 0, killed: false };
       atk.byTarget.push(bt);
     }
     bt.amount += e.amount;
+    if (e.kill) {
+      atk.kills += 1;
+      bt.killed = true;
+    }
 
     ensure(e.targetKey, e.targetName, e.targetType).taken += e.amount;
   }

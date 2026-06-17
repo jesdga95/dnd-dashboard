@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { X, Plus, Swords, SkipForward, Maximize2, Minimize2, ListOrdered, Trophy } from "lucide-react";
+import { X, Plus, Swords, Maximize2, Minimize2, ListOrdered, Trophy } from "lucide-react";
 import { useDict } from "@/lib/DictContext";
 import { useAuth } from "@/hooks/useAuth";
 import { useDmCombat } from "@/hooks/useDmCombat";
@@ -9,8 +9,9 @@ import { useCombatEvents } from "@/hooks/useCombatEvents";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { CombatantList, type MonsterControls, type MemberLiveData } from "@/components/combat/CombatantList";
 import { DamageLeaderboard } from "@/components/combat/DamageLeaderboard";
-import { AttackerChip } from "@/components/combat/AttackerChip";
-import { writeDamageEvent } from "@/lib/combatDamage";
+import { CombatCommandBar } from "@/components/combat/CombatCommandBar";
+import { CombatOutcome } from "@/components/combat/CombatOutcome";
+import { aggregateLeaderboard, writeDamageEvent } from "@/lib/combatDamage";
 import type { PartyMember } from "@/hooks/useDmParty";
 import type { Combatant, MonsterCombatant, OfflinePlayerCombatant } from "@/lib/types";
 
@@ -474,11 +475,14 @@ export function DmCombatMode({ members, onClose }: DmCombatModeProps) {
   const finished = combat?.status === "finished";
   const events = useCombatEvents(user?.uid, combat?.combatId);
   const [tab, setTab] = useState<"initiative" | "damage">("initiative");
-  // When combat ends, surface the results first.
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- jump to the leaderboard on finish
-    if (finished) setTab("damage");
-  }, [finished]);
+  // Reset to the initiative tab when a new combat starts; jump to results when
+  // one ends. Keyed on combatId+finished so manual tab switches are preserved.
+  const [tabKey, setTabKey] = useState<string>();
+  const curTabKey = combat ? `${combat.combatId ?? ""}:${finished}` : "";
+  if (combat && curTabKey !== tabKey) {
+    setTabKey(curTabKey);
+    setTab(finished ? "damage" : "initiative");
+  }
   // keep a fresh ref to onClose without adding it to the keydown effect's deps
   const onCloseRef = useRef(onClose);
   useEffect(() => {
@@ -536,14 +540,46 @@ export function DmCombatMode({ members, onClose }: DmCombatModeProps) {
     }
   }
 
+  // Decisive end: every monster down ⇒ victory; the whole party (players +
+  // offline allies) down ⇒ defeat. The DM's client records the outcome on the
+  // doc the instant it happens — no click — so everyone gets the screen at once.
+  const cbs = combat?.combatants ?? [];
+  const monsters = cbs.filter((c) => c.type === "monster");
+  const allies = cbs.filter((c) => c.type === "player" || c.type === "offline");
+  const allFoesDown = monsters.length > 0 && monsters.every((m) => m.hp <= 0);
+  const allPartyDown = allies.length > 0 && allies.every((a) => downedKeys.has(a.type === "player" ? a.uid : a.id));
+  const decisive: "victory" | "defeat" | null = allFoesDown ? "victory" : allPartyDown ? "defeat" : null;
+
+  // Auto-finish the moment it's decisive (ref-guarded against the write→snapshot gap).
+  const autoEndedRef = useRef<string | undefined>(undefined);
+  useEffect(() => {
+    if (!combat || combat.status === "finished" || combat.outcome || !decisive) return;
+    if (autoEndedRef.current === combat.combatId) return;
+    autoEndedRef.current = combat.combatId;
+    void finishCombat(decisive);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [combat?.combatId, combat?.status, combat?.outcome, decisive]);
+
+  // Overlay is driven by the doc's outcome, so it appears for the DM the same
+  // way it does for players; OK just dismisses it to the results.
+  const [outcomeAckKey, setOutcomeAckKey] = useState<string>();
+  const showOutcome = !!combat?.outcome && outcomeAckKey !== combat.combatId;
+  const topName = combat ? aggregateLeaderboard(events, combat.combatants).find((r) => r.dealt > 0)?.name : undefined;
+
   // Apply HP as before, and log a damage event for any hit (negative delta),
   // credited to the active attacker. Healing is never logged.
   const adjustMonsterHpLogged = (id: string, delta: number) => {
     adjustMonsterHp(id, delta);
     if (delta < 0 && combat && user && combat.status !== "finished") {
       const target = combat.combatants.find((c) => c.type !== "player" && c.id === id);
-      if (target) {
-        writeDamageEvent(user.uid, combat, { key: id, name: target.name, type: target.type }, -delta);
+      if (target && target.type !== "player") {
+        // Log the damage that actually landed — capped at remaining HP, so a hit
+        // for more than the target had left (or on a 0-HP target) isn't overcounted.
+        const after = Math.max(0, Math.min(target.hpMax, target.hp + delta));
+        const effective = target.hp - after;
+        if (effective > 0) {
+          writeDamageEvent(user.uid, combat, { key: id, name: target.name, type: target.type }, effective, after <= 0);
+        }
       }
     }
   };
@@ -560,8 +596,8 @@ export function DmCombatMode({ members, onClose }: DmCombatModeProps) {
   return (
     <div
       className={isSidebar
-        ? "fixed top-0 right-0 bottom-0 z-[200] overflow-y-auto w-[420px] border-l border-white/[0.08]"
-        : "fixed inset-0 z-[200] overflow-y-auto"
+        ? "fixed top-0 right-0 bottom-0 z-[200] flex flex-col w-[420px] border-l border-white/[0.08]"
+        : "fixed inset-0 z-[200] flex flex-col"
       }
       style={{
         background:
@@ -570,7 +606,7 @@ export function DmCombatMode({ members, onClose }: DmCombatModeProps) {
     >
       {/* ── Header ── */}
       <div
-        className="sticky top-0 z-10"
+        className="shrink-0 z-10"
         style={{
           background: "rgba(14,9,6,0.92)",
           backdropFilter: "blur(10px)",
@@ -607,39 +643,10 @@ export function DmCombatMode({ members, onClose }: DmCombatModeProps) {
           </button>
         </div>
 
-        {/* Round / actions bar */}
-        {combat && (
-          <div className="flex items-center px-3 py-1.5 gap-1">
-            <span className="text-[12px] font-semibold text-white/25 px-1.5">
-              {finished ? dict.combatDamage.results : `${dict.dmCombat.round} ${combat.round}`}
-            </span>
-            <div className="flex-1" />
-            {!finished && (
-              <button
-                onClick={() => nextTurn(downedKeys)}
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-[7px] text-[12px] font-semibold
-                  cursor-pointer font-[inherit] transition-colors
-                  bg-[rgba(244,123,95,0.12)] text-[var(--color-coral)] border border-[rgba(244,123,95,0.25)]
-                  hover:bg-[rgba(244,123,95,0.22)] hover:border-[rgba(244,123,95,0.4)]"
-              >
-                <SkipForward size={12} />
-                {dict.dmCombat.nextTurn}
-              </button>
-            )}
-            <button
-              onClick={finished ? closeCombat : finishCombat}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-[7px] text-[12px] font-semibold
-                cursor-pointer font-[inherit] transition-colors
-                bg-[rgba(244,123,95,0.12)] text-[var(--color-coral)] border border-[rgba(244,123,95,0.25)]
-                hover:bg-[rgba(244,123,95,0.22)] hover:border-[rgba(244,123,95,0.4)]"
-            >
-              {finished ? dict.combatDamage.close : dict.dmCombat.endCombat}
-            </button>
-          </div>
-        )}
+        {/* Round / actions live in the floating CombatCommandBar at the bottom. */}
 
-        {/* Initiative / Damage tabs */}
-        {combat && (
+        {/* Initiative / Damage tabs — hidden once combat is over (results only) */}
+        {combat && !finished && (
           <div className="flex gap-1 px-3 pb-2">
             {([
               ["initiative", dict.combatDamage.initiativeTab, ListOrdered],
@@ -667,78 +674,79 @@ export function DmCombatMode({ members, onClose }: DmCombatModeProps) {
         )}
       </div>
 
-      {/* ── Body ── */}
-      {!combat ? (
-        <SetupPhase members={members} onStart={startCombat} />
-      ) : tab === "damage" ? (
-        <div className="px-5 py-6 max-w-[740px] mx-auto flex flex-col gap-3">
-          {finished && (
+      {/* ── Scrollable body ── */}
+      <div className="flex-1 min-h-0 overflow-y-auto">
+        {!combat ? (
+          <SetupPhase members={members} onStart={startCombat} />
+        ) : finished ? (
+          /* Results-only page: leaderboard + Close, no tabs */
+          <div className="px-5 py-6 max-w-[740px] mx-auto flex flex-col gap-3">
             <p className="text-[12.5px] text-white/35 italic mb-1">{dict.combatDamage.resultsHint}</p>
-          )}
-          <DamageLeaderboard combatants={combat.combatants} events={events} viewerIsDm finished={!!finished} />
-          <div className="h-10" />
-        </div>
-      ) : (
-        <div className="px-5 py-6 max-w-[740px] mx-auto flex flex-col gap-3">
-          {/* Crediting control — always in eyeline beside the damage buttons */}
-          {!finished && (
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-[11px] font-bold tracking-[0.16em] uppercase text-white/25">
-                {dict.combatDamage.creditingTo}
-              </span>
-              <AttackerChip combat={combat} downedKeys={downedKeys} onSelect={setActiveAttacker} />
-            </div>
-          )}
-
-          <CombatantList
-            combat={combat}
-            memberData={memberData}
-            monsterControls={monsterControls}
-            reorder={moveCombatant}
-            onSetInitiative={setInitiative}
-          />
-
-          <div className="mt-1 flex flex-wrap justify-end gap-2">
-            <InlineAdd
-              accent="coral"
-              openLabel={dict.dmCombat.addMonster}
-              addLabel={dict.dmCombat.addMonster}
-              namePlaceholder={dict.dmCombat.namePlaceholder}
-              withCount
-              onAdd={(d) => addMonsters(buildMonsters(d))}
-            />
-            <InlineAdd
-              accent="blue"
-              openLabel={dict.dmCombat.addOfflinePlayer}
-              addLabel={dict.dmCombat.addOfflinePlayer}
-              namePlaceholder={dict.dmCombat.offlineNamePlaceholder}
-              onAdd={(d) => addOfflinePlayer(buildOffline(d))}
-            />
+            <DamageLeaderboard combatants={combat.combatants} events={events} viewerIsDm finished />
+            <button
+              onClick={closeCombat}
+              className="mt-3 w-full py-3 rounded-full text-[14px] font-bold cursor-pointer font-[inherit] transition-colors"
+              style={{ background: "rgba(244,123,95,0.18)", color: "var(--color-coral)", border: "1px solid rgba(244,123,95,0.3)" }}
+            >
+              {dict.combatDamage.closeCombat}
+            </button>
           </div>
+        ) : tab === "damage" ? (
+          <div className="px-5 py-6 max-w-[740px] mx-auto flex flex-col gap-3">
+            <DamageLeaderboard combatants={combat.combatants} events={events} viewerIsDm finished={false} />
+          </div>
+        ) : (
+          <div className="px-5 py-6 max-w-[740px] mx-auto flex flex-col gap-3">
+            <CombatantList
+              combat={combat}
+              memberData={memberData}
+              monsterControls={monsterControls}
+              reorder={moveCombatant}
+              onSetInitiative={setInitiative}
+            />
 
-          <div className="h-10" />
-        </div>
+            <div className="mt-1 flex flex-wrap justify-end gap-2">
+              <InlineAdd
+                accent="coral"
+                openLabel={dict.dmCombat.addMonster}
+                addLabel={dict.dmCombat.addMonster}
+                namePlaceholder={dict.dmCombat.namePlaceholder}
+                withCount
+                onAdd={(d) => addMonsters(buildMonsters(d))}
+              />
+              <InlineAdd
+                accent="blue"
+                openLabel={dict.dmCombat.addOfflinePlayer}
+                addLabel={dict.dmCombat.addOfflinePlayer}
+                namePlaceholder={dict.dmCombat.offlineNamePlaceholder}
+                onAdd={(d) => addOfflinePlayer(buildOffline(d))}
+              />
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Floating command bar — attribution + Next Turn + End, active combat only */}
+      {combat && !finished && (
+        <CombatCommandBar
+          combat={combat}
+          finished={false}
+          viewerIsDm
+          endLabel={dict.dmCombat.endCombat}
+          downedKeys={downedKeys}
+          onSelectAttacker={setActiveAttacker}
+          onNextTurn={() => nextTurn(downedKeys)}
+          onEnd={finishCombat}
+        />
       )}
 
-      {/* Mobile End / Close Combat */}
-      {combat && (
-        <div
-          className="hidden max-[460px]:block sticky bottom-0 px-5 py-3"
-          style={{
-            background: "rgba(14,9,6,0.92)",
-            backdropFilter: "blur(10px)",
-            borderTop: "1px solid rgba(255,255,255,0.06)",
-          }}
-        >
-          <button
-            onClick={finished ? closeCombat : finishCombat}
-            className="w-full py-2.5 rounded-full text-[13px] font-semibold font-[inherit]
-              border-none cursor-pointer transition-colors text-white/40 hover:text-white/65
-              hover:bg-white/[0.06]"
-          >
-            {finished ? dict.combatDamage.close : dict.dmCombat.endCombat}
-          </button>
-        </div>
+      {/* Decisive end — appears automatically for everyone; OK reveals results. */}
+      {showOutcome && combat.outcome && (
+        <CombatOutcome
+          variant={combat.outcome}
+          subtitle={topName ? `${dict.combatDamage.mvp}: ${topName}` : undefined}
+          onOk={() => setOutcomeAckKey(combat.combatId)}
+        />
       )}
     </div>
   );

@@ -29,13 +29,18 @@ export function CharacterSheet() {
   const { combat: dmCombat, dmUid } = usePlayerCombat();
   const [dmCombatDismissed, setDmCombatDismissed] = useState(false);
 
-  // Auto-show overlay when a new combat begins (null → non-null transition only).
-  // Adjust-state-during-render, keyed on the transition — preferred over an effect.
-  const hasCombat = !!dmCombat;
-  const [prevHasCombat, setPrevHasCombat] = useState(hasCombat);
-  if (hasCombat !== prevHasCombat) {
-    setPrevHasCombat(hasCombat);
-    if (hasCombat) setDmCombatDismissed(false);
+  // Auto-show the overlay on two transitions: when a new combat begins, and when
+  // a combat ends decisively (so players never miss the victory/defeat screen,
+  // even if they'd minimized the combat view). Adjust-state-during-render.
+  const combatPhase = dmCombat
+    ? `${dmCombat.combatId ?? ""}:${dmCombat.status ?? "active"}:${dmCombat.outcome ?? ""}`
+    : "none";
+  const [prevPhase, setPrevPhase] = useState(combatPhase);
+  if (combatPhase !== prevPhase) {
+    const started = prevPhase === "none" && combatPhase !== "none";
+    const decisiveEnd = dmCombat?.status === "finished" && !!dmCombat.outcome;
+    setPrevPhase(combatPhase);
+    if (started || decisiveEnd) setDmCombatDismissed(false);
   }
 
   const { user } = useAuth();
@@ -87,7 +92,17 @@ export function CharacterSheet() {
   const loggedAdjustHp = (delta: number) => {
     adjustHp(delta);
     if (delta < 0 && dmCombat && dmUid && user?.uid && dmCombat.status !== "finished") {
-      writeDamageEvent(dmUid, dmCombat, { key: user.uid, name: char.name || user.uid, type: "player" }, -delta);
+      // Log the damage that actually landed — capped at the target's remaining
+      // pool (HP + temp), so overkill (or a hit on a 0-HP target) never inflates
+      // the tally. Mirrors adjustHp's temp-HP absorption.
+      const hp = char.hp ?? 0;
+      const tempHp = char.tempHp ?? 0;
+      const tempAbsorb = Math.min(tempHp, -delta);
+      const hpRemoved = Math.min(hp, -delta - tempAbsorb);
+      const effective = hpRemoved + tempAbsorb;
+      if (effective <= 0) return;
+      const kill = hp > 0 && hp - hpRemoved <= 0;
+      writeDamageEvent(dmUid, dmCombat, { key: user.uid, name: char.name || user.uid, type: "player" }, effective, kill);
     }
   };
 

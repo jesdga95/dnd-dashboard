@@ -88,10 +88,10 @@ export function useDmCombat() {
 
   // End Combat → keep the doc (and events) alive in a "finished" state so the
   // whole party can review the damage leaderboard before it's torn down.
-  const finishCombat = async () => {
+  const finishCombat = async (outcome?: "victory" | "defeat") => {
     const c = combatRef.current;
     if (!c) return;
-    await write({ ...c, status: "finished" });
+    await write({ ...c, status: "finished", ...(outcome ? { outcome } : {}) });
   };
 
   // Close → the real teardown: clear the damage log, then delete the combat doc.

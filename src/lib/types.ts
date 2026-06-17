@@ -200,6 +200,8 @@ export interface DmCombat {
   combatId?: string;
   /** undefined ⇒ active. "finished" keeps the doc alive so the party can review the results. */
   status?: "active" | "finished";
+  /** How it ended (set on finish): all foes down ⇒ victory, whole party down ⇒ defeat. */
+  outcome?: "victory" | "defeat";
   /** Combatant key (uid|id) damage is currently credited to; null ⇒ Unattributed. Pre-filled by the turn. */
   activeAttackerKey?: string | null;
 }
@@ -225,6 +227,8 @@ export interface DamageEvent {
   targetType: "player" | "monster" | "offline";
   /** Positive damage swing entered (healing is never logged). */
   amount: number;
+  /** True when this hit dropped the target from >0 to 0 HP — the killing blow. */
+  kill?: boolean;
   round: number;
   at: number;
 }
