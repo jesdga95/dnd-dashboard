@@ -2,13 +2,15 @@
 
 import { useState, useRef, useEffect } from "react";
 import { usePlayerCombat } from "@/hooks/usePlayerCombat";
+import { useCombatEvents } from "@/hooks/useCombatEvents";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useDict } from "@/lib/DictContext";
 import { usePartyId } from "@/hooks/usePartyId";
 import { usePlayerParty } from "@/hooks/usePlayerParty";
-import { Swords, X, Shield, ShieldPlus, HeartPlus, Plus, Check, Maximize2, Minimize2 } from "lucide-react";
+import { Swords, X, Shield, ShieldPlus, HeartPlus, Plus, Check, Maximize2, Minimize2, Trophy } from "lucide-react";
 import { EditableNumber } from "@/components/ui/EditableNumber";
 import { CombatantList, type MemberLiveData } from "@/components/combat/CombatantList";
+import { DamageLeaderboard } from "@/components/combat/DamageLeaderboard";
 import type { DmCombat, Character } from "@/lib/types";
 
 export interface PlayerCombatViewProps {
@@ -33,6 +35,7 @@ function PlayerCombatViewInner({
   char,
   statuses,
   combat,
+  dmUid,
   onAdjustHp,
   onUpdateHp,
   onTempHpChange,
@@ -40,10 +43,19 @@ function PlayerCombatViewInner({
   onAddStatus,
   onRemoveStatus,
   onDismiss,
-}: PlayerCombatViewProps & { combat: DmCombat }) {
+}: PlayerCombatViewProps & { combat: DmCombat; dmUid: string | null }) {
   const dict = useDict();
   const isDesktop = useMediaQuery("(min-width: 1280px)");
   const [isFullscreen, setIsFullscreen] = useState(false);
+
+  const finished = combat.status === "finished";
+  const events = useCombatEvents(dmUid, combat.combatId);
+  const [tab, setTab] = useState<"combat" | "damage">("combat");
+  // Land on the results when the DM ends combat.
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- jump to the leaderboard on finish
+    if (finished) setTab("damage");
+  }, [finished]);
   const isSidebar = isDesktop && !isFullscreen;
 
   const [customAmount, setCustomAmount] = useState("");
@@ -133,41 +145,83 @@ function PlayerCombatViewInner({
     >
       {/* ── Header ── */}
       <div
-        className="sticky top-0 z-10 flex items-center px-3 py-2 gap-1"
+        className="sticky top-0 z-10"
         style={{
           background: "rgba(14,9,6,0.92)",
           backdropFilter: "blur(10px)",
           borderBottom: "1px solid rgba(255,255,255,0.06)",
         }}
       >
-        <div className="flex items-center gap-2 text-[11.5px] font-bold tracking-[0.22em] uppercase text-white/30 px-1.5">
-          <Swords size={13} style={{ color: "var(--color-coral)" }} />
-          {dict.combat.title}
-        </div>
-        <div className="flex-1" />
-        {isDesktop && (
+        <div className="flex items-center px-3 py-2 gap-1">
+          <div className="flex items-center gap-2 text-[11.5px] font-bold tracking-[0.22em] uppercase text-white/30 px-1.5">
+            <Swords size={13} style={{ color: "var(--color-coral)" }} />
+            {finished ? dict.combatDamage.results : dict.combat.title}
+          </div>
+          <div className="flex-1" />
+          {isDesktop && (
+            <button
+              onClick={() => setIsFullscreen(f => !f)}
+              className="flex items-center p-1.5 rounded-[7px] bg-transparent cursor-pointer
+                transition-colors text-white/40 hover:text-white/65 hover:bg-white/[0.06]
+                border border-white/15 hover:border-white/25"
+            >
+              {isFullscreen ? <Minimize2 size={12} /> : <Maximize2 size={12} />}
+            </button>
+          )}
           <button
-            onClick={() => setIsFullscreen(f => !f)}
+            onClick={onDismiss}
             className="flex items-center p-1.5 rounded-[7px] bg-transparent cursor-pointer
               transition-colors text-white/40 hover:text-white/65 hover:bg-white/[0.06]
               border border-white/15 hover:border-white/25"
           >
-            {isFullscreen ? <Minimize2 size={12} /> : <Maximize2 size={12} />}
+            <X size={12} />
           </button>
-        )}
-        <button
-          onClick={onDismiss}
-          className="flex items-center p-1.5 rounded-[7px] bg-transparent cursor-pointer
-            transition-colors text-white/40 hover:text-white/65 hover:bg-white/[0.06]
-            border border-white/15 hover:border-white/25"
-        >
-          <X size={12} />
-        </button>
+        </div>
+
+        {/* Combat / Damage tabs */}
+        <div className="flex gap-1 px-3 pb-2">
+          {([
+            ["combat", dict.combatDamage.combatTab, Swords],
+            ["damage", dict.combatDamage.damageTab, Trophy],
+          ] as const).map(([key, label, Icon]) => {
+            const active = tab === key;
+            return (
+              <button
+                key={key}
+                onClick={() => setTab(key)}
+                className="flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-[7px] text-[12px]
+                  font-semibold cursor-pointer font-[inherit] transition-colors border"
+                style={
+                  active
+                    ? { background: "rgba(244,123,95,0.14)", color: "var(--color-coral)", borderColor: "rgba(244,123,95,0.25)" }
+                    : { background: "transparent", color: "rgba(255,255,255,0.4)", borderColor: "rgba(255,255,255,0.08)" }
+                }
+              >
+                <Icon size={12} />
+                {label}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* ── Main content ── */}
       <div className="px-5 py-6 max-w-[740px] mx-auto">
 
+        {tab === "damage" ? (
+          <>
+            {finished && (
+              <p className="text-[12.5px] text-white/35 italic mb-3">{dict.combatDamage.resultsHint}</p>
+            )}
+            <DamageLeaderboard
+              combatants={combat.combatants}
+              events={events}
+              viewerIsDm={false}
+              finished={finished}
+            />
+          </>
+        ) : (
+          <>
         {/* ── Character HP hero ── */}
         <div
           className="rounded-[22px] px-6 py-7 mb-4"
@@ -542,6 +596,8 @@ function PlayerCombatViewInner({
           />
 
         </div>
+          </>
+        )}
 
         <div className="h-10" />
       </div>
@@ -550,7 +606,7 @@ function PlayerCombatViewInner({
 }
 
 export function PlayerCombatView(props: PlayerCombatViewProps) {
-  const { combat } = usePlayerCombat();
+  const { combat, dmUid } = usePlayerCombat();
   if (!combat) return null;
-  return <PlayerCombatViewInner {...props} combat={combat} />;
+  return <PlayerCombatViewInner {...props} combat={combat} dmUid={dmUid} />;
 }

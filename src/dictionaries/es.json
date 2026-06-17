@@ -350,6 +350,22 @@
     "moveDown": "Bajar en la iniciativa",
     "setInitiative": "Editar iniciativa"
   },
+  "combatDamage": {
+    "initiativeTab": "Iniciativa",
+    "combatTab": "Combate",
+    "damageTab": "Daño",
+    "creditingTo": "Atribuir a",
+    "creditTitle": "Atribuir el daño a",
+    "unattributed": "Sin atribuir",
+    "down": "caído",
+    "taken": "Recibido",
+    "noDamage": "Aún no se ha hecho daño.",
+    "results": "Resultados del combate",
+    "resultsHint": "El combate ha terminado: aquí está el desglose de daño.",
+    "close": "Cerrar",
+    "monsterWarn": "Atribuyendo a un monstruo, ¿es correcto?",
+    "downWarn": "Este atacante está caído, ¿reasignar?"
+  },
   "iconPicker": {
     "searchPlaceholder": "Buscar íconos…",
     "noMatch": "No hay íconos que coincidan con"

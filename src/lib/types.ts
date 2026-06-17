@@ -196,4 +196,35 @@ export interface DmCombat {
   round: number;
   currentTurnIndex: number;
   combatants: Combatant[];
+  /** Generated when combat starts; tags damage events so stale ones from a prior combat are ignored. */
+  combatId?: string;
+  /** undefined ⇒ active. "finished" keeps the doc alive so the party can review the results. */
+  status?: "active" | "finished";
+  /** Combatant key (uid|id) damage is currently credited to; null ⇒ Unattributed. Pre-filled by the turn. */
+  activeAttackerKey?: string | null;
+}
+
+export type AttackerType = "player" | "monster" | "offline" | "unattributed";
+
+/** Sentinel attacker key used when damage has no clear actor. */
+export const UNATTRIBUTED_KEY = "unattributed";
+
+/**
+ * A single attribution-tagged damage event, stored at
+ * `dm_combats/{dmUid}/events/{autoId}`. Written by the DM (player→monster) and
+ * by players (monster→player), since players can't write the combat doc itself.
+ */
+export interface DamageEvent {
+  id: string;
+  combatId: string;
+  attackerKey: string;
+  attackerName: string;
+  attackerType: AttackerType;
+  targetKey: string;
+  targetName: string;
+  targetType: "player" | "monster" | "offline";
+  /** Positive damage swing entered (healing is never logged). */
+  amount: number;
+  round: number;
+  at: number;
 }

@@ -19,13 +19,14 @@ import { SpellcastingCard } from "@/components/spellcasting/SpellcastingCard";
 import { ResourcesCard } from "@/components/resources/ResourcesCard";
 import { PlayerCombatView } from "@/components/combat/PlayerCombatView";
 import { usePlayerCombat } from "@/hooks/usePlayerCombat";
+import { writeDamageEvent } from "@/lib/combatDamage";
 import { useDict } from "@/lib/DictContext";
 import { Swords } from "lucide-react";
 import { DEFAULT_SPELLCASTING } from "@/lib/defaults";
 
 export function CharacterSheet() {
   const dict = useDict();
-  const { combat: dmCombat } = usePlayerCombat();
+  const { combat: dmCombat, dmUid } = usePlayerCombat();
   const [dmCombatDismissed, setDmCombatDismissed] = useState(false);
 
   // Auto-show overlay when a new combat begins (null → non-null transition only).
@@ -79,6 +80,16 @@ export function CharacterSheet() {
     removeCustomResource,
     importChar,
   } = useCharacter();
+
+  // During combat, applying incoming damage to myself also logs a damage event
+  // credited to whoever's currently acting (the attacking monster), so monsters
+  // land on the leaderboard too. Healing and post-combat tweaks are never logged.
+  const loggedAdjustHp = (delta: number) => {
+    adjustHp(delta);
+    if (delta < 0 && dmCombat && dmUid && user?.uid && dmCombat.status !== "finished") {
+      writeDamageEvent(dmUid, dmCombat, { key: user.uid, name: char.name || user.uid, type: "player" }, -delta);
+    }
+  };
 
   if (loading) {
     return (
@@ -228,7 +239,7 @@ export function CharacterSheet() {
           uid={user.uid}
           char={char}
           statuses={char.conditions ?? []}
-          onAdjustHp={adjustHp}
+          onAdjustHp={loggedAdjustHp}
           onUpdateHp={update}
           onTempHpChange={setTempHp}
           onTempAcChange={setTempAc}

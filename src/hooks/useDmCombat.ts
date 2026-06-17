@@ -1,10 +1,23 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { doc, onSnapshot, setDoc, deleteDoc } from "firebase/firestore";
+import { doc, collection, onSnapshot, setDoc, deleteDoc, getDocs, writeBatch } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useAuth } from "./useAuth";
+import { combatantKey } from "@/lib/combatDamage";
 import type { DmCombat, Combatant, MonsterCombatant, OfflinePlayerCombatant } from "@/lib/types";
+
+// Drop every logged damage event for a DM's combat (in batches, since a session
+// can exceed Firestore's 500-write batch limit). Run on start (hygiene) and close.
+async function clearEvents(dmUid: string) {
+  const snap = await getDocs(collection(db, "dm_combats", dmUid, "events"));
+  const refs = snap.docs.map((d) => d.ref);
+  for (let i = 0; i < refs.length; i += 450) {
+    const batch = writeBatch(db);
+    refs.slice(i, i + 450).forEach((ref) => batch.delete(ref));
+    await batch.commit();
+  }
+}
 
 export function useDmCombat() {
   const { user } = useAuth();
@@ -61,26 +74,67 @@ export function useDmCombat() {
   };
 
   const startCombat = async (combatants: Combatant[]) => {
+    if (!user) return;
+    await clearEvents(user.uid); // drop any leftover events from a combat that wasn't cleanly closed
     const sorted = [...combatants].sort((a, b) => b.initiativeRoll - a.initiativeRoll);
-    await write({ round: 1, currentTurnIndex: 0, combatants: sorted });
+    await write({
+      round: 1,
+      currentTurnIndex: 0,
+      combatants: sorted,
+      combatId: crypto.randomUUID(),
+      status: "active",
+      activeAttackerKey: sorted.length ? combatantKey(sorted[0]) : null,
+    });
   };
 
-  const endCombat = async () => {
+  // End Combat → keep the doc (and events) alive in a "finished" state so the
+  // whole party can review the damage leaderboard before it's torn down.
+  const finishCombat = async () => {
+    const c = combatRef.current;
+    if (!c) return;
+    await write({ ...c, status: "finished" });
+  };
+
+  // Close → the real teardown: clear the damage log, then delete the combat doc.
+  const closeCombat = async () => {
     if (!user) return;
+    await clearEvents(user.uid);
     combatRef.current = null;
     await deleteDoc(doc(db, "dm_combats", user.uid));
   };
 
-  const nextTurn = async () => {
+  // Advance to the next combatant that isn't downed (downedKeys is computed by
+  // the caller, which has live player HP). The active attacker follows the turn.
+  const nextTurn = async (downedKeys?: Set<string>) => {
     const c = combatRef.current;
-    if (!c) return;
-    const next = c.currentTurnIndex + 1;
-    const wrapped = next >= c.combatants.length;
+    const n = c?.combatants.length ?? 0;
+    if (!c || n === 0) return;
+    let idx = c.currentTurnIndex;
+    let round = c.round;
+    for (let step = 0; step < n; step++) {
+      const next = idx + 1;
+      if (next >= n) {
+        idx = 0;
+        round += 1;
+      } else {
+        idx = next;
+      }
+      if (!downedKeys || !downedKeys.has(combatantKey(c.combatants[idx]))) break;
+    }
     await write({
       ...c,
-      currentTurnIndex: wrapped ? 0 : next,
-      round: wrapped ? c.round + 1 : c.round,
+      currentTurnIndex: idx,
+      round,
+      activeAttackerKey: combatantKey(c.combatants[idx]),
     });
+  };
+
+  // The Crediting chip / override: set who damage is attributed to without
+  // moving the turn. `null` ⇒ Unattributed.
+  const setActiveAttacker = async (key: string | null) => {
+    const c = combatRef.current;
+    if (!c) return;
+    await write({ ...c, activeAttackerKey: key });
   };
 
   // Swap a combatant with its neighbour to reorder the initiative list mid-combat.
@@ -104,14 +158,13 @@ export function useDmCombat() {
   const setInitiative = async (index: number, value: number) => {
     const c = combatRef.current;
     if (!c || index < 0 || index >= c.combatants.length) return;
-    const keyOf = (cm: Combatant) => (cm.type === "player" ? cm.uid : cm.id);
     const current = c.combatants[c.currentTurnIndex];
-    const currentKey = current ? keyOf(current) : null;
+    const currentKey = current ? combatantKey(current) : null;
     const combatants = c.combatants.map((cm, i) =>
       i === index ? { ...cm, initiativeRoll: value } : cm
     );
     combatants.sort((a, b) => b.initiativeRoll - a.initiativeRoll);
-    const found = currentKey === null ? -1 : combatants.findIndex((cm) => keyOf(cm) === currentKey);
+    const found = currentKey === null ? -1 : combatants.findIndex((cm) => combatantKey(cm) === currentKey);
     const currentTurnIndex = found >= 0 ? found : Math.min(c.currentTurnIndex, combatants.length - 1);
     await write({ ...c, combatants, currentTurnIndex });
   };
@@ -204,8 +257,10 @@ export function useDmCombat() {
     combat,
     loading,
     startCombat,
-    endCombat,
+    finishCombat,
+    closeCombat,
     nextTurn,
+    setActiveAttacker,
     moveCombatant,
     setInitiative,
     addMonsters,

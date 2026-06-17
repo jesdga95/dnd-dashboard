@@ -350,6 +350,22 @@
     "moveDown": "Move down in initiative",
     "setInitiative": "Set initiative"
   },
+  "combatDamage": {
+    "initiativeTab": "Initiative",
+    "combatTab": "Combat",
+    "damageTab": "Damage",
+    "creditingTo": "Crediting to",
+    "creditTitle": "Credit damage to",
+    "unattributed": "Unattributed",
+    "down": "down",
+    "taken": "Taken",
+    "noDamage": "No damage dealt yet.",
+    "results": "Combat Results",
+    "resultsHint": "Combat has ended — here's the damage breakdown.",
+    "close": "Close",
+    "monsterWarn": "Crediting a monster — is that right?",
+    "downWarn": "This attacker is down — re-pick?"
+  },
   "iconPicker": {
     "searchPlaceholder": "Search icons…",
     "noMatch": "No icons match"
