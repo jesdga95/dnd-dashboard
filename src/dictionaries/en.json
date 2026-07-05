@@ -64,6 +64,7 @@
     "title": "HP",
     "longRest": "Long Rest",
     "tempHp": "Temp HP",
+    "clearTempHp": "Clear temporary HP",
     "clear": "Clear",
     "bloodied": "½ HP"
   },

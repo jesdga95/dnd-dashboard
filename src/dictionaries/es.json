@@ -64,6 +64,7 @@
     "title": "Vida",
     "longRest": "Descanso Largo",
     "tempHp": "PV Temp.",
+    "clearTempHp": "Quitar PV temporales",
     "clear": "Limpiar",
     "bloodied": "½ PV"
   },
