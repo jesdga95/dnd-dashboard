@@ -443,6 +443,22 @@ function PlayerCombatViewInner({
               className="flex gap-0.5 rounded-full p-[3px]"
               style={{ background: "rgba(255,255,255,0.06)" }}
             >
+              {[10, 5, 1].map((n) => (
+                <button
+                  key={"td" + n}
+                  onClick={() => onTempHpChange(tempHp - n)}
+                  className="px-2.5 py-[5px] text-[12px] border-none bg-transparent rounded-full
+                    font-semibold font-[inherit] cursor-pointer transition-colors duration-150
+                    text-white/40 hover:bg-[rgba(129,140,248,0.15)] hover:text-[#818cf8]"
+                >
+                  −{n}
+                </button>
+              ))}
+            </div>
+            <div
+              className="flex gap-0.5 rounded-full p-[3px]"
+              style={{ background: "rgba(255,255,255,0.06)" }}
+            >
               {[1, 5, 10].map((n) => (
                 <button
                   key={"t" + n}
@@ -457,6 +473,7 @@ function PlayerCombatViewInner({
               {tempHp > 0 && (
                 <button
                   onClick={() => onTempHpChange(0)}
+                  title={dict.hp.clearTempHp}
                   className="px-2 py-[5px] border-none bg-transparent rounded-full font-[inherit]
                     cursor-pointer flex items-center transition-colors duration-150
                     text-white/35 hover:bg-[rgba(224,74,58,0.15)] hover:text-[var(--color-coral)]"
@@ -482,6 +499,19 @@ function PlayerCombatViewInner({
               signed
               style={{ width: 44, textAlign: "center", fontSize: 16, fontWeight: 700, color: TEMP_AC_COLOR }}
             />
+            <div className="flex gap-0.5 rounded-full p-[3px]" style={{ background: "rgba(255,255,255,0.06)" }}>
+              {[5, 2, 1].map((n) => (
+                <button
+                  key={"tad" + n}
+                  onClick={() => onTempAcChange(tempAc - n)}
+                  className="px-2.5 py-[5px] text-[12px] border-none bg-transparent rounded-full
+                    font-semibold font-[inherit] cursor-pointer transition-colors duration-150
+                    text-white/40 hover:bg-[rgba(125,211,252,0.15)] hover:text-[#7dd3fc]"
+                >
+                  −{n}
+                </button>
+              ))}
+            </div>
             <div className="flex gap-0.5 rounded-full p-[3px]" style={{ background: "rgba(255,255,255,0.06)" }}>
               {[1, 2, 5].map((n) => (
                 <button
