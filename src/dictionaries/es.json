@@ -311,7 +311,8 @@
     "monsterBadge": "M",
     "tempAc": "CA Temp.",
     "tempAcTitle": "CA temporal",
-    "clearTempAc": "Quitar CA temporal"
+    "clearTempAc": "Quitar CA temporal",
+    "maxHpReduced": "PV máximos reducidos"
   },
   "dmCombat": {
     "title": "Combate DM",

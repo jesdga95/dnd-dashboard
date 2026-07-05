@@ -58,7 +58,9 @@ export function HpCard({ hp, hpMax, tempHp, onAdjust, onUpdate }: HpCardProps) {
             value={hp}
             onChange={(v) => onUpdate({ hp: v })}
             min={0}
-            style={{ width: 56, textAlign: "right", fontSize: 30, fontWeight: 800, letterSpacing: "-0.02em",
+            maxLength={4}
+            autoWidth
+            style={{ textAlign: "right", fontSize: 30, fontWeight: 800, letterSpacing: "-0.02em",
               color: bloodied ? "var(--color-coral-deep)" : undefined }}
           />
           {tempHp > 0 && (
@@ -71,7 +73,9 @@ export function HpCard({ hp, hpMax, tempHp, onAdjust, onUpdate }: HpCardProps) {
             value={hpMax}
             onChange={(v) => onUpdate({ hpMax: v })}
             min={1}
-            style={{ width: 42, textAlign: "left", fontSize: 18, fontWeight: 600, color: "var(--color-muted)" }}
+            maxLength={4}
+            autoWidth
+            style={{ textAlign: "left", fontSize: 18, fontWeight: 600, color: "var(--color-muted)" }}
           />
         </span>
       </div>

@@ -107,19 +107,29 @@ export function useCharacter() {
       const hp = c.hp ?? 0;
       const hpMax = c.hpMax ?? 0;
       const tempHp = c.tempHp ?? 0;
-      if (delta >= 0) return { ...c, hp: clamp(hp + delta, 0, hpMax) };
-      // Damage drains temp HP first
-      const tempAbsorb = Math.min(tempHp, -delta);
+      // Negative temp HP is a max-HP reduction (a debuff), so real HP tops out below hpMax.
+      const effMax = Math.max(0, hpMax + Math.min(0, tempHp));
+      if (delta >= 0) return { ...c, hp: clamp(hp + delta, 0, effMax) };
+      // Damage drains positive temp HP first; a negative (max-reduction) temp HP never absorbs.
+      const tempAbsorb = tempHp > 0 ? Math.min(tempHp, -delta) : 0;
       const remaining = -delta - tempAbsorb;
       return {
         ...c,
         tempHp: tempHp - tempAbsorb,
-        hp: clamp(hp - remaining, 0, hpMax),
+        hp: clamp(hp - remaining, 0, effMax),
       };
     });
 
+  // Temp HP is signed: positive = a buffer soaked before real HP; negative = a max-HP
+  // reduction (debuff), bounded so it can't push the max below 0. When the reduced max
+  // drops under current HP, real HP is pulled down to the new ceiling (min is still 0).
   const setTempHp = (val: number) =>
-    setChar((c) => ({ ...c, tempHp: Math.max(0, val) }));
+    setChar((c) => {
+      const hpMax = c.hpMax ?? 0;
+      const tempHp = Math.max(-hpMax, val);
+      const effMax = Math.max(0, hpMax + Math.min(0, tempHp));
+      return { ...c, tempHp, hp: c.hp == null ? c.hp : Math.min(c.hp, effMax) };
+    });
 
   // Temporary AC buff/debuff (combat). Signed: positive = buff, negative = penalty.
   const setTempAc = (val: number) =>

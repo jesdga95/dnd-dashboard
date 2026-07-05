@@ -311,7 +311,8 @@
     "monsterBadge": "M",
     "tempAc": "Temp AC",
     "tempAcTitle": "Temporary AC",
-    "clearTempAc": "Clear temporary AC"
+    "clearTempAc": "Clear temporary AC",
+    "maxHpReduced": "Maximum HP reduced"
   },
   "dmCombat": {
     "title": "DM Combat",

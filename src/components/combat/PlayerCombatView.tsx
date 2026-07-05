@@ -33,6 +33,10 @@ export interface PlayerCombatViewProps {
 const TEMP_AC_COLOR = "#7dd3fc";
 const TEMP_AC_BG = "rgba(125,211,252,0.16)";
 
+// Temp HP accent — indigo when it's a buffer, coral when it's a max-HP debuff.
+const TEMP_HP_COLOR = "#818cf8";
+const TEMP_HP_PENALTY_COLOR = "var(--color-coral)";
+
 function PlayerCombatViewInner({
   uid,
   char,
@@ -94,9 +98,15 @@ function PlayerCombatViewInner({
   const baseAc = char.ac;
   const effAc = (baseAc ?? 0) + tempAc;
   const showAc = (baseAc !== null && baseAc > 0) || tempAc !== 0;
-  const total = Math.max(1, hpMax + tempHp);
-  const hpPct = (hp / total) * 100;
-  const tempPct = (tempHp / total) * 100;
+  // Signed temp HP: positive extends the pool as a buffer; negative is a max-HP debuff.
+  // The bar track spans the base max plus any positive buffer; a negative penalty is
+  // drawn as a locked-off segment on the right so the shrunken ceiling reads visually.
+  const posTemp = Math.max(0, tempHp);
+  const negTemp = Math.max(0, -tempHp);
+  const barMax = Math.max(1, hpMax + posTemp);
+  const hpPct = Math.min(100, (hp / barMax) * 100);
+  const tempPct = (posTemp / barMax) * 100;
+  const penaltyPct = (negTemp / barMax) * 100;
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -289,8 +299,9 @@ function PlayerCombatViewInner({
               value={char.hp}
               onChange={(v) => onUpdateHp({ hp: v })}
               min={0}
+              maxLength={4}
+              autoWidth
               style={{
-                width: 88,
                 textAlign: "left",
                 fontSize: 68,
                 fontWeight: 800,
@@ -300,7 +311,7 @@ function PlayerCombatViewInner({
               }}
             />
             {tempHp > 0 && (
-              <span className="text-[22px] font-bold" style={{ color: "#818cf8" }}>
+              <span className="text-[22px] font-bold" style={{ color: TEMP_HP_COLOR }}>
                 (+{tempHp})
               </span>
             )}
@@ -312,8 +323,9 @@ function PlayerCombatViewInner({
                 value={char.hpMax}
                 onChange={(v) => onUpdateHp({ hpMax: v })}
                 min={1}
+                maxLength={4}
+                autoWidth
                 style={{
-                  width: 60,
                   textAlign: "left",
                   fontSize: 22,
                   fontWeight: 600,
@@ -321,6 +333,15 @@ function PlayerCombatViewInner({
                   letterSpacing: "-0.02em",
                 }}
               />
+              {tempHp < 0 && (
+                <span
+                  className="text-[18px] font-bold ml-0.5"
+                  style={{ color: TEMP_HP_PENALTY_COLOR }}
+                  title={dict.combatMode.maxHpReduced}
+                >
+                  ({tempHp})
+                </span>
+              )}
             </div>
           </div>
 
@@ -344,6 +365,20 @@ function PlayerCombatViewInner({
                   background: "linear-gradient(90deg, #818cf8, #60a5fa)",
                 }}
               />
+            )}
+            {tempHp < 0 && (
+              <>
+                {/* healable gap between current HP and the reduced ceiling */}
+                <div className="h-full flex-1" />
+                <div
+                  className="h-full transition-all duration-300"
+                  style={{
+                    width: `${penaltyPct}%`,
+                    background:
+                      "repeating-linear-gradient(-45deg, rgba(224,74,58,0.55) 0, rgba(224,74,58,0.55) 4px, rgba(224,74,58,0.28) 4px, rgba(224,74,58,0.28) 8px)",
+                  }}
+                />
+              </>
             )}
           </div>
 
@@ -430,17 +465,18 @@ function PlayerCombatViewInner({
             <EditableNumber
               value={char.tempHp}
               onChange={(v) => onTempHpChange(v ?? 0)}
-              min={0}
+              signed
+              min={-hpMax}
               style={{
                 width: 44,
                 textAlign: "center",
                 fontSize: 16,
                 fontWeight: 700,
-                color: "#818cf8",
+                color: tempHp < 0 ? TEMP_HP_PENALTY_COLOR : TEMP_HP_COLOR,
               }}
             />
             <div
-              className="flex gap-0.5 rounded-full p-[3px]"
+              className="flex items-center gap-0.5 rounded-full p-[3px]"
               style={{ background: "rgba(255,255,255,0.06)" }}
             >
               {[10, 5, 1].map((n) => (
@@ -449,16 +485,12 @@ function PlayerCombatViewInner({
                   onClick={() => onTempHpChange(tempHp - n)}
                   className="px-2.5 py-[5px] text-[12px] border-none bg-transparent rounded-full
                     font-semibold font-[inherit] cursor-pointer transition-colors duration-150
-                    text-white/40 hover:bg-[rgba(129,140,248,0.15)] hover:text-[#818cf8]"
+                    text-white/40 hover:bg-[rgba(224,74,58,0.15)] hover:text-[var(--color-coral)]"
                 >
                   −{n}
                 </button>
               ))}
-            </div>
-            <div
-              className="flex gap-0.5 rounded-full p-[3px]"
-              style={{ background: "rgba(255,255,255,0.06)" }}
-            >
+              <span className="w-px h-4 mx-0.5 shrink-0 bg-white/10" />
               {[1, 5, 10].map((n) => (
                 <button
                   key={"t" + n}
@@ -470,7 +502,7 @@ function PlayerCombatViewInner({
                   +{n}
                 </button>
               ))}
-              {tempHp > 0 && (
+              {tempHp !== 0 && (
                 <button
                   onClick={() => onTempHpChange(0)}
                   title={dict.hp.clearTempHp}
@@ -499,7 +531,7 @@ function PlayerCombatViewInner({
               signed
               style={{ width: 44, textAlign: "center", fontSize: 16, fontWeight: 700, color: TEMP_AC_COLOR }}
             />
-            <div className="flex gap-0.5 rounded-full p-[3px]" style={{ background: "rgba(255,255,255,0.06)" }}>
+            <div className="flex items-center gap-0.5 rounded-full p-[3px]" style={{ background: "rgba(255,255,255,0.06)" }}>
               {[5, 2, 1].map((n) => (
                 <button
                   key={"tad" + n}
@@ -511,8 +543,7 @@ function PlayerCombatViewInner({
                   −{n}
                 </button>
               ))}
-            </div>
-            <div className="flex gap-0.5 rounded-full p-[3px]" style={{ background: "rgba(255,255,255,0.06)" }}>
+              <span className="w-px h-4 mx-0.5 shrink-0 bg-white/10" />
               {[1, 2, 5].map((n) => (
                 <button
                   key={"ta" + n}

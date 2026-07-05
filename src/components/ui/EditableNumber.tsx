@@ -13,6 +13,8 @@ interface EditableNumberProps {
   className?: string;
   style?: React.CSSProperties;
   asDiv?: boolean;
+  /** Size the field to its content instead of a fixed width. */
+  autoWidth?: boolean;
 }
 
 const DASH = "–";
@@ -28,6 +30,7 @@ export function EditableNumber({
   className = "",
   style,
   asDiv = false,
+  autoWidth = false,
 }: EditableNumberProps) {
   const [localVal, setLocalVal] = useState<string | null>(null);
   const focused = localVal !== null;
@@ -55,6 +58,13 @@ export function EditableNumber({
 
   const isNull = value === null;
   const showOutline = (!focused && isNull) || empty;
+
+  // Size to content: ~1ch per glyph, plus a few px so the last digit never clips
+  // (a digit's rendered width can slightly exceed the "0"-based ch unit). Spinners
+  // are hidden globally, so nothing else eats the width.
+  const autoStyle: React.CSSProperties | undefined = autoWidth
+    ? { width: `calc(${Math.max(1, (displayValue ?? "").length)}ch + 4px)` }
+    : undefined;
 
   // Editability hint that reads on any surface: light tiles/coins get a faint dark wash, the dark header a light one.
   const affordance = asDiv ? "cursor-text hover:bg-white/[0.10]" : "cursor-text hover:bg-black/[0.05]";
@@ -108,9 +118,12 @@ export function EditableNumber({
       type={!focused && (isNull || format) ? "text" : "number"}
       value={displayValue ?? ""}
       onFocus={() => setLocalVal("")}
-      onChange={(e) => setLocalVal(e.target.value)}
+      // maxLength is ignored on type="number", so cap the digit count here instead.
+      onChange={(e) =>
+        setLocalVal(maxLength !== undefined ? e.target.value.slice(0, maxLength) : e.target.value)
+      }
       onBlur={() => commit(localVal)}
-      style={style}
+      style={{ ...autoStyle, ...style }}
       className={sharedCls}
     />
   );
