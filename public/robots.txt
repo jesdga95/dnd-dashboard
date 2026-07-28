@@ -1,0 +1,7 @@
+# Everything is crawlable. The sheet itself is behind Google sign-in and each
+# character is private to its account, so all a crawler can reach is the public
+# shell and the metadata in <head> — there is no player data on an indexable URL.
+User-agent: *
+Allow: /
+
+Sitemap: https://dnd.jgulfo.com/sitemap.xml

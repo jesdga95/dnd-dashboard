@@ -1,7 +1,9 @@
 {
   "meta": {
-    "title": "D&D Dashboard",
-    "description": "Lleva el registro de tu personaje de D&D — estadísticas, PV, conjuros, inventario y más."
+    "title": "D&D Dashboard · Hoja de Personaje 5e en Vivo",
+    "description": "Una hoja de personaje de D&D 5e en vivo para toda la mesa. Registra aptitudes, PV, conjuros, inventario y combate, sincronizados entre cada jugador y el DM.",
+    "ogDescription": "Aptitudes, PV, conjuros, inventario y combate, sincronizados en vivo entre cada jugador y el DM.",
+    "ogAlt": "D&D Dashboard: una hoja para toda la mesa. Una hoja de personaje con PV, armadura, velocidad, iniciativa, CD de salvación de conjuros y una lista de grupo en vivo."
   },
   "auth": {
     "title": "D&D Dashboard",

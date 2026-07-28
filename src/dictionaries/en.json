@@ -1,7 +1,9 @@
 {
   "meta": {
-    "title": "D&D Dashboard",
-    "description": "Track your D&D character — stats, HP, spells, inventory and more."
+    "title": "D&D Dashboard · Live 5e Character Sheet",
+    "description": "A live D&D 5e character sheet for the whole table. Track abilities, HP, spells, inventory and combat, synced in real time between every player and the DM.",
+    "ogDescription": "Abilities, HP, spells, inventory and combat, synced live between every player and the DM.",
+    "ogAlt": "D&D Dashboard: one sheet for the whole table. A character sheet showing HP, armor, speed, initiative, spell save DC and a live party list."
   },
   "auth": {
     "title": "D&D Dashboard",

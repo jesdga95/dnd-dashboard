@@ -64,3 +64,19 @@ NEXT_PUBLIC_FIREBASE_APP_ID=...
 | `npm run build` | Production build |
 | `npm run start` | Start production server |
 | `npm run lint` | Run ESLint |
+
+## SEO and share assets
+
+The site is a static export, so what crawlers and LLM fetchers read is committed
+rather than generated per request. `src/lib/site.ts` holds the canonical URL,
+name, author and `WebApplication` JSON-LD. The root layout carries the site-wide
+metadata and the JSON-LD — without it `/`, a client-side language redirect, ships
+an empty `<head>`. `src/app/[lang]/layout.tsx` overrides title, description,
+canonical and Open Graph per locale from the `meta` block in
+`src/dictionaries/*.json`; metadata merges *shallowly*, so `openGraph` and
+`twitter` are respelled in full there.
+
+`public/` also carries `robots.txt`, `sitemap.xml`, `llms.txt`,
+`site.webmanifest`, the favicon set and `assets/og.png`. Verify changes with
+`curl`, not the browser — the browser fills in a title client-side and hides a
+missing one.

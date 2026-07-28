@@ -40,6 +40,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# local one-off tooling (rasterises the icons and og.png; its output is committed)
+/scripts
+
 # claude
 .claude/
 memory/

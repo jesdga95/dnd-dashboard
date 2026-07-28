@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="D&amp;D Dashboard">
+  <title>D&amp;D Dashboard</title>
+  <!-- A d20 seen face-on: hexagonal silhouette, ten visible faces. The body is
+       parchment and the top face coral so the mark still reads as a die at 16px,
+       where the facet creases below have already dissolved. The die is kept large
+       in the tile for the same reason — at favicon size, padding is legibility
+       you can't spare. -->
+  <rect width="64" height="64" rx="12" fill="#1a1715"/>
+  <polygon points="32,5 55.38,18.5 55.38,45.5 32,59 8.62,45.5 8.62,18.5" fill="#f4f1ec"/>
+  <polygon points="32,17.96 44.16,39.02 19.84,39.02" fill="#f47b5f"/>
+  <g stroke="#1a1715" stroke-width="1.8" stroke-linecap="round" opacity=".32" fill="none">
+    <!-- Radial creases, from the top face out to alternating hull corners. -->
+    <path d="M32 17.96 32 5M19.84 39.02 8.62 45.5M44.16 39.02 55.38 45.5"/>
+    <!-- The three faces that share an edge with the top one, plus their neighbours. -->
+    <path d="M32 17.96 8.62 18.5M19.84 39.02 8.62 18.5"/>
+    <path d="M32 17.96 55.38 18.5M44.16 39.02 55.38 18.5"/>
+    <path d="M19.84 39.02 32 59M44.16 39.02 32 59"/>
+  </g>
+</svg>

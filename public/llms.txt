@@ -1,0 +1,76 @@
+# D&D Dashboard
+
+> A live Dungeons & Dragons 5th Edition character sheet for the whole table.
+> Players keep their character here instead of on paper; the Dungeon Master sees
+> the party's vital stats update in real time and runs combat from the same data.
+
+The app is a single-page dashboard at https://dnd.jgulfo.com. It is free, has no
+ads, and requires a Google sign-in because every character is stored privately
+per account. English and Spanish are both supported, at /en and /es; the root URL
+detects the browser's preferred language and forwards to one of them.
+
+It is an unofficial, non-commercial fan project by Jesus Gulfo
+(https://jgulfo.com). It is not affiliated with or endorsed by Wizards of the
+Coast, and it does not reproduce the rules text of any D&D book. It tracks the
+numbers for a character you have already made.
+
+## What a player gets
+
+A full 5e character sheet where the derived numbers are computed, not typed:
+
+- Header: name, race, class, subclass, background, alignment and level, plus AC,
+  speed, initiative, proficiency bonus, hit dice and passive perception.
+- Ability scores: the six abilities, with modifiers, saving throw bonuses, spell
+  save DC, spell attack bonus and passive perception all derived from the base
+  scores.
+- Skills: the eighteen 5e skills, each set to not proficient, proficient or
+  expertise, with bonuses derived from the governing ability.
+- Health: current, maximum and temporary HP, a bar that marks the character as
+  bloodied at half HP, and death saving throws. Temporary HP is signed, so a
+  negative value represents a maximum-HP debuff.
+- Combat: an attack list with hit bonus, damage, type (melee, ranged or special)
+  and notes.
+- Spellcasting: spell slots by level and a prepared-spell list with cast time,
+  range, duration, concentration and ritual flags.
+- Equipment and inventory: gear slots with modifiers, a pack with quantities and
+  icons, and a coin purse.
+- Resources: custom class resource trackers (ki points, sorcery points, Channel
+  Divinity and so on), each tagged as short rest or long rest so the rest
+  buttons reset the right ones.
+- Traits and notes: freeform cards for features, quests, NPCs and rumors. Notes
+  can be shared with the party or kept private, and can be dictated by voice.
+- Rests: a short rest resets only short-rest resources; a long rest restores HP,
+  every spell slot, death saves and all resources.
+
+## What a Dungeon Master gets
+
+Choosing the DM role on first sign-in swaps the character sheet for a party
+dashboard:
+
+- A live party grid. Players enable sharing and hand over their ID; from then on
+  the DM sees each character's HP, temporary HP, conditions, passive perception,
+  spell save DC and remaining spell slots update as they change.
+- A combat and initiative tracker. The DM adds monsters (with HP, AC, initiative
+  and a quantity that spawns identical copies) and offline players who are at the
+  table without the app, then drives the turn order. Monster names and stats stay
+  hidden as "????" until the DM reveals them.
+- Damage attribution. Damage is credited to whoever dealt it, producing a
+  per-combat leaderboard and a victory or defeat summary when combat ends.
+- When the DM starts combat, every player's screen opens a full-screen combat
+  view with their HP hero card, conditions and the live turn order.
+
+## Technical shape
+
+Next.js 16 App Router, React 19 and Tailwind CSS v4, built as a static export and
+served from Cloudflare Pages. Auth and persistence are Firebase (Google sign-in
+plus Firestore), so the page renders its content in the browser after sign-in:
+what a crawler or an unauthenticated fetch receives is the shell and this
+metadata, not a character sheet.
+
+## Links
+
+- Live app: https://dnd.jgulfo.com/
+- English: https://dnd.jgulfo.com/en
+- Spanish: https://dnd.jgulfo.com/es
+- Source: https://github.com/jesdga95/dnd-dashboard
+- Author: https://jgulfo.com
