@@ -345,11 +345,13 @@ export function useCharacter() {
       };
     });
 
-  const addCustomResource = () =>
+  const addCustomResource = (draft: Pick<CustomResource, "name" | "max" | "resetOn">) => {
+    const resource: CustomResource = { ...draft, id: generateId(), used: 0 };
     setChar((c) => ({
       ...c,
-      customResources: [...(c.customResources ?? []), { id: generateId(), name: "", max: 1, used: 0, resetOn: "long" as const }],
+      customResources: [...(c.customResources ?? []), resource],
     }));
+  };
 
   const updateCustomResource = (id: number, patch: Partial<Omit<CustomResource, "id">>) =>
     setChar((c) => ({

@@ -5,6 +5,7 @@ import { useCallback, useState } from "react";
 import { IconPill } from "@/components/ui/IconPill";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Btn } from "@/components/ui/Btn";
+import { Modal, ModalField, ModalInput, ModalTextarea, ModalBtn } from "@/components/ui/Modal";
 import { useDict } from "@/lib/DictContext";
 import { useNotes } from "@/hooks/useNotes";
 import { useSpeechToText } from "@/hooks/useSpeechToText";
@@ -24,8 +25,7 @@ export function NotesCard({ characterName, partyMemberIds }: { characterName?: s
     myUid,
   } = useNotes({ characterName });
   const speech = useSpeechToText();
-  // The note just created — its title field takes the caret.
-  const [freshId, setFreshId] = useState<string | null>(null);
+  const [adding, setAdding] = useState(false);
 
   const otherShared = sharedNotes.filter((n) =>
     n.ownerId !== myUid &&
@@ -47,7 +47,7 @@ export function NotesCard({ characterName, partyMemberIds }: { characterName?: s
         title={dict.notes.title}
         sub={hasShared ? undefined : entrySub}
         actions={
-          <Btn variant="dark" size="sm" onClick={() => setFreshId(addNote())}>
+          <Btn variant="dark" size="sm" onClick={() => setAdding(true)}>
             <Plus size={11} /> {dict.notes.addNote}
           </Btn>
         }
@@ -79,7 +79,6 @@ export function NotesCard({ characterName, partyMemberIds }: { characterName?: s
               <NoteRow
                 key={note.id}
                 note={note}
-                focusTitle={note.id === freshId}
                 canShare={canShare}
                 speech={speech}
                 onChange={(patch) => updateNote(note.id, patch)}
@@ -108,13 +107,68 @@ export function NotesCard({ characterName, partyMemberIds }: { characterName?: s
           </div>
         )}
       </div>
+
+      {adding && (
+        <NoteModal
+          onSave={(draft) => { addNote(draft); setAdding(false); }}
+          onClose={() => setAdding(false)}
+        />
+      )}
     </div>
+  );
+}
+
+function NoteModal({
+  onSave,
+  onClose,
+}: {
+  onSave: (draft: { title: string; body: string }) => void;
+  onClose: () => void;
+}) {
+  const dict = useDict();
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
+
+  return (
+    <Modal
+      title={dict.notes.modal.addTitle}
+      onClose={onClose}
+      footer={
+        <>
+          <ModalBtn onClick={onClose}>{dict.common.cancel}</ModalBtn>
+          <ModalBtn
+            variant="dark"
+            onClick={() => onSave({ title: title.trim(), body })}
+            disabled={!title.trim() && !body.trim()}
+          >
+            {dict.common.save}
+          </ModalBtn>
+        </>
+      }
+    >
+      <ModalField label={dict.notes.modal.title}>
+        <ModalInput
+          value={title}
+          onChange={setTitle}
+          placeholder={dict.notes.titlePlaceholder}
+          autoFocus
+          maxLength={100}
+        />
+      </ModalField>
+      <ModalField label={dict.notes.modal.body}>
+        <ModalTextarea
+          value={body}
+          onChange={setBody}
+          placeholder={dict.notes.bodyPlaceholder}
+          maxLength={5000}
+        />
+      </ModalField>
+    </Modal>
   );
 }
 
 function NoteRow({
   note,
-  focusTitle,
   canShare,
   speech,
   onChange,
@@ -122,8 +176,6 @@ function NoteRow({
   onDelete,
 }: {
   note: PartyNote;
-  /** Newly created note: put the caret in the title so you can just start typing. */
-  focusTitle: boolean;
   canShare: boolean;
   speech: ReturnType<typeof useSpeechToText>;
   onChange: (patch: Partial<Pick<PartyNote, "title" | "body">>) => void;
@@ -154,7 +206,6 @@ function NoteRow({
       {/* Title row with inline action buttons */}
       <div className="flex items-center gap-1.5 mb-1">
         <input
-          autoFocus={focusTitle}
           className="flex-1 min-w-0 bg-transparent border-none font-[inherit]
             text-[15px] font-bold text-[var(--color-ink)] px-1 -ml-1 rounded
             outline-none focus:bg-[var(--color-card)] focus:shadow-[0_0_0_2px_var(--color-coral)]

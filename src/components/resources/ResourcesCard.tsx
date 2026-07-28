@@ -1,21 +1,27 @@
 "use client";
 
+import { useState } from "react";
 import { Zap, Plus, Minus, X } from "lucide-react";
 import { IconPill } from "@/components/ui/IconPill";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Btn } from "@/components/ui/Btn";
+import { Modal, ModalField, ModalInput, ModalBtn } from "@/components/ui/Modal";
 import { useDict } from "@/lib/DictContext";
 import type { CustomResource } from "@/lib/types";
 
+/** What "Add" collects before a resource row exists. */
+export type ResourceDraft = Pick<CustomResource, "name" | "max" | "resetOn">;
+
 interface ResourcesCardProps {
   resources: CustomResource[];
-  onAdd: () => void;
+  onAdd: (draft: ResourceDraft) => void;
   onUpdate: (id: number, patch: Partial<Omit<CustomResource, "id">>) => void;
   onRemove: (id: number) => void;
 }
 
 export function ResourcesCard({ resources, onAdd, onUpdate, onRemove }: ResourcesCardProps) {
   const dict = useDict();
+  const [adding, setAdding] = useState(false);
 
   return (
     <div className="bg-[var(--color-card)] rounded-[22px] px-5 py-[18px]
@@ -24,7 +30,7 @@ export function ResourcesCard({ resources, onAdd, onUpdate, onRemove }: Resource
         icon={<IconPill tint="sand"><Zap size={14} /></IconPill>}
         title={dict.resources.title}
         actions={
-          <Btn variant="default" size="sm" onClick={onAdd}>
+          <Btn variant="default" size="sm" onClick={() => setAdding(true)}>
             <Plus size={11} /> {dict.resources.add}
           </Btn>
         }
@@ -48,7 +54,80 @@ export function ResourcesCard({ resources, onAdd, onUpdate, onRemove }: Resource
           />
         ))}
       </div>
+
+      {adding && (
+        <ResourceModal
+          onSave={(draft) => { onAdd(draft); setAdding(false); }}
+          onClose={() => setAdding(false)}
+        />
+      )}
     </div>
+  );
+}
+
+function ResourceModal({
+  onSave,
+  onClose,
+}: {
+  onSave: (draft: ResourceDraft) => void;
+  onClose: () => void;
+}) {
+  const dict = useDict();
+  const [name, setName] = useState("");
+  const [max, setMax] = useState("1");
+  const [resetOn, setResetOn] = useState<CustomResource["resetOn"]>("long");
+
+  const save = () =>
+    onSave({ name: name.trim(), max: Math.max(0, parseInt(max, 10) || 0), resetOn });
+
+  return (
+    <Modal
+      title={dict.resources.modal.addTitle}
+      onClose={onClose}
+      footer={
+        <>
+          <ModalBtn onClick={onClose}>{dict.common.cancel}</ModalBtn>
+          <ModalBtn variant="dark" onClick={save} disabled={!name.trim()}>
+            {dict.common.save}
+          </ModalBtn>
+        </>
+      }
+    >
+      <div className="grid grid-cols-[1fr_88px] gap-2.5">
+        <ModalField label={dict.resources.modal.name}>
+          <ModalInput
+            value={name}
+            onChange={setName}
+            placeholder={dict.resources.namePlaceholder}
+            autoFocus
+            maxLength={30}
+          />
+        </ModalField>
+        <ModalField label={dict.resources.modal.max}>
+          <ModalInput value={max} onChange={setMax} />
+        </ModalField>
+      </div>
+      <ModalField label={dict.resources.modal.resetOn}>
+        <div className="flex gap-1.5">
+          {([["short", dict.resources.modal.resetShort], ["long", dict.resources.modal.resetLong]] as const).map(
+            ([key, label]) => (
+              <button
+                key={key}
+                onClick={() => setResetOn(key)}
+                className={`flex-1 px-3 py-[9px] rounded-[10px] text-[14px] font-semibold font-[inherit]
+                  cursor-pointer border transition-colors duration-150 ${
+                    resetOn === key
+                      ? "bg-[var(--color-sand)] text-[var(--color-sand-deep)] border-[var(--color-sand-deep)]"
+                      : "bg-[var(--color-bg)] text-[var(--color-muted)] border-[var(--color-line)] hover:bg-[var(--color-bg-warm)]"
+                  }`}
+              >
+                {label}
+              </button>
+            )
+          )}
+        </div>
+      </ModalField>
+    </Modal>
   );
 }
 

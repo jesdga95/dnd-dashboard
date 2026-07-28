@@ -5,6 +5,7 @@ import { Skull, Plus, X, Search } from "lucide-react";
 import { IconPill } from "@/components/ui/IconPill";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Btn } from "@/components/ui/Btn";
+import { Modal, ModalField, ModalInput, ModalTextarea, ModalBtn } from "@/components/ui/Modal";
 import { useDict } from "@/lib/DictContext";
 import { useMonsterLibrary, type MonsterDraft } from "@/hooks/useMonsterLibrary";
 import type { MonsterTemplate } from "@/lib/types";
@@ -17,8 +18,7 @@ export function BestiaryCard() {
   const dict = useDict();
   const { monsters, loading, addMonster, updateMonster, deleteMonster } = useMonsterLibrary();
   const [search, setSearch] = useState("");
-  // The card the DM just created — its name field takes the caret.
-  const [freshId, setFreshId] = useState<string | null>(null);
+  const [adding, setAdding] = useState(false);
 
   if (loading) return null;
 
@@ -27,10 +27,11 @@ export function BestiaryCard() {
   const countSub = (monsters.length === 1 ? dict.bestiary.cardOne : dict.bestiary.cardOther)
     .replace("{count}", String(monsters.length));
 
-  // Clear the filter so the new (unnamed) card isn't hidden by an active search.
-  const handleAdd = () => {
-    setFreshId(addMonster().id);
+  // Clear the filter so the new card isn't hidden by an active search.
+  const handleAdd = (draft: MonsterDraft) => {
+    addMonster(draft);
     setSearch("");
+    setAdding(false);
   };
 
   return (
@@ -41,7 +42,7 @@ export function BestiaryCard() {
         title={dict.bestiary.title}
         sub={countSub}
         actions={
-          <Btn variant="dark" size="sm" onClick={handleAdd}>
+          <Btn variant="dark" size="sm" onClick={() => setAdding(true)}>
             <Plus size={11} /> {dict.bestiary.addCard}
           </Btn>
         }
@@ -90,14 +91,88 @@ export function BestiaryCard() {
             <MonsterCardRow
               key={card.id}
               card={card}
-              focusName={card.id === freshId}
               onChange={(patch) => updateMonster(card.id, patch)}
               onDelete={() => deleteMonster(card.id)}
             />
           ))}
         </div>
       )}
+
+      {adding && <MonsterCardModal onSave={handleAdd} onClose={() => setAdding(false)} />}
     </div>
+  );
+}
+
+function MonsterCardModal({
+  onSave,
+  onClose,
+}: {
+  onSave: (draft: MonsterDraft) => void;
+  onClose: () => void;
+}) {
+  const dict = useDict();
+  const [name, setName] = useState("");
+  const [hp, setHp] = useState("");
+  const [ac, setAc] = useState("");
+  const [initBonus, setInitBonus] = useState("");
+  const [notes, setNotes] = useState("");
+
+  const num = (v: string) => {
+    const n = parseInt(v, 10);
+    return isNaN(n) ? undefined : n;
+  };
+
+  const save = () =>
+    onSave({
+      name: name.trim(),
+      hp: Math.max(1, num(hp) ?? 1),
+      ac: num(ac),
+      initBonus: num(initBonus),
+      notes,
+    });
+
+  return (
+    <Modal
+      title={dict.bestiary.modal.addTitle}
+      onClose={onClose}
+      footer={
+        <>
+          <ModalBtn onClick={onClose}>{dict.common.cancel}</ModalBtn>
+          <ModalBtn variant="dark" onClick={save} disabled={!name.trim()}>
+            {dict.common.save}
+          </ModalBtn>
+        </>
+      }
+    >
+      <ModalField label={dict.bestiary.modal.name}>
+        <ModalInput
+          value={name}
+          onChange={setName}
+          placeholder={dict.bestiary.namePlaceholder}
+          autoFocus
+          maxLength={50}
+        />
+      </ModalField>
+      <div className="grid grid-cols-3 gap-2.5">
+        <ModalField label={dict.bestiary.modal.hp}>
+          <ModalInput value={hp} onChange={setHp} placeholder="1" />
+        </ModalField>
+        <ModalField label={dict.bestiary.modal.ac}>
+          <ModalInput value={ac} onChange={setAc} placeholder="–" />
+        </ModalField>
+        <ModalField label={dict.bestiary.modal.init}>
+          <ModalInput value={initBonus} onChange={setInitBonus} placeholder="+0" />
+        </ModalField>
+      </div>
+      <ModalField label={dict.bestiary.modal.notes}>
+        <ModalTextarea
+          value={notes}
+          onChange={setNotes}
+          placeholder={dict.bestiary.notesPlaceholder}
+          maxLength={4000}
+        />
+      </ModalField>
+    </Modal>
   );
 }
 
@@ -170,21 +245,17 @@ function StatField({
 
 function MonsterCardRow({
   card,
-  focusName,
   onChange,
   onDelete,
 }: {
   card: MonsterTemplate;
-  /** Newly created card: put the caret in the name field so the DM can just type. */
-  focusName: boolean;
   onChange: (patch: MonsterDraft) => void;
   onDelete: () => void;
 }) {
   const dict = useDict();
 
   // The card keeps its warm surface while being edited; the focused *field* is
-  // what lights up (the same treatment the character sheet's inputs use), so a
-  // card created with the caret already in it doesn't read as a different kind of card.
+  // what lights up, the same treatment the character sheet's inputs use.
   return (
     <div className="bg-[var(--color-bg-warm)] rounded-[14px] px-[14px] py-3
       focus-within:border-[var(--color-coral)]
@@ -192,7 +263,6 @@ function MonsterCardRow({
       border border-transparent transition-all duration-150">
       <div className="flex items-center gap-1.5 mb-2">
         <input
-          autoFocus={focusName}
           className="flex-1 min-w-0 bg-transparent border-none font-[inherit]
             text-[15px] font-bold text-[var(--color-ink)] px-1 -ml-1 rounded
             outline-none focus:bg-[var(--color-card)] focus:shadow-[0_0_0_2px_var(--color-coral)]

@@ -265,7 +265,15 @@
     "emptyStateHighlight": "Add",
     "emptyStatePost": "to track a class resource.",
     "resetShort": "S",
-    "resetLong": "L"
+    "resetLong": "L",
+    "modal": {
+      "addTitle": "Add Resource",
+      "name": "Name",
+      "max": "Max",
+      "resetOn": "Resets on",
+      "resetShort": "Short rest",
+      "resetLong": "Long rest"
+    }
   },
   "notes": {
     "title": "Notes",
@@ -286,7 +294,12 @@
     "byAuthor": "by {name}",
     "micStart": "Dictate note",
     "micStop": "Stop dictation",
-    "micDenied": "Microphone access denied"
+    "micDenied": "Microphone access denied",
+    "modal": {
+      "addTitle": "Add Note",
+      "title": "Title",
+      "body": "Note"
+    }
   },
   "stats": {
     "armor": "Armor",
@@ -380,7 +393,15 @@
     "save": "Save card",
     "saveToLibrary": "Save this monster to your bestiary",
     "saved": "Saved",
-    "statCard": "Stat card"
+    "statCard": "Stat card",
+    "modal": {
+      "addTitle": "New Monster Card",
+      "name": "Name",
+      "hp": "Max HP",
+      "ac": "AC",
+      "init": "Init mod",
+      "notes": "Stat block"
+    }
   },
   "combatDamage": {
     "initiativeTab": "Initiative",

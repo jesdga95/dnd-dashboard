@@ -265,7 +265,15 @@
     "emptyStateHighlight": "Agregar",
     "emptyStatePost": "para registrar un recurso de clase.",
     "resetShort": "C",
-    "resetLong": "L"
+    "resetLong": "L",
+    "modal": {
+      "addTitle": "Agregar Recurso",
+      "name": "Nombre",
+      "max": "Máx.",
+      "resetOn": "Se recupera con",
+      "resetShort": "Descanso corto",
+      "resetLong": "Descanso largo"
+    }
   },
   "notes": {
     "title": "Notas",
@@ -286,7 +294,12 @@
     "byAuthor": "de {name}",
     "micStart": "Dictar nota",
     "micStop": "Detener dictado",
-    "micDenied": "Acceso al micrófono denegado"
+    "micDenied": "Acceso al micrófono denegado",
+    "modal": {
+      "addTitle": "Agregar Nota",
+      "title": "Título",
+      "body": "Nota"
+    }
   },
   "stats": {
     "armor": "Armadura",
@@ -380,7 +393,15 @@
     "save": "Guardar tarjeta",
     "saveToLibrary": "Guardar este monstruo en tu bestiario",
     "saved": "Guardado",
-    "statCard": "Ficha del monstruo"
+    "statCard": "Ficha del monstruo",
+    "modal": {
+      "addTitle": "Nueva Tarjeta de Monstruo",
+      "name": "Nombre",
+      "hp": "PV máx.",
+      "ac": "CA",
+      "init": "Mod. ini.",
+      "notes": "Estadísticas"
+    }
   },
   "combatDamage": {
     "initiativeTab": "Iniciativa",

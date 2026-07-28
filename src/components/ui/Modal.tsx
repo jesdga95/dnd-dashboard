@@ -134,14 +134,17 @@ export function ModalTextarea({
 export function ModalBtn({
   onClick,
   variant = "default",
+  disabled,
   children,
 }: {
   onClick: () => void;
   variant?: "default" | "dark";
+  /** Greys out Save until the form has the minimum a row needs to be useful. */
+  disabled?: boolean;
   children: React.ReactNode;
 }) {
   return (
-    <Btn variant={variant} size="base" onClick={onClick}>
+    <Btn variant={variant} size="base" onClick={onClick} disabled={disabled}>
       {children}
     </Btn>
   );
