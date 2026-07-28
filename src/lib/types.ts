@@ -188,6 +188,8 @@ export interface MonsterCombatant {
   initiativeRoll: number;
   conditions: string[];
   visibility: 0 | 1 | 2; // 0=hidden, 1=name only, 2=name+stats
+  /** Bestiary card this monster was spawned from — lets combat show its stat card. */
+  templateId?: string;
 }
 
 export type Combatant = PlayerCombatant | MonsterCombatant | OfflinePlayerCombatant;
@@ -204,6 +206,28 @@ export interface DmCombat {
   outcome?: "victory" | "defeat";
   /** Combatant key (uid|id) damage is currently credited to; null ⇒ Unattributed. Pre-filled by the turn. */
   activeAttackerKey?: string | null;
+}
+
+/**
+ * A reusable monster stat card in the DM's private bestiary
+ * (`monster_library/{dmUid}`). Combat spawns copies from these instead of the DM
+ * re-typing a stat block every session.
+ */
+export interface MonsterTemplate {
+  id: string;
+  name: string;
+  /** Max HP a spawned copy starts at. */
+  hp: number;
+  ac?: number;
+  /** Initiative modifier, added to a d20 when the card is dropped into combat. */
+  initBonus?: number;
+  /** Free-form stat block: attacks, abilities, tactics. Readable during combat. */
+  notes?: string;
+  createdAt: number;
+}
+
+export interface MonsterLibrary {
+  monsters: MonsterTemplate[];
 }
 
 export type AttackerType = "player" | "monster" | "offline" | "unattributed";

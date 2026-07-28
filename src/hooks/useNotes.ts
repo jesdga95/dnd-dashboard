@@ -123,11 +123,13 @@ export function useNotes(opts?: { characterName?: string }) {
     return () => map.forEach((t) => clearTimeout(t));
   }, []);
 
-  const addNote = async () => {
-    if (!user) return;
+  // Returns the new note's id synchronously (the write settles in the background)
+  // so the caller can hand the caret to that row the moment it renders.
+  const addNote = (): string | null => {
+    if (!user) return null;
     const id = String(generateId());
     const now = generateId();
-    await setDoc(doc(db, "party_notes", id), {
+    setDoc(doc(db, "party_notes", id), {
       ownerId: user.uid,
       partyId: partyId ?? "",
       authorName,
@@ -135,7 +137,8 @@ export function useNotes(opts?: { characterName?: string }) {
       body: "",
       shared: false,
       createdAt: now,
-    });
+    }).catch(() => {});
+    return id;
   };
 
   const updateNote = (id: string, patch: Partial<Pick<PartyNote, "title" | "body">>) => {

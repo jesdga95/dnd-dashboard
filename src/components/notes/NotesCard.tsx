@@ -1,7 +1,7 @@
 "use client";
 
 import { FileText, Plus, X, Share2, Mic, MicOff } from "lucide-react";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { IconPill } from "@/components/ui/IconPill";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Btn } from "@/components/ui/Btn";
@@ -24,6 +24,8 @@ export function NotesCard({ characterName, partyMemberIds }: { characterName?: s
     myUid,
   } = useNotes({ characterName });
   const speech = useSpeechToText();
+  // The note just created — its title field takes the caret.
+  const [freshId, setFreshId] = useState<string | null>(null);
 
   const otherShared = sharedNotes.filter((n) =>
     n.ownerId !== myUid &&
@@ -45,7 +47,7 @@ export function NotesCard({ characterName, partyMemberIds }: { characterName?: s
         title={dict.notes.title}
         sub={hasShared ? undefined : entrySub}
         actions={
-          <Btn variant="dark" size="sm" onClick={addNote}>
+          <Btn variant="dark" size="sm" onClick={() => setFreshId(addNote())}>
             <Plus size={11} /> {dict.notes.addNote}
           </Btn>
         }
@@ -77,6 +79,7 @@ export function NotesCard({ characterName, partyMemberIds }: { characterName?: s
               <NoteRow
                 key={note.id}
                 note={note}
+                focusTitle={note.id === freshId}
                 canShare={canShare}
                 speech={speech}
                 onChange={(patch) => updateNote(note.id, patch)}
@@ -111,6 +114,7 @@ export function NotesCard({ characterName, partyMemberIds }: { characterName?: s
 
 function NoteRow({
   note,
+  focusTitle,
   canShare,
   speech,
   onChange,
@@ -118,6 +122,8 @@ function NoteRow({
   onDelete,
 }: {
   note: PartyNote;
+  /** Newly created note: put the caret in the title so you can just start typing. */
+  focusTitle: boolean;
   canShare: boolean;
   speech: ReturnType<typeof useSpeechToText>;
   onChange: (patch: Partial<Pick<PartyNote, "title" | "body">>) => void;
@@ -137,17 +143,22 @@ function NoteRow({
     }
   }, [isActive, speech, note.id, note.body, onChange]);
 
+  // The row keeps its warm surface while being edited; the focused *field* is what
+  // lights up, so a note created with the caret already in it looks like the rest.
   return (
     <div className="bg-[var(--color-bg-warm)] rounded-[14px] px-[14px] py-3
-      hover:bg-[#ebe5db] focus-within:bg-[var(--color-card)]
-      focus-within:border focus-within:border-[var(--color-coral)]
+      hover:bg-[#ebe5db]
+      focus-within:border-[var(--color-coral)]
       focus-within:shadow-[0_0_0_3px_rgba(244,123,95,0.12)]
       border border-transparent transition-all duration-150">
       {/* Title row with inline action buttons */}
       <div className="flex items-center gap-1.5 mb-1">
         <input
-          className="flex-1 min-w-0 bg-transparent border-none outline-none font-[inherit]
-            text-[15px] font-bold text-[var(--color-ink)] p-0
+          autoFocus={focusTitle}
+          className="flex-1 min-w-0 bg-transparent border-none font-[inherit]
+            text-[15px] font-bold text-[var(--color-ink)] px-1 -ml-1 rounded
+            outline-none focus:bg-[var(--color-card)] focus:shadow-[0_0_0_2px_var(--color-coral)]
+            transition-[background,box-shadow] duration-[0.12s]
             placeholder:text-[var(--color-muted-soft)] placeholder:font-semibold
             overflow-hidden text-ellipsis whitespace-nowrap"
           value={note.title}

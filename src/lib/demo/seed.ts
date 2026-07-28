@@ -1,5 +1,5 @@
 import { DEFAULT_CHAR } from "../defaults";
-import type { Character, DmCombat, PartyNote } from "../types";
+import type { Character, DmCombat, MonsterLibrary, PartyNote } from "../types";
 
 // A path-keyed snapshot of the whole fake datastore: "collection/id" -> document data.
 export type Store = Record<string, Record<string, unknown>>;
@@ -94,9 +94,44 @@ export function seedData(): Store {
     activeAttackerKey: "demo-p1",
     combatants: [
       { type: "player", uid: "demo-p1", name: "Lyra", initiativeRoll: 18 },
-      { type: "monster", id: "m1", name: "Goblin Boss", hp: 21, hpMax: 21, ac: 17, initiativeRoll: 15, conditions: [], visibility: 2 },
+      { type: "monster", id: "m1", name: "Goblin Boss", hp: 21, hpMax: 21, ac: 17, initiativeRoll: 15, conditions: [], visibility: 2, templateId: "card-goblin-boss" },
       { type: "player", uid: "demo-p2", name: "Borin", initiativeRoll: 12 },
       { type: "monster", id: "m2", name: "Hidden Lurker", hp: 11, hpMax: 11, ac: 14, initiativeRoll: 9, conditions: [], visibility: 0 },
+    ],
+  };
+
+  // The Goblin Boss already in the combat above was spawned from its card, so the
+  // stat-card toggle on that row has something to show.
+  const bestiary: MonsterLibrary = {
+    monsters: [
+      {
+        id: "card-goblin-boss",
+        name: "Goblin Boss",
+        hp: 21,
+        ac: 17,
+        initBonus: 2,
+        notes:
+          "Multiattack: two scimitar attacks (+4, 1d6+2 slashing).\nRedirect Attack: swaps places with a nearby goblin to take a hit for it.\nNimble Escape: disengage or hide as a bonus action.",
+        createdAt: 1700000000000,
+      },
+      {
+        id: "card-goblin",
+        name: "Goblin",
+        hp: 7,
+        ac: 15,
+        initBonus: 2,
+        notes: "Scimitar +4 (1d6+2) or shortbow +4 (1d6+2, 80/320 ft).\nNimble Escape: disengage or hide as a bonus action.",
+        createdAt: 1700000001000,
+      },
+      {
+        id: "card-dire-wolf",
+        name: "Dire Wolf",
+        hp: 37,
+        ac: 14,
+        initBonus: 2,
+        notes: "Bite +5 (2d6+3 piercing), DC 13 STR save or knocked prone.\nPack Tactics: advantage when an ally is next to the target.",
+        createdAt: 1700000002000,
+      },
     ],
   };
 
@@ -120,6 +155,7 @@ export function seedData(): Store {
     "player_dm_links/demo-p1": { dmUid: "demo-dm" },
     "player_dm_links/demo-p2": { dmUid: "demo-dm" },
     "dm_combats/demo-dm": combat,
+    "monster_library/demo-dm": bestiary,
     "party_notes/demo-note-1": note,
   } as unknown as Store;
 }

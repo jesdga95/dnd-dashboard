@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Eye, EyeOff, Trash2, Plus, Check, X, Shield, ShieldPlus, ChevronUp, ChevronDown } from "lucide-react";
+import { Eye, EyeOff, Trash2, Plus, Check, X, Shield, ShieldPlus, ChevronUp, ChevronDown, BookOpen } from "lucide-react";
 import { useDict } from "@/lib/DictContext";
 import type { DmCombat, MonsterCombatant, OfflinePlayerCombatant } from "@/lib/types";
 
@@ -283,6 +283,11 @@ export interface CombatantListProps {
   reorder?: (index: number, dir: -1 | 1) => void;
   /** When provided, the initiative number is editable and re-sorts on commit (DM only). */
   onSetInitiative?: (index: number, value: number) => void;
+  /**
+   * Bestiary notes keyed by monster-card id. A monster spawned from a card gets a
+   * toggle that opens its stat card in place. DM only — never passed in player views.
+   */
+  statCards?: Record<string, string>;
 }
 
 // ── Monster / offline-player row ─────────────────────────────────────────────
@@ -293,15 +298,19 @@ function ManualCombatantRow({
   combatant,
   isCurrent,
   controls,
+  statCard,
 }: {
   combatant: MonsterCombatant | OfflinePlayerCombatant;
   isCurrent: boolean;
   controls?: MonsterControls;
+  /** Bestiary notes for this monster's card, when it came from one (DM view only). */
+  statCard?: string;
 }) {
   const dict = useDict();
   const [condInput, setCondInput] = useState("");
   const [showCondInput, setShowCondInput] = useState(false);
   const [customDelta, setCustomDelta] = useState("");
+  const [showStatCard, setShowStatCard] = useState(false);
 
   const isOffline = combatant.type === "offline";
   const isDead = combatant.hp <= 0;
@@ -406,6 +415,20 @@ function ManualCombatantRow({
 
         <div className="flex-1" />
 
+        {isDm && statCard && (
+          <button
+            onClick={() => setShowStatCard((s) => !s)}
+            title={dict.bestiary.statCard}
+            className="w-8 h-8 flex items-center justify-center rounded-full cursor-pointer shrink-0
+              transition-colors duration-150"
+            style={showStatCard
+              ? { background: "rgba(244,123,95,0.16)", color: "var(--color-coral)" }
+              : { color: "rgba(255,255,255,0.3)" }}
+          >
+            <BookOpen size={13} />
+          </button>
+        )}
+
         {isDm && (
           <button
             onClick={() => controls.onRemove(combatant.id)}
@@ -461,6 +484,16 @@ function ManualCombatantRow({
               {cond}
             </span>
           ))}
+        </div>
+      )}
+
+      {/* Stat card from the bestiary — attacks / abilities / tactics, on demand */}
+      {isDm && statCard && showStatCard && (
+        <div
+          className="mt-2.5 px-3 py-2.5 rounded-[14px]"
+          style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}
+        >
+          <p className="text-[12.5px] leading-[1.5] text-white/60 whitespace-pre-wrap">{statCard}</p>
         </div>
       )}
 
@@ -702,6 +735,7 @@ export function CombatantList({
   monsterControls,
   reorder,
   onSetInitiative,
+  statCards,
 }: CombatantListProps) {
   const last = combat.combatants.length - 1;
   return (
@@ -723,7 +757,12 @@ export function CombatantList({
               liveData={memberData?.[c.uid]}
             />
           ) : (
-            <ManualCombatantRow combatant={c} isCurrent={isCurrent} controls={monsterControls} />
+            <ManualCombatantRow
+              combatant={c}
+              isCurrent={isCurrent}
+              controls={monsterControls}
+              statCard={c.type === "monster" && c.templateId ? statCards?.[c.templateId] : undefined}
+            />
           );
         return (
           <div key={key} className="flex items-start gap-2">

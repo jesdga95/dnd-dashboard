@@ -72,7 +72,9 @@ export function CombatCommandBar({
               {dict.combatDamage.results}
             </span>
             <div className="flex-1" />
-            <button onClick={onEnd} className={actionBtn}>
+            {/* Wrapped, not passed directly: onEnd's first arg is the combat
+                outcome, and React would hand it the click event. */}
+            <button onClick={() => onEnd?.()} className={actionBtn}>
               {endLabel}
             </button>
           </div>
@@ -99,7 +101,7 @@ export function CombatCommandBar({
                 <SkipForward size={13} />
                 {dict.dmCombat.nextTurn}
               </button>
-              <button onClick={onEnd} className={actionBtn}>
+              <button onClick={() => onEnd?.()} className={actionBtn}>
                 {endLabel}
               </button>
             </div>

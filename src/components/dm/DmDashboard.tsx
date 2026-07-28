@@ -9,6 +9,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useDict } from "@/lib/DictContext";
 import { PartyCard } from "./PartyCard";
 import { DmCombatMode } from "./DmCombatMode";
+import { BestiaryCard } from "./BestiaryCard";
 import { NotesCard } from "@/components/notes/NotesCard";
 
 function DmAvatarMenu({ onReset, onSignOut }: { onReset: () => void; onSignOut: () => void }) {
@@ -202,6 +203,9 @@ export function DmDashboard() {
           ))}
         </div>
       )}
+
+      <div className="h-4" />
+      <BestiaryCard />
 
       <div className="h-4" />
       <NotesCard partyMemberIds={members.map((m) => m.uid)} />
